@@ -74,8 +74,9 @@ body {
 #titlecard .logo-baku { width: clamp(86px, 16vw, 150px); height: auto; margin-bottom: 2.4rem; opacity: 0.92; animation: fadeUp 2.4s ease both; }
 .tc-title {
   font-size: clamp(2.2rem, 8vw, 5.4rem); font-weight: 200;
-  letter-spacing: 0.28em; text-transform: uppercase; line-height: 1;
+  letter-spacing: 0.28em; text-transform: uppercase; line-height: 1.08;
   padding-left: 0.28em; /* optical balance for tracking */
+  max-width: 100%; /* flex item: 親幅で折り返す（はみ出し防止） */
   animation: fadeUp 2.4s ease 0.2s both;
 }
 .tc-sub {
@@ -262,6 +263,50 @@ footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-si
   aside.feed { max-height: 24vh; }
   .metrics { gap: 24px; }
   header.topbar { flex-wrap: wrap; gap: 16px; }
+}
+
+/* ---- スマートフォン（〜560px）。iPadは縦768px〜なので影響しない ---- */
+@media (max-width: 560px) {
+  /* タイトル画面: nbspで折り返せないので字間を詰めて一行に収める */
+  .tc-title { font-size: clamp(1.55rem, 7.4vw, 5.4rem); letter-spacing: 0.13em; padding-left: 0.13em; }
+  .tc-sub { margin-top: 1.4rem; padding: 0 6px; }
+  .tc-enter { margin-top: 2.2rem; padding: 13px 26px; }
+
+  /* topbar: ブランドとメトリクスを上下2段に、余白を詰める */
+  header.topbar { padding: 13px 15px; gap: 12px; }
+  .brand { gap: 9px; }
+  .brand .logo-baku { width: 30px; height: 30px; }
+  .brand-name { font-size: 0.8rem; letter-spacing: 0.16em; padding-left: 0; }
+  .navbtn { margin-left: 8px; padding: 7px 11px; letter-spacing: 0.1em; }
+  .metrics { width: 100%; gap: 12px 18px; justify-content: space-between; flex-wrap: wrap; }
+  .metric { min-width: 0; flex: 1 1 28%; }
+  .metric .m-val { font-size: 1.05rem; margin-top: 5px; }
+  #fgGauge { max-width: 100%; height: auto; }
+  .bar { width: 100%; max-width: 96px; }
+
+  /* listings / feed の余白とサイズ */
+  .col-label { padding: 16px 16px 12px; }
+  .row { padding: 14px 16px; gap: 10px; }
+  .row.active { padding-left: 20px; }
+  .sortbar { padding: 0 16px 12px; }
+  .trade { padding: 12px 16px; }
+  #marketList { max-height: 36vh; }
+  aside.feed { max-height: 22vh; }
+
+  /* feature（中央）: オーブが画面幅を超えないよう vw でも上限を掛ける */
+  .feature-scroll { padding: 24px 15px 48px; }
+  .orb { width: min(74vw, 52vh, 420px); }
+  .glass { padding: 18px 14px 14px; margin-top: 26px; transform: none; }
+  .stats { gap: 14px 22px; margin-top: 24px; }
+  .desc { margin-top: 24px; font-size: 0.94rem; line-height: 1.9; }
+  .actions { gap: 12px; margin-top: 26px; }
+  button.act { padding: 13px 22px; }
+  .recommend { margin-top: 30px; }
+
+  /* Dreamfield 夢の海のパネル */
+  #fieldPanel { width: min(92vw, 520px); padding: 20px 18px 18px; bottom: 5%; }
+  #fieldPanel .fp-en { font-size: 1.25rem; }
+  #fieldPanel .fp-quote { font-size: 0.9rem; line-height: 1.9; }
 }
 
 /* ============================================================
