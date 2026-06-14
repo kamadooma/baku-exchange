@@ -1,0 +1,38 @@
+name: Update interest (現実の関心スナップショット)
+
+on:
+  schedule:
+    - cron: "0 21 * * *"   # 毎日 21:00 UTC（日本の朝6時ごろ）
+  workflow_dispatch: {}      # 手動実行も可
+
+permissions:
+  contents: write
+
+concurrency:
+  group: interest
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fetch Wikipedia pageviews → data/interest.json
+        run: python3 tools/fetch_interest.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain data/interest.json)" ]; then
+            git add data/interest.json
+            git commit -m "data: 現実の関心スナップショット更新 ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "変更なし"
+          fi

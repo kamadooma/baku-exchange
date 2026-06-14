@@ -1807,7 +1807,36 @@
   }
 
   // ---- Wikipedia interest ----
+  // interest（現実の関心）を fair に反映。momentum＞0（足元で注目上昇）なら基準価格を少し引き上げる
+  function applyInterest(ok) {
+    const logs = ok.map((o) => Math.log(o.avg + 1)), lo = Math.min(...logs), hi = Math.max(...logs);
+    ok.forEach((o) => {
+      const t = hi > lo ? (Math.log(o.avg + 1) - lo) / (hi - lo) : 0.5;
+      o.s.interest = Math.round(15 + t * 80);
+      if (!o.s.hasHistory) o.s.fair = 38 + o.s.interest * 4.2;
+      const m = Math.max(-0.3, Math.min(0.5, o.mom || 0));          // 現実の勢いを基準価格に反映
+      o.s.fair = o.s.fair * (1 + m * 0.6);
+      o.s.momentum = m; o.s.realViews = Math.round(o.avg);
+    });
+  }
   async function loadInterest() {
+    // 1) GitHub Actions が日次生成した data/interest.json を優先（速い・確実・GDELT等にも拡張可）
+    try {
+      const r = await fetch("data/interest.json", { cache: "no-store" });
+      if (r.ok) {
+        const data = await r.json(), items = data.items || {};
+        const ok = state.filter((s) => items[s.ticker]).map((s) => ({ s, avg: items[s.ticker].views30, mom: items[s.ticker].momentum }));
+        if (ok.length >= 2) {
+          applyInterest(ok);
+          setStatus(true, `Live · 現実の関心連動 (${ok.length}/${state.length}) · ${(data.generatedAt || "").slice(0, 10)}`);
+          return;
+        }
+      }
+    } catch (e) {}
+    // 2) フォールバック：ブラウザから直接 Wikipedia API を叩く
+    return loadInterestLive();
+  }
+  async function loadInterestLive() {
     const end = new Date(), start = new Date(Date.now() - 30 * 864e5);
     const f = (d) => `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, "0")}${String(d.getUTCDate()).padStart(2, "0")}`;
     const base = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user";
@@ -1817,12 +1846,11 @@
       if (!r.ok) throw new Error(s.wiki + " " + r.status);
       const j = await r.json(); const views = (j.items || []).map((i) => i.views);
       if (!views.length) throw new Error("no data");
-      return { s, avg: views.reduce((a, b) => a + b, 0) / views.length };
+      return { s, avg: views.reduce((a, b) => a + b, 0) / views.length, mom: 0 };
     }));
     const ok = results.filter((r) => r.status === "fulfilled").map((r) => r.value);
     if (ok.length >= 2) {
-      const logs = ok.map((o) => Math.log(o.avg + 1)), lo = Math.min(...logs), hi = Math.max(...logs);
-      ok.forEach((o) => { const t = hi > lo ? (Math.log(o.avg + 1) - lo) / (hi - lo) : 0.5; o.s.interest = Math.round(15 + t * 80); if (!o.s.hasHistory) o.s.fair = 38 + o.s.interest * 4.2; o.s.realViews = Math.round(o.avg); });
+      applyInterest(ok);
       setStatus(true, `Live · Wikipedia 関心連動 (${ok.length}/${state.length})`);
     } else setStatus(false, "Simulated · オフライン（模擬データ）");
   }
