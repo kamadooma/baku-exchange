@@ -210,8 +210,8 @@
 
     $("#feature").innerHTML = `
       <div class="feature-head">
-        <h2>${s.nameJp}</h2>
-        <div class="f-en">${s.nameEn}</div>
+        <h2>${s.nameEn}</h2>
+        <div class="f-en">${s.nameJp}</div>
         <div class="f-tk">${s.ticker} · ${categoryLabel(s.category)}</div>
       </div>
       <div class="orb-wrap">
@@ -250,7 +250,7 @@
     // ---- orb: WebGL crystal ball (footage texture + liquid pinch) ----
     if (orbCanvas) $(".orb").appendChild(orbCanvas);
     const FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10], mundane: [0.40, 0.16, 0.26] }[s.category] || [0.12, 0.12, 0.14];
-    if (window.OrbGL && OrbGL.ok()) OrbGL.setMedia(`assets/footage/${s.ticker}.jpg`, `assets/footage/${s.ticker}.mp4`, FB);
+    if (window.OrbGL && OrbGL.ok()) OrbGL.setMedia(`assets/footage/${s.ticker}.jpg`, `assets/footage/${s.ticker}.mp4`, FB, (s.idx % 17) / 17);
 
     const w = deriveWish(s);
     $("#dWish").textContent = w; $("#dWishFill").style.width = w + "%";
@@ -510,6 +510,9 @@
   }
   function setStatus(live, text) { $("#dataStatus").textContent = text; $("#dataDot").classList.toggle("live", !!live); }
 
+  // 近年テック富豪らが本気で追う夢は、2020年代に急騰している（Ngramは2019まで＆書籍ベースで拾えない）
+  const TREND_NOW = { IMMO: 1.0, SING: 0.85, AIBC: 0.7, ENHANCE: 0.7, MARS: 0.5 };
+
   // ---- historical shape from Google Ngram (data/history.json) ----
   async function loadHistory() {
     let hist = null;
@@ -530,6 +533,8 @@
         s.closes[m] = 30 + v * 420;                 // 0..1 → ~30..450 BAKU
       }
       for (let m = 1; m < L; m++) s.closes[m] *= (1 + 0.015 * gauss());  // 月次のテクスチャ
+      const boost = TREND_NOW[s.ticker];                                 // いま熱い夢は近年急騰
+      if (boost) { const cy = _now.getFullYear(); for (let m = 0; m < L; m++) { const yr = START_YEAR + m / 12; if (yr > 2008) { const t = (yr - 2008) / (cy - 2008); s.closes[m] *= 1 + boost * 1.9 * t; } } }
       s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price;
       s.tape = Array.from(s.closes.slice(-TAPE_N));
       s.hasHistory = true; n++;

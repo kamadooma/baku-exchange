@@ -8,7 +8,7 @@
 window.OrbGL = (function () {
   let gl, prog, buf, tex, canvas, raf = null;
   let mouse = [0.5, 0.5], energy = 0, t = 0;
-  let video = null, imgReady = false, fallback = [0.1, 0.1, 0.12];
+  let video = null, imgReady = false, fallback = [0.1, 0.1, 0.12], seedVal = 0;
   let u = {};
 
   const VS = `attribute vec2 p; varying vec2 uv;
@@ -17,7 +17,7 @@ window.OrbGL = (function () {
   const FS = `precision mediump float;
     varying vec2 uv;
     uniform sampler2D tex; uniform vec2 mouse; uniform float energy;
-    uniform float time; uniform float hasTex; uniform vec3 fallback;
+    uniform float time; uniform float hasTex; uniform vec3 fallback; uniform float seed;
     void main(){
       vec2 c = (uv*2.0-1.0) * 1.04;
       float r = length(c);
@@ -41,7 +41,16 @@ window.OrbGL = (function () {
       if(hasTex > 0.5){
         col = vec3(texture2D(tex, suv+dir*ca).r, texture2D(tex, suv).g, texture2D(tex, suv-dir*ca).b);
       } else {
-        col = fallback * (0.85 + 0.35*z);
+        // ambient-drone color field — slowly drifting, per-dream hue
+        float s = seed * 6.2832;
+        float a1 = sin(c.x*1.6 + time*0.26 + s) * 0.5 + 0.5;
+        float a2 = sin(c.y*1.9 - time*0.20 + s*1.3) * 0.5 + 0.5;
+        float a3 = sin((c.x - c.y)*1.3 + time*0.15 + s*0.7) * 0.5 + 0.5;
+        vec3 hueA = fallback;
+        vec3 hueB = fallback.gbr * 0.9 + 0.05;
+        col = mix(hueA, hueB, a1);
+        col += 0.10 * vec3(a3, a2, a1) + 0.04;
+        col *= (0.62 + 0.5*z);
       }
       float hl = smoothstep(0.40, 0.0, length(c - vec2(-0.30, 0.34)));
       col += vec3(1.0) * hl * 0.13;                 // gentle specular, no dark rim
@@ -68,7 +77,8 @@ window.OrbGL = (function () {
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     u = { tex: gl.getUniformLocation(prog, "tex"), mouse: gl.getUniformLocation(prog, "mouse"),
       energy: gl.getUniformLocation(prog, "energy"), time: gl.getUniformLocation(prog, "time"),
-      hasTex: gl.getUniformLocation(prog, "hasTex"), fallback: gl.getUniformLocation(prog, "fallback") };
+      hasTex: gl.getUniformLocation(prog, "hasTex"), fallback: gl.getUniformLocation(prog, "fallback"),
+      seed: gl.getUniformLocation(prog, "seed") };
     tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -91,9 +101,9 @@ window.OrbGL = (function () {
     return true;
   }
 
-  function setMedia(imgUrl, vidUrl, fb) {
+  function setMedia(imgUrl, vidUrl, fb, seed) {
     if (!gl) return;
-    fallback = fb || fallback;
+    fallback = fb || fallback; seedVal = seed || 0;
     imgReady = false; gl.uniform1f(u.hasTex, 0);
     if (video) { try { video.pause(); } catch (e) {} video.src = ""; video = null; }
     // try video first
@@ -122,7 +132,7 @@ window.OrbGL = (function () {
     if (video && video.readyState >= 2) { gl.bindTexture(gl.TEXTURE_2D, tex); try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video); } catch (e) {} }
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2fv(u.mouse, mouse); gl.uniform1f(u.energy, energy); gl.uniform1f(u.time, t);
-    gl.uniform1f(u.hasTex, imgReady ? 1 : 0); gl.uniform3fv(u.fallback, fallback);
+    gl.uniform1f(u.hasTex, imgReady ? 1 : 0); gl.uniform3fv(u.fallback, fallback); gl.uniform1f(u.seed, seedVal);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
