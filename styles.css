@@ -315,24 +315,7 @@ footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-si
   .actions { gap: 12px; margin-top: 26px; }
   button.act { padding: 13px 22px; }
   .recommend { margin-top: 30px; }
-
-  /* Dreamfield 夢の海のパネル: 幅・高さとも画面内に収め、はみ出す分はスクロール */
-  #fieldPanel {
-    width: min(92vw, 520px); max-width: 92vw; box-sizing: border-box;
-    max-height: 70vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
-    padding: 18px 16px 16px; bottom: 4%;
-  }
-  #fieldPanel .fp-en { font-size: 1.2rem; }
-  #fieldPanel .fp-jp { font-size: 0.72rem; }
-  #fieldPanel .fp-quote { font-size: 0.9rem; line-height: 1.85; max-width: 100%; margin-top: 14px; }
-  #fieldPanel .fp-price { font-size: 1.02rem; }
-  #fieldPanel .fp-nature { font-size: 0.78rem; }
-  #fieldPanel .fp-seller { margin-top: 12px; }
-  #fpOpen { margin-top: 16px; }
-
-  /* Dreamfield: タイトルと閉じるボタンを上端に詰める */
-  .field-title { top: 16px; font-size: 0.54rem; }
-  #fieldClose { top: 12px; left: 14px; }
+  /* Dreamfield パネルのスマホ調整はファイル末尾（ベース定義より後）に集約 */
 }
 
 /* ============================================================
@@ -514,3 +497,29 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 /* 夢の海パネル：名言エピグラフ（売り手コメントの下に小さく） */
 #fieldPanel .fp-famous { margin-top: 16px; padding-top: 13px; border-top: 1px solid var(--line); font-style: italic; font-size: 0.78rem; color: var(--g1); line-height: 1.7; }
 #fieldPanel .fp-famous .by { color: var(--g2); font-style: normal; letter-spacing: 0.04em; }
+
+/* ============================================================
+   スマホ(〜560px): Dreamfield 夢の海パネルを画面内に収める
+   ※ ベース #fieldPanel 定義より後に置き、ソース順で確実に勝たせる
+   ============================================================ */
+@media (max-width: 560px) {
+  #fieldPanel {
+    left: 50%; right: auto;
+    bottom: max(3.5%, env(safe-area-inset-bottom));
+    width: min(92vw, 520px); max-width: 92vw; box-sizing: border-box;
+    max-height: 80dvh;            /* モバイルのURLバーを考慮（vh非対応でも下のvhが効く） */
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 16px 16px 14px;
+  }
+  @supports not (height: 80dvh) { #fieldPanel { max-height: 72vh; } }
+  #fieldPanel .fp-en { font-size: 1.2rem; }
+  #fieldPanel .fp-jp { font-size: 0.72rem; }
+  #fieldPanel .fp-price { font-size: 1.02rem; margin-top: 8px; }
+  #fieldPanel .fp-nature { font-size: 0.78rem; margin-top: 10px; }
+  #fieldPanel .fp-quote { font-size: 0.9rem; line-height: 1.8; max-width: 100%; margin-top: 12px; }
+  #fieldPanel .fp-seller { margin-top: 10px; }
+  #fieldPanel .fp-famous { margin-top: 12px; padding-top: 10px; font-size: 0.74rem; }
+  #fpOpen { margin-top: 14px; }
+  .field-title { top: 14px; font-size: 0.54rem; }
+  #fieldClose { top: 10px; left: 12px; }
+}
