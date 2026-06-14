@@ -7,24 +7,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- cinematic overlays -->
   <div id="grain"></div>
   <div id="vignette"></div>
 
   <!-- title card -->
   <div id="titlecard">
-    <svg class="coin coin-lg" viewBox="0 0 100 100" aria-hidden="true">
-      <circle cx="50" cy="50" r="46" class="c-ring"/>
-      <circle cx="50" cy="50" r="39" class="c-ring2"/>
-      <rect x="40" y="40" width="20" height="20" class="c-hole"/>
-      <path class="c-mark" d="M50 14 q -7 3 -6 9 q 1 5 5 4 q 3 -1 2 -4"/>
-      <circle cx="84" cy="50" r="3" class="c-mark"/><circle cx="84" cy="50" r="0.9" class="c-dot"/>
-      <path class="c-mark" d="M44 84 q 3 -5 6 -1 q 3 4 6 -1"/>
-      <path class="c-mark" d="M14 46 v8 M17 45 v9 M20 46 v8"/>
-    </svg>
-    <div class="tc-title">Baku Exchange</div>
-    <div class="tc-sub">夢の取引なんてディストピアだ。<br/>けれど株式とは、私たちが共に見る、いちばん大きな夢だ。<br/><br/>The stock market is the largest dream we share.</div>
-    <div class="tc-enter">— Tap to enter —</div>
+    <img class="logo-baku" src="assets/baku.webp" alt="獏 Baku" />
+    <div class="tc-title">Baku&nbsp;Exchange</div>
+    <div class="tc-sub">あなたの夢を、みんなの夢に。<br/>Your dream, everyone's dream.</div>
+    <button class="tc-enter">Enter 入場</button>
   </div>
 
   <!-- ticker tape -->
@@ -33,59 +24,46 @@
   <div id="app">
     <header class="topbar">
       <div class="brand">
-        <div class="brand-row">
-          <svg class="coin" viewBox="0 0 100 100" aria-hidden="true">
-            <circle cx="50" cy="50" r="46" class="c-ring"/>
-            <circle cx="50" cy="50" r="39" class="c-ring2"/>
-            <rect x="40" y="40" width="20" height="20" class="c-hole"/>
-            <path class="c-mark" d="M50 14 q -7 3 -6 9 q 1 5 5 4 q 3 -1 2 -4"/>
-            <circle cx="84" cy="50" r="3" class="c-mark"/><circle cx="84" cy="50" r="0.9" class="c-dot"/>
-            <path class="c-mark" d="M44 84 q 3 -5 6 -1 q 3 4 6 -1"/>
-            <path class="c-mark" d="M14 46 v8 M17 45 v9 M20 46 v8"/>
-          </svg>
-          <h1>Baku Exchange</h1>
-        </div>
-        <div class="tagline">幻影のウォール街 ・ Phantom Wall Street — where dreams are bought and let go</div>
+        <img class="logo-baku" src="assets/baku.webp" alt="獏" />
+        <div class="brand-name">Baku&nbsp;Exchange</div>
       </div>
       <div class="metrics">
         <div class="metric">
-          <div class="label">Apocalypse 終末感</div>
-          <div class="val" id="doomMeter">—</div>
+          <div class="m-label">Dream Index 夢幻指数</div>
+          <div class="m-val num" id="dreamIndex">—</div>
         </div>
-        <div class="metric">
-          <div class="label">Dream Index 夢幻指数</div>
-          <div class="val" id="dreamIndex">—</div>
+        <div class="metric fg">
+          <div class="m-label">Fear &amp; Greed</div>
+          <canvas id="fgGauge" width="132" height="58"></canvas>
+          <div class="m-val" id="fgWord">—</div>
         </div>
-        <div id="fearGreedWrap">
-          <canvas id="fearGreed" width="120" height="64"></canvas>
-          <div id="fearGreedLabel">Fear &amp; Greed</div>
+        <div class="metric doom">
+          <div class="m-label">Apocalypse 終末感</div>
+          <div class="m-val num" id="doomVal">—</div>
+          <div class="bar"><i id="doomFill"></i></div>
         </div>
       </div>
     </header>
 
     <main>
-      <!-- market list -->
-      <section class="board">
-        <div class="col-title">Listings 上場銘柄</div>
+      <section class="listings">
+        <div class="col-label">Listings 上場銘柄</div>
         <div id="marketList"></div>
       </section>
 
-      <!-- detail -->
-      <section class="detail">
-        <div class="col-title">Dream 銘柄詳細</div>
-        <div class="detail-inner" id="detail"></div>
+      <section class="feature">
+        <div class="feature-scroll" id="feature"></div>
       </section>
 
-      <!-- trade feed -->
       <aside class="feed">
-        <div class="col-title">Tape 取引フィード</div>
+        <div class="col-label">Tape 取引フィード</div>
         <div id="tradeFeed"></div>
       </aside>
     </main>
   </div>
 
   <div id="toast"></div>
-  <footer class="status"><span id="dataDot"></span><span id="dataStatus">connecting…</span></footer>
+  <footer class="status"><i id="dataDot"></i><span id="dataStatus">connecting…</span></footer>
 
   <script src="data.js"></script>
   <script src="app.js"></script>

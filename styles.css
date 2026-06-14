@@ -1,272 +1,305 @@
 /* ============================================================
-   BACK EXCHANGE — Phantom Wall Street
-   A24-style cinematic dream market
+   BAKU EXCHANGE
+   Monochrome editorial (Monopo / Adaline) · footage-in-sphere
+   (ThoughtLab) · glassy transparent charts.
+   Color lives only inside the dream-orb imagery; UI is monochrome.
    ============================================================ */
 
 :root {
-  --bg: #0a0908;
-  --bg-2: #100e0c;
-  --panel: rgba(22, 20, 18, 0.55);
-  --panel-line: rgba(190, 175, 150, 0.14);
-  --bone: #e9e2d4;
-  --bone-dim: #b6ad9c;
-  --bone-faint: #6f685c;
-  --gold: #c9a96a;       /* Back currency */
-  --jade: #7fae9b;       /* up — pale jade */
-  --blood: #b25a52;      /* down — faded blood */
-  --neutral: #8a8275;
-  --serif: "Didot", "Bodoni 72", "Hoefler Text", "Times New Roman", serif;
-  --mono: "SF Mono", "Menlo", "Courier New", monospace;
-  --sans: -apple-system, "Helvetica Neue", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --bg: #08090b;
+  --bg-2: #0c0d10;
+  --fg: #f3f1ec;
+  --g1: #b7b4ac;   /* dim text */
+  --g2: #807d77;   /* fainter */
+  --g3: #4f4e4b;   /* faintest */
+  --line: rgba(243, 241, 236, 0.09);
+  --line-2: rgba(243, 241, 236, 0.16);
+  --sans: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Inter",
+          "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 html, body { height: 100%; }
 
 body {
-  background:
-    radial-gradient(120% 90% at 50% 0%, #16130f 0%, var(--bg) 55%, #050403 100%);
-  color: var(--bone);
+  background: var(--bg);
+  color: var(--fg);
   font-family: var(--sans);
+  font-weight: 300;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
   letter-spacing: 0.01em;
 }
 
-/* ---- film grain + vignette overlays ---- */
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.up   { color: var(--fg); }
+.down { color: var(--g2); }
+
+/* micro labels */
+.label, .col-label, .m-label, .chart-label, .f-tk, .tc-enter, .ticker-item b, .stat .k {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.6rem;
+  color: var(--g2);
+  font-weight: 400;
+}
+
+/* ---- film grain + vignette ---- */
 #grain {
   position: fixed; inset: 0; z-index: 9000; pointer-events: none;
-  opacity: 0.05; mix-blend-mode: screen;
+  opacity: 0.045; mix-blend-mode: screen;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation: grain 0.6s steps(3) infinite;
+  animation: grain 0.7s steps(3) infinite;
 }
-@keyframes grain {
-  0% { transform: translate(0,0); } 33% { transform: translate(-2%,1%); }
-  66% { transform: translate(1%,-2%); } 100% { transform: translate(0,0); }
-}
+@keyframes grain { 0%{transform:translate(0,0)} 33%{transform:translate(-2%,1%)} 66%{transform:translate(1%,-2%)} 100%{transform:translate(0,0)} }
 #vignette {
   position: fixed; inset: 0; z-index: 8000; pointer-events: none;
-  background: radial-gradient(120% 100% at 50% 45%, transparent 55%, rgba(0,0,0,0.6) 100%);
+  background: radial-gradient(130% 110% at 50% 40%, transparent 60%, rgba(0,0,0,0.55) 100%);
 }
 
-/* ---- baku coin emblem ---- */
-.coin .c-ring  { fill: none; stroke: var(--gold); stroke-width: 1.6; opacity: 0.9; }
-.coin .c-ring2 { fill: none; stroke: var(--gold); stroke-width: 0.8; opacity: 0.45; }
-.coin .c-hole  { fill: none; stroke: var(--gold); stroke-width: 1.4; opacity: 0.8; }
-.coin .c-mark  { fill: none; stroke: var(--gold); stroke-width: 1.3; opacity: 0.8; stroke-linecap: round; stroke-linejoin: round; }
-.coin .c-dot   { fill: var(--gold); stroke: none; }
-.coin-lg {
-  width: clamp(64px, 14vw, 96px); height: auto; margin-bottom: 1.6rem;
-  filter: drop-shadow(0 0 14px rgba(201,169,106,0.35));
-  animation: coinspin 90s linear infinite, fadeUp 2.4s ease both;
+/* ---- Baku ink logo: invert to white line-art, drop the paper ---- */
+.logo-baku {
+  filter: invert(1) grayscale(1) brightness(1.12) contrast(1.05);
+  mix-blend-mode: screen;
 }
-.brand .coin { width: 30px; height: 30px; flex: 0 0 auto; }
-.brand-row { display: flex; align-items: center; gap: 12px; }
-@keyframes coinspin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
 
-/* ---- title card (cinematic intro) ---- */
+/* ---- title card ---- */
 #titlecard {
   position: fixed; inset: 0; z-index: 9500;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  background: radial-gradient(120% 90% at 50% 45%, #120f0b 0%, #050403 100%);
-  text-align: center; padding: 8vw;
+  background: var(--bg); text-align: center; padding: 8vw;
   transition: opacity 1.6s ease;
 }
 #titlecard.hide { opacity: 0; pointer-events: none; }
+#titlecard .logo-baku { width: clamp(86px, 16vw, 150px); height: auto; margin-bottom: 2.4rem; opacity: 0.92; animation: fadeUp 2.4s ease both; }
 .tc-title {
-  font-family: var(--serif); font-weight: 400;
-  font-size: clamp(2.4rem, 8vw, 5.5rem); letter-spacing: 0.14em;
-  color: var(--bone); text-transform: uppercase;
-  animation: fadeUp 2.4s ease both;
+  font-size: clamp(2.2rem, 8vw, 5.4rem); font-weight: 200;
+  letter-spacing: 0.28em; text-transform: uppercase; line-height: 1;
+  padding-left: 0.28em; /* optical balance for tracking */
+  animation: fadeUp 2.4s ease 0.2s both;
 }
 .tc-sub {
-  font-family: var(--serif); font-style: italic;
-  font-size: clamp(0.95rem, 2.6vw, 1.5rem); color: var(--bone-dim);
-  margin-top: 1.6rem; max-width: 30ch; line-height: 1.7;
+  margin-top: 1.8rem; color: var(--g1); font-size: clamp(0.85rem, 2vw, 1.05rem);
+  letter-spacing: 0.06em; line-height: 1.9; max-width: 40ch;
   animation: fadeUp 2.4s ease 0.5s both;
 }
 .tc-enter {
-  margin-top: 3rem; font-family: var(--mono); font-size: 0.72rem;
-  letter-spacing: 0.32em; color: var(--bone-faint); text-transform: uppercase;
-  animation: pulse 3s ease infinite, fadeUp 2s ease 1.2s both;
+  margin-top: 3rem; padding: 14px 30px; background: transparent; color: var(--fg);
+  border: 1px solid var(--line-2); cursor: pointer; transition: all 0.5s ease;
+  animation: fadeUp 2s ease 1s both;
 }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-@keyframes pulse { 0%,100% { opacity: 0.35; } 50% { opacity: 0.9; } }
+.tc-enter:hover { background: var(--fg); color: var(--bg); }
+@keyframes fadeUp { from{opacity:0; transform:translateY(16px)} to{opacity:1; transform:none} }
 
-/* ---- ticker tape ---- */
-#ticker {
-  position: relative; z-index: 10; height: 34px; overflow: hidden;
-  border-bottom: 1px solid var(--panel-line);
-  background: rgba(0,0,0,0.35); display: flex; align-items: center;
-}
-.ticker-track {
-  display: inline-flex; white-space: nowrap; gap: 2.6rem;
-  font-family: var(--mono); font-size: 0.78rem;
-  animation: scroll 80s linear infinite; padding-left: 100%;
-}
-.ticker-item { color: var(--bone-dim); }
-.ticker-item b { color: var(--bone); font-weight: 600; letter-spacing: 0.05em; }
-.up { color: var(--jade); } .down { color: var(--blood); }
-@keyframes scroll { from { transform: translateX(0);} to { transform: translateX(-50%);} }
+/* ---- ticker ---- */
+#ticker { position: relative; z-index: 10; height: 40px; overflow: hidden; display: flex; align-items: center; border-bottom: 1px solid var(--line); }
+.ticker-track { display: inline-flex; white-space: nowrap; gap: 3.2rem; animation: scroll 90s linear infinite; padding-left: 100%; }
+.ticker-item { font-size: 0.74rem; color: var(--g1); letter-spacing: 0.04em; }
+.ticker-item b { color: var(--fg); font-weight: 400; margin-right: 0.5em; }
+@keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
 /* ---- layout ---- */
-#app {
-  position: relative; z-index: 10; height: calc(100% - 34px);
-  display: grid; grid-template-rows: auto 1fr; gap: 0;
-}
+#app { position: relative; z-index: 10; height: calc(100% - 40px); display: grid; grid-template-rows: auto 1fr; }
 
 header.topbar {
-  display: flex; align-items: flex-end; justify-content: space-between;
-  padding: 18px 26px 14px; border-bottom: 1px solid var(--panel-line); gap: 20px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 22px 40px; border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; flex-direction: column; }
-.brand h1 {
-  font-family: var(--serif); font-weight: 400; font-size: 1.9rem;
-  letter-spacing: 0.22em; text-transform: uppercase;
-}
-.brand .tagline {
-  font-family: var(--serif); font-style: italic; color: var(--bone-faint);
-  font-size: 0.82rem; margin-top: 4px;
-}
-.metrics { display: flex; gap: 28px; align-items: center; }
-.metric { text-align: right; }
-.metric .label {
-  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.26em;
-  color: var(--bone-faint); text-transform: uppercase;
-}
-.metric .val { font-family: var(--mono); font-size: 1.3rem; margin-top: 3px; }
-#fearGreedWrap { display: flex; flex-direction: column; align-items: center; }
-#fearGreed { display: block; }
-#fearGreedLabel {
-  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.2em;
-  text-transform: uppercase; margin-top: 2px; color: var(--bone-dim);
-}
+.brand { display: flex; align-items: center; gap: 16px; }
+.brand .logo-baku { width: 40px; height: 40px; object-fit: contain; opacity: 0.9; }
+.brand-name { font-size: 1.05rem; font-weight: 300; letter-spacing: 0.3em; text-transform: uppercase; padding-left: 0.3em; }
+.brand .tagline { display: none; }
 
-/* ---- main 3-column ---- */
-main {
-  display: grid; grid-template-columns: 320px 1fr 270px; gap: 1px;
-  background: var(--panel-line); overflow: hidden; min-height: 0;
-}
-section, aside { background: var(--bg); overflow: hidden; min-height: 0; display: flex; flex-direction: column; }
-.col-title {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.26em;
-  text-transform: uppercase; color: var(--bone-faint);
-  padding: 14px 18px 10px; border-bottom: 1px solid var(--panel-line);
-}
+.metrics { display: flex; gap: 46px; align-items: center; }
+.metric { min-width: 120px; }
+.metric .m-val { font-size: 1.45rem; font-weight: 200; margin-top: 8px; }
+.metric.fg .m-val, .metric.doom .m-val { font-size: 0.92rem; letter-spacing: 0.04em; }
+.bar { margin-top: 9px; height: 2px; background: var(--line-2); position: relative; width: 130px; }
+.bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--fg); transition: width 1s ease; }
 
-/* ---- market list ---- */
-#marketList { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+/* ---- main three regions, separated by whitespace + hairlines ---- */
+main { display: grid; grid-template-columns: 280px 1fr 260px; min-height: 0; }
+section, aside { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+section.listings { border-right: 1px solid var(--line); }
+aside.feed { border-left: 1px solid var(--line); }
+.col-label { padding: 22px 28px 16px; }
+
+/* ---- listings ---- */
+#marketList { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; padding-bottom: 30px; }
 .row {
-  display: grid; grid-template-columns: 1fr 64px 70px; align-items: center;
-  gap: 8px; padding: 12px 18px; border-bottom: 1px solid rgba(190,175,150,0.06);
-  cursor: pointer; transition: background 0.4s ease;
+  display: grid; grid-template-columns: 1fr 56px 78px; align-items: center; gap: 14px;
+  padding: 16px 28px; cursor: pointer; border-bottom: 1px solid var(--line);
+  transition: background 0.5s ease, padding-left 0.4s ease;
 }
-.row:hover, .row.active { background: rgba(201,169,106,0.06); }
-.row.active { box-shadow: inset 2px 0 0 var(--gold); }
-.row .tk { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.08em; }
-.row .nm { font-size: 0.7rem; color: var(--bone-dim); margin-top: 2px; }
-.row .spark { width: 64px; height: 26px; }
-.row .pr { font-family: var(--mono); font-size: 0.82rem; text-align: right; }
-.row .ch { font-family: var(--mono); font-size: 0.66rem; text-align: right; margin-top: 2px; }
+.row:hover { background: rgba(243,241,236,0.03); }
+.row.active { background: rgba(243,241,236,0.05); padding-left: 34px; }
+.row .tk { font-size: 0.92rem; font-weight: 300; letter-spacing: 0.1em; }
+.row .nm { font-size: 0.66rem; color: var(--g2); margin-top: 4px; letter-spacing: 0.02em; }
+.row .spark { width: 56px; height: 24px; opacity: 0.8; }
+.row .pr { font-size: 0.86rem; text-align: right; font-weight: 300; }
+.row .ch { font-size: 0.64rem; text-align: right; margin-top: 4px; }
 
-/* ---- detail ---- */
-.detail-inner { overflow-y: auto; flex: 1; padding: 22px 28px; -webkit-overflow-scrolling: touch; }
-.detail-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
-.detail-head .names h2 {
-  font-family: var(--serif); font-weight: 400; font-size: 1.7rem; letter-spacing: 0.04em;
-}
-.detail-head .names .jp { color: var(--bone-dim); font-size: 0.92rem; margin-top: 2px; }
-.detail-head .names .tk { font-family: var(--mono); font-size: 0.7rem; color: var(--bone-faint); letter-spacing: 0.14em; margin-top: 6px; }
-.detail-head .pricebox { text-align: right; }
-.detail-head .pricebox .big { font-family: var(--mono); font-size: 1.9rem; }
-.detail-head .pricebox .chg { font-family: var(--mono); font-size: 0.85rem; margin-top: 2px; }
+/* ---- feature (center) ---- */
+.feature-scroll { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; padding: 40px clamp(28px, 5vw, 72px) 60px; display: flex; flex-direction: column; align-items: center; }
+.feature-head { width: 100%; text-align: center; }
+.feature-head h2 { font-size: clamp(2rem, 5.4vw, 3.6rem); font-weight: 200; letter-spacing: 0.04em; line-height: 1.05; }
+.feature-head .f-en { color: var(--g1); font-size: 1rem; margin-top: 10px; letter-spacing: 0.08em; }
+.feature-head .f-tk { margin-top: 14px; }
 
-.seller {
-  margin-top: 16px; font-size: 0.78rem; color: var(--bone-dim);
-  font-family: var(--mono); letter-spacing: 0.04em;
+/* the dream orb — footage inside a glowing sphere */
+.orb-wrap { margin: 40px 0 8px; display: flex; flex-direction: column; align-items: center; }
+.orb {
+  position: relative; width: min(44vh, 400px); aspect-ratio: 1 / 1; border-radius: 50%;
+  overflow: hidden; isolation: isolate;
+  box-shadow: 0 0 90px -10px rgba(255,255,255,0.10), 0 30px 80px -30px rgba(0,0,0,0.9);
 }
-.seller span { color: var(--bone-faint); }
-.desc {
-  margin-top: 10px; font-family: var(--serif); font-style: italic;
-  line-height: 1.8; color: var(--bone); font-size: 1.02rem; max-width: 58ch;
+.orb .orb-media { position: absolute; inset: -8%; background-size: cover; background-position: center;
+  animation: orbdrift 38s ease-in-out infinite alternate; }
+.orb .orb-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.2s ease; }
+/* toy-camera light leaks (lomo) — warm + cool, slowly drifting */
+.orb .orb-leak {
+  position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 1;
+  mix-blend-mode: screen; opacity: 0.6;
+  background:
+    radial-gradient(circle at 76% 18%, rgba(255,170,110,0.30), transparent 42%),
+    radial-gradient(circle at 18% 84%, rgba(120,160,255,0.20), transparent 46%);
+  animation: leak 26s ease-in-out infinite alternate;
 }
-.desc .en { display: block; font-size: 0.82rem; color: var(--bone-faint); margin-top: 8px; font-style: italic; }
-.aggregate {
-  margin-top: 14px; padding-left: 14px; border-left: 1px solid var(--panel-line);
-  font-family: var(--mono); font-size: 0.66rem; line-height: 1.7; color: var(--bone-dim);
+@keyframes leak { from { transform: translate(0,0); opacity: 0.45; } to { transform: translate(2%, -2%); opacity: 0.7; } }
+@keyframes orbdrift { from { transform: scale(1.06) translate(-1.5%, 1%); } to { transform: scale(1.16) translate(1.5%, -1%); } }
+/* spherical shading: rim darkening + top-left highlight */
+.orb::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255,255,255,0.22), transparent 34%),
+    radial-gradient(circle at 50% 50%, transparent 52%, rgba(0,0,0,0.55) 82%, rgba(0,0,0,0.9) 100%);
+  mix-blend-mode: soft-light;
 }
-.aggregate span { display: block; color: var(--bone-faint); }
+.orb::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; z-index: 2;
+  box-shadow: inset 0 0 1px rgba(255,255,255,0.4), inset 0 0 50px rgba(0,0,0,0.5);
+}
 
-.charts { margin-top: 22px; }
+.price-row { margin-top: 26px; text-align: center; }
+.price-row .big { font-size: clamp(2.4rem, 6vw, 3.4rem); font-weight: 200; letter-spacing: 0.02em; }
+.price-row .big small { font-size: 0.32em; color: var(--g2); letter-spacing: 0.2em; margin-left: 0.5em; vertical-align: 0.5em; }
+.price-row .chg { font-size: 0.95rem; margin-top: 8px; letter-spacing: 0.04em; }
+.wish-row { margin-top: 18px; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); }
+.wish-row b { font-weight: 400; color: var(--fg); font-size: 1.1rem; }
+.wish-row .wsub { color: var(--g3); }
+.wish-bar { margin: 9px auto 0; width: 180px; }
+
+/* glassy transparent chart */
+.glass {
+  width: 100%; max-width: 640px; margin-top: 34px; padding: 22px 24px 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018));
+  border: 1px solid rgba(255,255,255,0.10); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-radius: 4px; box-shadow: 0 20px 60px -30px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.12);
+  transform: perspective(1400px) rotateX(2.2deg);
+}
+.chart-label { margin-bottom: 8px; }
+.chart-label:not(:first-child) { margin-top: 16px; }
 #candleChart, #volChart { width: 100%; display: block; }
-.chart-label {
-  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--bone-faint); margin: 14px 0 6px;
-}
-.stats { display: flex; gap: 26px; margin-top: 16px; flex-wrap: wrap; }
-.stat .k { font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.18em; color: var(--bone-faint); text-transform: uppercase; }
-.stat .v { font-family: var(--mono); font-size: 0.92rem; margin-top: 3px; }
 
-.actions { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
+.stats { display: flex; gap: 34px; flex-wrap: wrap; justify-content: center; margin-top: 30px; }
+.stat { text-align: center; }
+.stat .v { font-size: 0.95rem; margin-top: 6px; font-weight: 300; }
+
+.desc { margin-top: 30px; max-width: 56ch; text-align: center; line-height: 2; color: var(--g1); font-size: 1rem; font-weight: 300; }
+.desc .en { display: block; color: var(--g2); font-size: 0.82rem; margin-top: 10px; }
+.seller { margin-top: 18px; text-align: center; font-size: 0.72rem; color: var(--g2); letter-spacing: 0.04em; }
+.seller span { color: var(--g1); }
+
+.actions { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; justify-content: center; }
 button.act {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
-  padding: 14px 22px; background: transparent; color: var(--bone);
-  border: 1px solid var(--panel-line); cursor: pointer; transition: all 0.4s ease;
+  font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 400;
+  padding: 15px 30px; background: transparent; color: var(--fg);
+  border: 1px solid var(--line-2); cursor: pointer; transition: all 0.5s ease;
 }
-button.act.buy { border-color: rgba(201,169,106,0.5); color: var(--gold); }
-button.act.buy:hover { background: rgba(201,169,106,0.1); }
-button.act.sell:hover { background: rgba(178,90,82,0.1); border-color: var(--blood); color: var(--blood); }
+button.act.buy:hover { background: var(--fg); color: var(--bg); }
+button.act.sell:hover { border-color: var(--g1); color: var(--g1); }
 
-.recommend { margin-top: 30px; }
-.recommend .rec-title { font-family: var(--serif); font-style: italic; color: var(--bone-dim); font-size: 0.95rem; margin-bottom: 12px; }
-.rec-list { display: flex; gap: 12px; flex-wrap: wrap; }
+.recommend { margin-top: 40px; text-align: center; }
+.rec-title { color: var(--g2); font-size: 0.72rem; letter-spacing: 0.04em; margin-bottom: 16px; line-height: 1.7; }
+.rec-list { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
 .rec-chip {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
-  padding: 9px 14px; border: 1px solid var(--panel-line); cursor: pointer;
-  color: var(--bone-dim); transition: all 0.4s ease;
+  font-size: 0.68rem; letter-spacing: 0.04em; padding: 11px 18px; border: 1px solid var(--line);
+  border-radius: 75px; cursor: pointer; color: var(--g1); transition: all 0.4s ease;
 }
-.rec-chip:hover { color: var(--bone); border-color: var(--gold); }
+.rec-chip:hover { color: var(--fg); border-color: var(--line-2); }
 
 /* ---- trade feed ---- */
-#tradeFeed { overflow: hidden; flex: 1; padding: 6px 0; }
-.trade {
-  padding: 9px 18px; border-bottom: 1px solid rgba(190,175,150,0.05);
-  font-family: var(--mono); font-size: 0.66rem; line-height: 1.5;
-  animation: tradeIn 1.2s ease both;
-}
-.trade .who { color: var(--bone-dim); }
-.trade .act-b { color: var(--gold); }
-.trade.news { color: var(--gold); border-left: 2px solid var(--blood); padding-left: 16px; letter-spacing: 0.03em; }
-@keyframes tradeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 0.92; transform: none; } }
+#tradeFeed { overflow: hidden; flex: 1; padding: 4px 0 30px; }
+.trade { padding: 13px 28px; font-size: 0.66rem; line-height: 1.6; letter-spacing: 0.02em; border-bottom: 1px solid var(--line); animation: tradeIn 1.2s ease both; color: var(--g1); }
+.trade .who { color: var(--g2); }
+.trade b { font-weight: 400; color: var(--fg); }
+.trade.news { color: var(--fg); }
+@keyframes tradeIn { from{opacity:0; transform:translateX(8px)} to{opacity:0.95; transform:none} }
 
 /* ---- toast ---- */
 #toast {
-  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px);
-  z-index: 9600; background: rgba(10,9,8,0.92); border: 1px solid var(--gold);
-  color: var(--bone); font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em;
-  padding: 14px 24px; opacity: 0; pointer-events: none; transition: all 0.6s ease;
-  max-width: 80vw; text-align: center; line-height: 1.6;
+  position: fixed; bottom: 34px; left: 50%; transform: translateX(-50%) translateY(20px);
+  z-index: 9600; background: rgba(8,9,11,0.94); border: 1px solid var(--line-2); color: var(--fg);
+  font-size: 0.76rem; letter-spacing: 0.04em; padding: 16px 28px; opacity: 0; pointer-events: none;
+  transition: all 0.6s ease; max-width: 80vw; text-align: center; line-height: 1.8; backdrop-filter: blur(8px);
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ---- footer status ---- */
-footer.status {
-  position: fixed; bottom: 8px; right: 14px; z-index: 20;
-  font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.14em;
-  color: var(--bone-faint); text-transform: uppercase;
-}
-#dataDot { display: inline-block; width: 6px; height: 6px; border-radius: 50%;
-  background: var(--neutral); margin-right: 6px; vertical-align: middle; }
-#dataDot.live { background: var(--jade); box-shadow: 0 0 8px var(--jade); }
+/* ---- status ---- */
+footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-size: 0.56rem; letter-spacing: 0.16em; color: var(--g3); text-transform: uppercase; }
+#dataDot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--g3); margin-right: 7px; vertical-align: middle; }
+#dataDot.live { background: var(--fg); box-shadow: 0 0 8px var(--fg); }
 
-/* ---- scrollbars ---- */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-thumb { background: rgba(190,175,150,0.18); }
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: rgba(243,241,236,0.14); }
 
-/* ---- responsive: narrow / portrait iPad ---- */
-@media (max-width: 900px) {
+/* ---- responsive ---- */
+@media (max-width: 960px) {
   main { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; }
-  #marketList { max-height: 34vh; }
-  aside.feed { max-height: 26vh; }
+  section.listings { border-right: none; border-bottom: 1px solid var(--line); }
+  aside.feed { border-left: none; border-top: 1px solid var(--line); }
+  #marketList { max-height: 32vh; }
+  aside.feed { max-height: 24vh; }
+  .metrics { gap: 24px; }
+  header.topbar { flex-wrap: wrap; gap: 16px; }
 }
+
+/* ============================================================
+   Liquid / dreamy — ふわふわ
+   ============================================================ */
+:root { --ease-soft: cubic-bezier(0.34, 1.4, 0.5, 1); }
+
+/* the dream-orb: a softly morphing, floating blob of footage */
+.orb {
+  animation: blobMorph 16s ease-in-out infinite, orbFloat 8s ease-in-out infinite;
+  will-change: border-radius, transform;
+}
+.orb::after, .orb::before { border-radius: inherit; }
+@keyframes blobMorph {
+  0%, 100% { border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%; }
+  25%      { border-radius: 57% 43% 53% 47% / 49% 56% 44% 51%; }
+  50%      { border-radius: 45% 55% 48% 52% / 57% 45% 55% 43%; }
+  75%      { border-radius: 53% 47% 57% 43% / 46% 53% 49% 56%; }
+}
+@keyframes orbFloat { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-12px) rotate(0.6deg); } }
+
+/* dreamy entrance: blur in and float up when a dream is selected */
+.feature-head { animation: dreamIn 1.1s var(--ease-soft) both; }
+.orb-wrap     { animation: dreamIn 1.2s var(--ease-soft) 0.06s both; }
+.price-row    { animation: dreamIn 1.1s var(--ease-soft) 0.10s both; }
+.glass        { animation: glassIn 1.2s ease 0.12s both; }
+.desc, .seller, .stats, .actions, .recommend { animation: dreamIn 1.1s var(--ease-soft) 0.16s both; }
+@keyframes dreamIn { from { opacity: 0; transform: translateY(22px) scale(0.985); filter: blur(6px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes glassIn { from { opacity: 0; filter: blur(8px); } to { opacity: 1; filter: blur(0); } }
+
+/* springy, soft interactions */
+.row { transition: background 0.6s var(--ease-soft), padding-left 0.5s var(--ease-soft); }
+.rec-chip { transition: all 0.5s var(--ease-soft); }
+.rec-chip:hover { transform: translateY(-2px) scale(1.04); }
+button.act { transition: all 0.5s var(--ease-soft); }
+button.act:hover { transform: translateY(-2px); }
+
+/* fear & greed gauge */
+#fgGauge { display: block; margin: 4px auto 2px; }
+.metric.fg { text-align: center; min-width: 132px; }
+.metric.fg .m-val { font-size: 0.74rem; letter-spacing: 0.04em; margin-top: 0; }
