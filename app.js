@@ -784,15 +784,24 @@
     DEBT: [[2008, 100], [2011, 80]], HOME: [[2006, 90]],
     ROCK: [[1972, 150], [1988, 90]], CINDER: [[1985, 80]], FOLLOW: [[2015, 130]], FAME: [[1985, 70], [2010, 110]],
   };
+  let TL = {};   // 研究済みタイムライン（data/timelines.json）
+  async function loadTimelines() {
+    try { const r = await fetch("data/timelines.json"); if (r.ok) TL = await r.json(); } catch (e) {}
+  }
   function applyLogicalHistory() {
-    const L = TOTAL_MONTHS, cy = _now.getFullYear();
+    const L = TOTAL_MONTHS;
     state.forEach((s) => {
-      const birth = BIRTH[s.ticker], ev = EVENTS[s.ticker];
-      if (!birth && !ev) return;
+      const rec = TL[s.ticker] || { birth: BIRTH[s.ticker], events: EVENTS[s.ticker] };  // 研究データ優先、無ければ内蔵
+      const birth = rec.birth, ev = rec.events;
+      if (!birth && (!ev || !ev.length)) return;
       for (let m = 0; m < L; m++) {
         const y = START_YEAR + m / 12;
-        if (birth) s.closes[m] *= Math.max(0.04, Math.min(1, (y - (birth - 4)) / 8));  // 誕生前はほぼ無
-        if (ev) { let bump = 0; for (const e of ev) bump += e[1] * Math.exp(-((y - e[0]) * (y - e[0])) / (2 * 2.2 * 2.2)); s.closes[m] += bump; }
+        if (birth) s.closes[m] *= Math.max(0.04, Math.min(1, (y - (birth - 4)) / 8));   // 誕生前はほぼ無
+        if (ev) {
+          let bump = 0;
+          for (const e of ev) { const sig = e[0] >= 2015 ? 4.5 : 2.4; bump += e[1] * Math.exp(-((y - e[0]) * (y - e[0])) / (2 * sig * sig)); }  // 近年の山は2026まで余韻
+          s.closes[m] += bump;
+        }
       }
       s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price; s.tape = Array.from(s.closes.slice(-TAPE_N)); s.hasHistory = true;
     });
@@ -888,7 +897,7 @@
   buildList(); buildTicker(); buildDetail(); setupSort();
   updateFearGreed(); updateMainIndex(); updateDoom();
   setStatus(false, "connecting… 接続中");
-  loadHistory().then(() => { applyLogicalHistory(); loadInterest(); });
+  loadHistory().then(loadTimelines).then(() => { applyLogicalHistory(); loadInterest(); });
   setInterval(step, TICK_MS);
   window.addEventListener("resize", () => { if (dref) updateDetail(); });
   setTimeout(() => { if ($("#titlecard").style.display !== "none") enter(); }, 9000);
