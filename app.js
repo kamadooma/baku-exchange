@@ -510,7 +510,7 @@
     MEETLOVE: "まだ会ったこともない『その人』に、夢の中では会える。顔は思い出せないのに、声だけ覚えてる。目が覚めると、世界中の誰でもないその人が恋しい。この夢、運命を信じる人に売ります。",
   };
 
-  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null;
+  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null, fieldSel = null;
   function popularity(s) { return s.realViews ? Math.min(100, 15 + Math.log10(s.realViews + 1) * 18) : s.interest; }
   const FIELD_FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10], mundane: [0.40, 0.16, 0.26] };
   function sizeFieldLines() { const cv = $("#fieldLines"); if (!cv) return; const dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; lineCtx = cv.getContext("2d"); lineCtx.setTransform(dpr, 0, 0, dpr, 0, 0); }
@@ -520,11 +520,14 @@
     fieldBuilt = true; sizeFieldLines();
     const W = innerWidth, H = innerHeight;
     state.forEach((s) => {                                              // これまでの全銘柄をマッピング
-      const r = Math.round(18 + Math.pow(popularity(s) / 100, 2.6) * 128); // 人気度=大きさ（ジャンプ率を強く）
+      const lastM = s.closes.length - 1, pastM = Math.max(0, lastM - 240);
+      const grow = s.closes[pastM] > 0 ? s.closes[lastM] / s.closes[pastM] : 1;  // 直近20年の成長率
+      const m = popularity(s) * Math.min(2.2, Math.max(0.7, grow));             // 人気度×成長（急成長を加点）
+      const r = Math.round(16 + Math.pow(Math.min(m, 150) / 150, 2.4) * 122);   // ジャンプ率を強く（最大は抑制）
       const tex = FieldGL.loadTexture(`assets/footage/${s.ticker}.jpg`);
       fieldOrbs.push({ s, r, tex, fb: FIELD_FB[s.category] || [0.12, 0.12, 0.14], seed: (s.idx % 17) / 17,
         x: r + Math.random() * Math.max(1, W - 2 * r), y: 90 + r + Math.random() * Math.max(1, H - 2 * r - 200),
-        vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10 });
+        vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10, ph: Math.random() * 6.283, sc: 1 });
     });
   }
   function fieldTick() {
@@ -532,13 +535,20 @@
     fieldT += 0.016;
     const W = innerWidth, H = innerHeight, top = 80;
     fieldOrbs.forEach((o) => {
-      o.x += o.vx; o.y += o.vy;
-      if (o.x < o.r) { o.x = o.r; o.vx = Math.abs(o.vx); } if (o.x > W - o.r) { o.x = W - o.r; o.vx = -Math.abs(o.vx); }
-      if (o.y < top + o.r) { o.y = top + o.r; o.vy = Math.abs(o.vy); } if (o.y > H - o.r) { o.y = H - o.r; o.vy = -Math.abs(o.vy); }
-      o.vx *= 0.995; o.vy *= 0.995;                                     // ゆるやかな減衰
+      // ゆらゆら蛇行（直線的にならない、流体のような揺らぎ）
+      o.vx += Math.sin(fieldT * 0.24 + o.ph) * 0.004;
+      o.vy += Math.cos(fieldT * 0.20 + o.ph * 1.3) * 0.004;
+      // 壁はやわらかく押し返す（硬く跳ねない）
+      const m = o.r + 14;
+      if (o.x < m) o.vx += (m - o.x) * 0.0007;
+      if (o.x > W - m) o.vx -= (o.x - (W - m)) * 0.0007;
+      if (o.y < top + m) o.vy += (top + m - o.y) * 0.0007;
+      if (o.y > H - m) o.vy -= (o.y - (H - m)) * 0.0007;
+      o.vx *= 0.97; o.vy *= 0.97;                                       // 粘性のある減衰
       const sp = Math.hypot(o.vx, o.vy);
-      if (sp < 0.05) { const a = Math.random() * 6.283; o.vx += Math.cos(a) * 0.02; o.vy += Math.sin(a) * 0.02; }  // 漂い続ける
-      if (sp > 0.32) { o.vx *= 0.32 / sp; o.vy *= 0.32 / sp; }          // ゆっくりを保つ
+      if (sp > 0.5) { o.vx *= 0.5 / sp; o.vy *= 0.5 / sp; }
+      o.x += o.vx; o.y += o.vy;
+      o.x = Math.max(o.r, Math.min(W - o.r, o.x)); o.y = Math.max(top + o.r, Math.min(H - o.r, o.y));  // 安全クランプ
     });
     for (let i = 0; i < fieldOrbs.length; i++) {                        // ふわふわ、互いを“避ける”（繋がない）
       const a = fieldOrbs[i];
@@ -551,7 +561,13 @@
       }
     }
     FieldGL.begin();
-    fieldOrbs.forEach((o) => FieldGL.draw(o.x, o.y, o.r, o.seed, o.tex, o.fb, fieldT));
+    let selDraw = null;
+    fieldOrbs.forEach((o) => {                                         // 選択中は手前へ（拡大）
+      const tgt = (o === fieldSel) ? 1.7 : 1.0; o.sc += (tgt - o.sc) * 0.12;
+      if (o === fieldSel) { selDraw = o; return; }                     // 最前面に描くため後回し
+      FieldGL.draw(o.x, o.y, o.r * o.sc, o.seed, o.tex, o.fb, fieldT);
+    });
+    if (selDraw) FieldGL.draw(selDraw.x, selDraw.y, selDraw.r * selDraw.sc, selDraw.seed, selDraw.tex, selDraw.fb, fieldT);
     fieldRAF = requestAnimationFrame(fieldTick);
   }
   function fieldHit(cx, cy) { let best = null, bd = 1e9; fieldOrbs.forEach((o) => { const d = Math.hypot(cx - o.x, cy - o.y); if (d < o.r && d < bd) { bd = d; best = o; } }); return best; }
@@ -564,6 +580,7 @@
     mundane: ["A true desire, hiding in the deep psyche.", "深層心理に潜む、本当の欲望。"],
   };
   function openPanel(s) {
+    fieldSel = fieldOrbs.find((o) => o.s === s) || null;               // 選んだ夢を手前へ
     $("#fpEn").textContent = s.nameEn; $("#fpJp").textContent = s.nameJp;
     $("#fpPrice").innerHTML = `${fmt(s.price)} <small>${CUR}</small> <span class="${cls(dayChange(s))}">${pctTxt(dayChange(s))}</span>`;
     const nat = NATURE[s.category] || ["", ""];
@@ -574,7 +591,7 @@
     $("#fieldPanel").classList.remove("hidden");
   }
   function openField() { buildField(); $("#dreamfield").classList.remove("hidden"); $("#fieldPanel").classList.add("hidden"); if (!fieldRAF) fieldRAF = requestAnimationFrame(fieldTick); }
-  function closeField() { $("#dreamfield").classList.add("hidden"); }
+  function closeField() { $("#dreamfield").classList.add("hidden"); fieldSel = null; }
 
   // ---- Wikipedia interest ----
   async function loadInterest() {
@@ -643,7 +660,7 @@
   $("#fieldGL").addEventListener("pointerdown", (e) => {
     const rc = e.currentTarget.getBoundingClientRect();
     const o = fieldHit(e.clientX - rc.left, e.clientY - rc.top);
-    if (o) openPanel(o.s); else $("#fieldPanel").classList.add("hidden");
+    if (o) openPanel(o.s); else { $("#fieldPanel").classList.add("hidden"); fieldSel = null; }
   });
   window.addEventListener("resize", () => sizeFieldLines());
 

@@ -20,8 +20,8 @@ window.FieldGL = (function () {
       float ang = atan(c.y, c.x);
       float s = seed * 6.2832;
       // なめらかな油滴：低周波だけで、ゆっくり卵形に波打つ（角ばらせない）
-      float wob = 0.05*sin(ang + time*0.40 + s) + 0.03*sin(ang*2.0 - time*0.30 + s*1.7);
-      float edge = 0.84 + wob;
+      float wob = 0.08*sin(ang + time*0.50 + s) + 0.05*sin(ang*2.0 - time*0.38 + s*1.7);
+      float edge = 0.80 + wob;
       if(r > edge){ discard; }
       float rn = r/edge; vec2 cn = c/edge;
       float z = sqrt(max(0.0001, 1.0 - rn*rn));
@@ -37,8 +37,8 @@ window.FieldGL = (function () {
         float a2 = sin(c.y*1.9 - time*0.20 + s*1.3)*0.5+0.5;
         col = mix(fallback, fallback.gbr*0.9 + 0.05, a1) + 0.08*vec3(a2, a1, a2);
       }
-      float hl = smoothstep(0.4, 0.0, length(c - vec2(-0.3, 0.34)));
-      col += vec3(1.0) * hl * 0.16;
+      float hl = smoothstep(0.6, 0.0, length(c - vec2(-0.32, 0.40)));
+      col += vec3(1.0) * hl * 0.28;                  // 濡れた光沢（液体感）
       float al = smoothstep(edge, edge-0.18, r);     // やわらかく溶ける縁
       gl_FragColor = vec4(col, al);
     }`;

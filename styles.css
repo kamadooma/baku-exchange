@@ -427,3 +427,6 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
   border-bottom: 1px solid var(--line); background: rgba(0,0,0,0.25); }
 .slogan-track { white-space: nowrap; animation: scroll 72s linear infinite; padding-left: 100%;
   font-size: 0.68rem; font-style: italic; color: var(--g1); letter-spacing: 0.1em; }
+
+/* 入り口の宝船の回文歌 */
+.tc-sub .poem-jp { display: block; margin-top: 1.5rem; color: var(--g2); font-size: 0.84rem; letter-spacing: 0.12em; line-height: 2.0; font-style: normal; }
