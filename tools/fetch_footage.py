@@ -31,7 +31,7 @@ IMG_WIKI = {
   "NAKED":"The_Birth_of_Venus", "MUTE":"The_Nightmare", "DROWN":"Ophelia_(painting)",
   "EXAM":"Test_(assessment)", "FUNRL":"Funeral", "MIRR":"Mirror", "DEAD":"Telephone",
   "LOOP":"Clock", "NOWAKE":"Sleep", "FALSE":"Dream",
-  "SEX":"The_Kiss_(Klimt)", "MEETLOVE":"The_Kiss_(Hayez)", "DEADCAT":"Cat", "FORGETEX":"Rain",
+  "SEX":"Coupling_rod", "MEETLOVE":"The_Kiss_(Hayez)", "DEADCAT":"Cat", "FORGETEX":"Rain",  # SEX:蒸気機関車の動輪+連接棒(婉曲表現)。クリムトは分かりにくく差し替え
   "OSHI":"Concert", "SLEEP":"Sleep", "PARENT":"Family", "NEEDED":"Hug", "CHILD":"Child",
   "HOME2":"Village", "UNDO":"Letter_(message)", "DEBT":"Debt", "PREZ":"White_House",
   "BALLER":"Association_football", "SINGER":"Singing", "ASTRO":"Astronaut", "ELOPE":"Elopement",
