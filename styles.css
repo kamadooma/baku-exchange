@@ -93,7 +93,7 @@ body {
 
 /* ---- ticker ---- */
 #ticker { position: relative; z-index: 10; height: 40px; overflow: hidden; display: flex; align-items: center; border-bottom: 1px solid var(--line); }
-.ticker-track { display: inline-flex; white-space: nowrap; gap: 3.2rem; animation: scroll 90s linear infinite; padding-left: 100%; }
+.ticker-track { display: inline-flex; white-space: nowrap; gap: 3.2rem; animation: scroll 360s linear infinite; padding-left: 100%; }
 .ticker-item { font-size: 0.74rem; color: var(--g1); letter-spacing: 0.04em; }
 .ticker-item b { color: var(--fg); font-weight: 400; margin-right: 0.5em; }
 @keyframes scroll { from{transform:translateX(0)} to{transform:translateX(-50%)} }
