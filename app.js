@@ -823,757 +823,757 @@
     "NOWAR": {
       "jp": "戦争を終わらせる戦争など、かつて一度もなかった。",
       "en": "There never was a good war or a bad peace.",
-      "by": "Benjamin Franklin"
+      "by": "ベンジャミン・フランクリン"
     },
     "NOHGR": {
       "jp": "飢餓とは、食糧が足りないことではない。正義が足りないことだ。",
       "en": "Hunger is not a problem of supply; it is a problem of justice.",
-      "by": "Amartya Sen (paraphrase)"
+      "by": "アマルティア・セン（要約）"
     },
     "NOPOV": {
       "jp": "貧困は自然現象ではない。それは人間がつくり、人間が取り除くことのできるものだ。",
       "en": "Overcoming poverty is not a task of charity, it is an act of justice.",
-      "by": "Nelson Mandela"
+      "by": "ネルソン・マンデラ"
     },
     "CURE": {
       "jp": "病いとは、生のもう一つの側面における市民権である。",
       "en": "Illness is the night-side of life, a more onerous citizenship.",
-      "by": "Susan Sontag, *Illness as Metaphor*"
+      "by": "スーザン・ソンタグ『隠喩としての病い』"
     },
     "IMMO": {
       "jp": "不死の人間にとって、すべての人間は不幸である。なぜなら死者と同じように、彼らはすでに幽霊なのだから。",
       "en": "Immortality is trivial. Except for man, all creatures are immortal, for they know nothing of death.",
-      "by": "Jorge Luis Borges, *The Immortal*"
+      "by": "ホルヘ・ルイス・ボルヘス『不死の人』"
     },
     "EDU": {
       "jp": "教育とは、世界を変えるために使える最も強力な武器である。",
       "en": "Education is the most powerful weapon which you can use to change the world.",
-      "by": "Nelson Mandela"
+      "by": "ネルソン・マンデラ"
     },
     "DISARM": {
       "jp": "核兵器とともに生きることは、閉めた首輪のまま忘れた犬のようなものだ。やがてそれが首を締め上げる。",
       "en": "The unleashed power of the atom has changed everything save our modes of thinking.",
-      "by": "Albert Einstein"
+      "by": "アルベルト・アインシュタイン"
     },
     "STOPGW": {
       "jp": "家が燃えているのに、私たちはまだ火事について議論している。",
       "en": "Our house is on fire. I am here to say, our house is on fire.",
-      "by": "Greta Thunberg"
+      "by": "グレタ・トゥーンベリ"
     },
     "SUST": {
       "jp": "持続可能性とは、未来の世代が自分たちのニーズを満たす能力を損なわないようにすることである。",
       "en": "We do not inherit the earth from our ancestors, we borrow it from our children.",
-      "by": "(attributed, Indigenous proverb)"
+      "by": "先住民のことわざ（とされる）"
     },
     "ENRGY": {
       "jp": "太陽が一時間で地球に降り注ぐエネルギーは、人類が一年で消費するエネルギーに匹敵する。",
       "en": "The sun, in one hour, gives enough energy to the earth to meet its needs for a year.",
-      "by": "(commonly cited in solar research)"
+      "by": "太陽研究でよく引かれる言葉"
     },
     "NOWORK": {
       "jp": "ゴンドラの歌が聞こえる。命短し、恋せよ乙女——しかし私たちは、恋をする前に出勤しなければならない。",
       "en": "It is not that we have a short time to live, but that we waste a great deal of it.",
-      "by": "Seneca"
+      "by": "セネカ"
     },
     "FIRE": {
       "jp": "自由とは、何もしないことではない。何をしないかを自分で選べることだ。",
       "en": "A man is rich in proportion to the number of things which he can afford to let alone.",
-      "by": "Henry David Thoreau"
+      "by": "ヘンリー・D・ソロー"
     },
     "HLTH": {
       "jp": "健康とは沈黙する臓器のことである。病気になって初めて、私たちは身体を持っていたことを思い出す。",
       "en": "Health is the silence of the organs.",
-      "by": "René Leriche"
+      "by": "ルネ・ルリッシュ"
     },
     "YOUTH": {
       "jp": "若さは浪費される。若者の手に委ねられているから。",
       "en": "Youth is wasted on the young.",
-      "by": "attributed to George Bernard Shaw"
+      "by": "ジョージ・バーナード・ショー（とされる）"
     },
     "BODY": {
       "jp": "身体は第一の道具である。",
       "en": "The body is man's first and most natural instrument.",
-      "by": "Marcel Mauss"
+      "by": "マルセル・モース"
     },
     "CALM": {
       "jp": "静かな心とは、嵐のなかにある島ではない。嵐そのものが静まることだ。",
       "en": "Do you have the patience to wait till your mud settles and the water is clear?",
-      "by": "Lao Tzu, *Tao Te Ching*"
+      "by": "老子『道徳経』"
     },
     "NOANX": {
       "jp": "不安とは、自由のめまいである。",
       "en": "Anxiety is the dizziness of freedom.",
-      "by": "Søren Kierkegaard"
+      "by": "セーレン・キェルケゴール"
     },
     "CONF": {
       "jp": "人間の最大の恐怖は闇ではない。自分自身の光を恐れているのだ。",
       "en": "Our deepest fear is not that we are inadequate. Our deepest fear is that we are powerful beyond measure.",
-      "by": "Marianne Williamson"
+      "by": "マリアン・ウィリアムソン"
     },
     "SELF": {
       "jp": "『ほんとうの自分』がどこかにいると信じることは、いま此処にいる自分を否定し続けることでもある。",
       "en": "Become who you are.",
-      "by": "Friedrich Nietzsche (pindar, cited in *Ecce Homo*)"
+      "by": "ニーチェ『この人を見よ』（ピンダロスの引用）"
     },
     "CALL": {
       "jp": "天職とは、世界の深い飢えと、あなたの深い喜びが交わる場所にある。",
       "en": "Vocation is where your deep gladness and the world's deep hunger meet.",
-      "by": "Frederick Buechner"
+      "by": "フレデリック・ビークナー"
     },
     "TALNT": {
       "jp": "才能とは、長い忍耐のことである。",
       "en": "Genius is only a greater aptitude for patience.",
-      "by": "attributed to Buffon"
+      "by": "ビュフォン（とされる）"
     },
     "FREE": {
       "jp": "金がないのは悲しいことだ。しかしそれが有り余るのは、その二倍悲しい。",
       "en": "Money often costs too much.",
-      "by": "Ralph Waldo Emerson"
+      "by": "ラルフ・ウォルドー・エマソン"
     },
     "JACK": {
       "jp": "宝くじとは、数学のできない人への税金である。",
       "en": "The lottery is a tax on people who are bad at math.",
-      "by": "(commonly attributed)"
+      "by": "とされる"
     },
     "HOME": {
       "jp": "家は、人間の最初の世界である。",
       "en": "The house is our first universe, a real cosmos.",
-      "by": "Gaston Bachelard, *The Poetics of Space*"
+      "by": "ガストン・バシュラール『空間の詩学』"
     },
     "SOUL": {
       "jp": "元来人間は球形であり、四本の手と四本の足を持っていた。ゼウスはそれを二つに切った。以来、人は自分のもう半分を探し続けている。",
       "en": "Each of us is but half, always searching for the other.",
-      "by": "Plato, *Symposium* (paraphrase)"
+      "by": "プラトン『饗宴』（要約）"
     },
     "LOVE": {
       "jp": "愛されることは燃え尽きることだ。愛することは、尽きることのない油をもって灯すことだ。",
       "en": "To be loved is to be consumed. To love is to give light with inexhaustible oil.",
-      "by": "Rainer Maria Rilke (paraphrase)"
+      "by": "ライナー・マリア・リルケ（要約）"
     },
     "FRND": {
       "jp": "友人とは、あなたについてすべてを知っていて、それでもなおあなたを好きでいてくれる人のことだ。",
       "en": "A friend is someone who knows all about you and still loves you.",
-      "by": "Elbert Hubbard"
+      "by": "エルバート・ハバード"
     },
     "ALONE": {
       "jp": "最も深い孤独とは、自分が自分の友になれない状態のことだ。",
       "en": "The eternal quest of the human being is to shatter his loneliness.",
-      "by": "Norman Cousins"
+      "by": "ノーマン・カズンズ"
     },
     "TRVL": {
       "jp": "旅の本当の目的は、新しい風景を見ることではなく、新しい目を持つことだ。",
       "en": "The real voyage of discovery consists not in seeking new landscapes, but in having new eyes.",
-      "by": "Marcel Proust"
+      "by": "マルセル・プルースト"
     },
     "MARS": {
       "jp": "地球は人類のゆりかごだ。しかし人は永遠にゆりかごの中で暮らすことはできない。",
       "en": "Earth is the cradle of humanity, but one cannot live in the cradle forever.",
-      "by": "Konstantin Tsiolkovsky"
+      "by": "コンスタンチン・ツィオルコフスキー"
     },
     "REUNI": {
       "jp": "死者は、私たちが忘れた時にはじめて本当に死ぬ。",
       "en": "Say not in grief 'he is no more' but live in thankfulness that he was.",
-      "by": "(Hebrew proverb)"
+      "by": "ヘブライのことわざ"
     },
     "REDO": {
       "jp": "後悔は、時間の税金である。",
       "en": "We are all sentenced to solitary confinement inside our own skins, for life.",
-      "by": "Tennessee Williams"
+      "by": "テネシー・ウィリアムズ"
     },
     "TIME": {
       "jp": "時間とは、すべてのものが同時に起こるのを防ぐためにある。",
       "en": "Time is what keeps everything from happening at once.",
-      "by": "attributed to Ray Cummings / John Wheeler"
+      "by": "レイ・カミングス／ジョン・ホイーラー（とされる）"
     },
     "ETLIF": {
       "jp": "宇宙に我々しかいないとすれば、それは途方もない空間の無駄遣いだ。",
       "en": "The universe is a pretty big place. If it's just us, seems like an awful waste of space.",
-      "by": "Carl Sagan, *Contact*"
+      "by": "カール・セーガン『コンタクト』"
     },
     "FLYCR": {
       "jp": "21世紀には空飛ぶ車があるはずだった。そのかわりにSNSを手に入れた。",
       "en": "We wanted flying cars; instead we got 140 characters.",
-      "by": "Peter Thiel"
+      "by": "ピーター・ティール"
     },
     "FAME": {
       "jp": "有名になるということは、よく知りもしない人々に誤解されることだ。",
       "en": "A celebrity is a person who works hard all his life to become well known, then wears dark glasses to avoid being recognized.",
-      "by": "Fred Allen"
+      "by": "フレッド・アレン"
     },
     "ERTH2": {
       "jp": "どこへ行こうと、そこにあるのはここだ。",
       "en": "Wherever you go, there you are.",
-      "by": "Jon Kabat-Zinn"
+      "by": "ジョン・カバット＝ジン"
     },
     "ENLIGHT": {
       "jp": "悟りの前は、薪を割り水を汲む。悟りの後も、薪を割り水を汲む。",
       "en": "Before enlightenment, chop wood, carry water. After enlightenment, chop wood, carry water.",
-      "by": "Zen proverb"
+      "by": "禅のことわざ"
     },
     "EDEN": {
       "jp": "楽園は、追放されたあとにしか存在しない。",
       "en": "We only know paradise once we have been driven out of it.",
-      "by": "Heinrich Heine (paraphrase)"
+      "by": "ハインリヒ・ハイネ（要約）"
     },
     "MESSI": {
       "jp": "メシアは来ない。メシアはつねに『来つつある』のだ。",
       "en": "The Messiah will come only when he is no longer necessary.",
-      "by": "Franz Kafka (paraphrase from notebooks)"
+      "by": "フランツ・カフカ（手帳より要約）"
     },
     "GOLDEN": {
       "jp": "黄金時代とは、つねに過去にあると語られる。だがもし一度でも現在にあったなら、それは黄金時代とは呼ばれなかっただろう。",
       "en": "Every age has its golden age — always in the past.",
-      "by": "(common observation)"
+      "by": "よく知られた警句"
     },
     "STONE": {
       "jp": "鉛を金に変えることは、錬金術の最も退屈な解釈である。",
       "en": "The real alchemy is transforming the base metal of the self.",
-      "by": "attributed to Paracelsus (paraphrase)"
+      "by": "パラケルスス（要約・とされる）"
     },
     "UTOPIA": {
       "jp": "ユートピアとは、文字通り『どこにもない場所』のことだ。",
       "en": "A map of the world that does not include Utopia is not worth even glancing at.",
-      "by": "Oscar Wilde"
+      "by": "オスカー・ワイルド"
     },
     "REBORN": {
       "jp": "毎朝、目を覚ますということは、小さな再生である。",
       "en": "Every morning we are born again. What we do today is what matters most.",
-      "by": "attributed to the Buddha"
+      "by": "ブッダ（とされる）"
     },
     "SOULIM": {
       "jp": "肉体が朽ちた後にも残るものがあるとすれば、それは問いかけそのものだ。",
       "en": "The soul is not a thing but a quality or dimension of experiencing life and ourselves.",
-      "by": "Thomas Moore"
+      "by": "トマス・ムーア"
     },
     "SHANGRI": {
       "jp": "桃の花びらが水に浮かんで流れてくる。その先に何があるのか、漁師は舟を進めた。",
       "en": "The fisherman followed the peach blossoms upstream, not knowing where they led.",
-      "by": "Tao Yuanming, *Peach Blossom Spring*"
+      "by": "陶淵明「桃花源記」"
     },
     "TOKOYO": {
       "jp": "海の向こうから豊穣がやってくるという信仰は、この列島の最も古い祈りのひとつである。",
       "en": "From beyond the sea comes abundance.",
-      "by": "Orikuchi Shinobu, *Marebito* concept (paraphrase)"
+      "by": "折口信夫「まれびと」概念（要約）"
     },
     "ATLANT": {
       "jp": "プラトンが一つの寓話を書いただけで、二千年にわたって人々はその島を探し続けている。",
       "en": "Atlantis — a story first told to make a philosophical point, and sought ever since as a literal place.",
-      "by": "(common scholarly observation)"
+      "by": "よく知られた学説"
     },
     "RIVAL": {
       "jp": "闘いに飢えている者は、相手ではなく自分の飢えと闘っている。",
       "en": "He who fights with monsters should look to it that he himself does not become a monster.",
-      "by": "Friedrich Nietzsche"
+      "by": "フリードリヒ・ニーチェ"
     },
     "CRUSH": {
       "jp": "恋とは、相手の中に自分が作り上げたものを見ることだ。",
       "en": "We are never so defenceless against suffering as when we love.",
-      "by": "Sigmund Freud"
+      "by": "ジークムント・フロイト"
     },
     "CHOSEN": {
       "jp": "人間は、自分が特別であると信じることなしには生きられない。そしてその信念こそが、最も平凡なものだ。",
       "en": "Everyone thinks they are the exception.",
-      "by": "(universal observation)"
+      "by": "普遍的な警句"
     },
     "ISEKAI": {
       "jp": "ここではない場所への渇望は、ここにいる苦しみの正確な測定値である。",
       "en": "The desire to be elsewhere is the exact measure of the pain of being here.",
-      "by": "(paraphrase of Fernando Pessoa)"
+      "by": "フェルナンド・ペソア（要約）"
     },
     "FORESEE": {
       "jp": "未来を知りたいという欲望の裏側には、現在を手放したいという欲望がある。",
       "en": "He who controls the past controls the future. He who controls the present controls the past.",
-      "by": "George Orwell, *1984*"
+      "by": "ジョージ・オーウェル『一九八四年』"
     },
     "ANIMAL": {
       "jp": "動物が話さないのは、話すことを拒んでいるからかもしれない。",
       "en": "The question is not, Can they reason? Nor, Can they talk? But, Can they suffer?",
-      "by": "Jeremy Bentham"
+      "by": "ジェレミー・ベンサム"
     },
     "REVENGE": {
       "jp": "復讐は、二つの墓を掘ることだ。",
       "en": "Before you embark on a journey of revenge, dig two graves.",
-      "by": "Confucius (attributed)"
+      "by": "孔子（とされる）"
     },
     "SOMEONE": {
       "jp": "何者かになりたいという願いの裏で、何者でもないという苦しみだけが確かに存在している。",
       "en": "I am nobody! Who are you? Are you nobody, too?",
-      "by": "Emily Dickinson"
+      "by": "エミリー・ディキンソン"
     },
     "WPRE": {
       "jp": "権利のために闘うとき、人はその権利がまだ存在しないことを証明している。",
       "en": "I do not wish women to have power over men; but over themselves.",
-      "by": "Mary Wollstonecraft"
+      "by": "メアリ・ウルストンクラフト"
     },
     "2COM": {
       "jp": "万物は崩れ、中心は持ちこたえられない。",
       "en": "Things fall apart; the centre cannot hold.",
-      "by": "W. B. Yeats, *The Second Coming*"
+      "by": "W・B・イェイツ「再臨」"
     },
     "NUKE": {
       "jp": "人間は原爆を作ったが、いかなるネズミも、ネズミ捕りをつくったりしない。",
       "en": "The unleashed power of the atom has changed everything save our modes of thinking.",
-      "by": "Albert Einstein"
+      "by": "アルベルト・アインシュタイン"
     },
     "EXTN": {
       "jp": "種は一度消えたら、永遠に消える。百万年の進化は、一世代の不注意で終わる。",
       "en": "In pushing other species to extinction, humanity is busy sawing off the limb on which it perches.",
-      "by": "Paul R. Ehrlich"
+      "by": "ポール・R・エーリック"
     },
     "PANDM": {
       "jp": "疫病は、人間がつくった社会の地図をなぞるように広がる。",
       "en": "In the midst of an epidemic, there is no one who is not touched.",
-      "by": "Albert Camus, *The Plague* (paraphrase)"
+      "by": "アルベール・カミュ『ペスト』（要約）"
     },
     "CRSH": {
       "jp": "市場は、あなたが支払い能力を維持できるよりも長い間、非合理的でいられる。",
       "en": "Markets can remain irrational longer than you can remain solvent.",
-      "by": "attributed to John Maynard Keynes"
+      "by": "ジョン・メイナード・ケインズ（とされる）"
     },
     "AIBC": {
       "jp": "すべてのバブルは、世界を変える物語の上に膨らむ。",
       "en": "Speculation is an effort, probably unsuccessful, to turn a little money into a lot. Investment is an effort, which should be successful, to prevent a lot of money from becoming a little.",
-      "by": "Fred Schwed (paraphrase)"
+      "by": "フレッド・シュエッド（要約）"
     },
     "ROBOT": {
       "jp": "機械が人間に反旗を翻すのではない。人間が機械になることを恐れているのだ。",
       "en": "The danger is not that computers will begin to think like men, but that men will begin to think like computers.",
-      "by": "Sydney J. Harris"
+      "by": "シドニー・J・ハリス"
     },
     "AIJOB": {
       "jp": "馬は自動車に抗議しなかった。ただ消えていった。",
       "en": "The factory of the future will have only two employees, a man and a dog. The man will be there to feed the dog. The dog will be there to keep the man from touching the equipment.",
-      "by": "Warren Bennis"
+      "by": "ウォーレン・ベニス"
     },
     "FOOD": {
       "jp": "文明と飢餓のあいだには、たった三度の食事しかない。",
       "en": "Every society is only three meals away from chaos.",
-      "by": "attributed to Vladimir Lenin"
+      "by": "ウラジーミル・レーニン（とされる）"
     },
     "QUAKE": {
       "jp": "地震とは、大地が私たちの足元にあることを突然思い出させるものだ。",
       "en": "Earthquakes don't kill people; buildings kill people.",
-      "by": "(common seismology observation)"
+      "by": "地震学でよく言われること"
     },
     "BLKOUT": {
       "jp": "電気が消えてはじめて、闇がどれほど深いか知る。",
       "en": "We are so used to the light that we forget what darkness really means.",
-      "by": "(common observation)"
+      "by": "よく知られた警句"
     },
     "OIL": {
       "jp": "石器時代は石がなくなって終わったのではない。",
       "en": "The Stone Age did not end because we ran out of stones.",
-      "by": "Ahmed Zaki Yamani"
+      "by": "アハメド・ザキ・ヤマニ"
     },
     "ENDEM": {
       "jp": "民主主義は、選挙で終わるのではない。拍手で終わる。",
       "en": "Liberty, once lost, is lost forever.",
-      "by": "John Adams"
+      "by": "ジョン・アダムズ"
     },
     "FASC": {
       "jp": "ファシズムが再び来るとき、それは『反ファシズム』を名乗ってやってくるだろう。",
       "en": "When Fascism comes it will not be in the form of an attack. It will come with friendly flags.",
-      "by": "Huey Long (paraphrase)"
+      "by": "ヒューイ・ロング（要約）"
     },
     "ALIEN": {
       "jp": "災害の想像力は、不安を浄化すると同時に、不安に慣れさせてしまう。",
       "en": "The imagination of disaster is the faith that the real thing will not happen.",
-      "by": "Susan Sontag, *The Imagination of Disaster*"
+      "by": "スーザン・ソンタグ「災害の想像力」"
     },
     "ASTER": {
       "jp": "恐竜は望遠鏡を持っていなかった。私たちは持っている。",
       "en": "The dinosaurs did not have a space programme.",
-      "by": "(common asteroid-defence slogan)"
+      "by": "惑星防衛のスローガン"
     },
     "ARMAG": {
       "jp": "終わりが至るところで予感されているのに、終わりは来ない。終わりはもはや出来事ではなく、雰囲気になった。",
       "en": "The sense of an ending is pervasive, but the end itself does not come.",
-      "by": "Frank Kermode, *The Sense of an Ending* (paraphrase)"
+      "by": "フランク・カーモード『終りの意識』（要約）"
     },
     "SURV": {
       "jp": "人は見られていることを知ったとき、すでに自由ではない。",
       "en": "If you want to keep a secret, you must also hide it from yourself.",
-      "by": "George Orwell, *1984*"
+      "by": "ジョージ・オーウェル『一九八四年』"
     },
     "LEAK": {
       "jp": "プライバシーが贅沢品になる時代が来る。",
       "en": "In the future, privacy will be a luxury good.",
-      "by": "(common tech-industry prediction)"
+      "by": "テック業界の予言"
     },
     "JUDG": {
       "jp": "審判の日に恐ろしいのは、裁かれることではない。自分が自分を裁くことだ。",
       "en": "No one can harm you except yourself.",
-      "by": "Mahatma Gandhi (paraphrase)"
+      "by": "マハトマ・ガンジー（要約）"
     },
     "WEDLOCK": {
       "jp": "結婚とは、二人の人間が互いの孤独を分かち合うことだ——うまくいけば。",
       "en": "Marriage is not a noun; it's a verb. It is not something you get. It is something you do.",
-      "by": "Barbara De Angelis"
+      "by": "バーバラ・デ・アンジェリス"
     },
     "JPSK": {
       "jp": "この島国は、海に浮かんでいるのではない。海に沈みかけているのだ——とはまだ誰も言っていない。",
       "en": "An island is a world in miniature.",
-      "by": "(geographic truism, inverted)"
+      "by": "地理の常識を逆さにした言葉"
     },
     "GEQ": {
       "jp": "フェミニズムとは、女性も人間であるという過激な思想のことだ。",
       "en": "Feminism is the radical notion that women are people.",
-      "by": "Marie Shear"
+      "by": "マリー・シア"
     },
     "NODISC": {
       "jp": "差別をする人間は、自分が何を恐れているかを知らない。",
       "en": "No one is born hating another person because of the colour of his skin.",
-      "by": "Nelson Mandela"
+      "by": "ネルソン・マンデラ"
     },
     "FAIR": {
       "jp": "富者がその富をどう使うかについて語るとき、彼らはつねに慈善を語る。しかし貧者が語るのは正義である。",
       "en": "When I give food to the poor, they call me a saint. When I ask why the poor have no food, they call me a communist.",
-      "by": "Dom Hélder Câmara"
+      "by": "ドン・エルデル・カマラ"
     },
     "DEMO": {
       "jp": "民主主義は最悪の政治形態だ。これまで試みられた他のすべての政治形態を除いては。",
       "en": "Democracy is the worst form of Government except for all those other forms.",
-      "by": "Winston Churchill"
+      "by": "ウィンストン・チャーチル"
     },
     "CLEAN": {
       "jp": "権力は腐敗する。絶対的権力は、絶対的に腐敗する。",
       "en": "Power tends to corrupt, and absolute power corrupts absolutely.",
-      "by": "Lord Acton"
+      "by": "アクトン卿"
     },
     "UBI": {
       "jp": "すべての人にパンを保証することは、革命ではない。文明である。",
       "en": "A nation's greatness is measured by how it treats its weakest members.",
-      "by": "attributed to Mahatma Gandhi"
+      "by": "マハトマ・ガンジー（とされる）"
     },
     "SING": {
       "jp": "もうすぐ全てが変わると、毎年言われている。",
       "en": "The future is already here — it's just not evenly distributed.",
-      "by": "William Gibson"
+      "by": "ウィリアム・ギブスン"
     },
     "CLASS": {
       "jp": "歴史は、すべて階級闘争の歴史である。",
       "en": "The history of all hitherto existing society is the history of class struggles.",
-      "by": "Karl Marx & Friedrich Engels, *The Communist Manifesto*"
+      "by": "マルクス＆エンゲルス『共産党宣言』"
     },
     "PERP": {
       "jp": "永久機関を夢見るのは、物理学を学ぶ前か、学びすぎたあとだ。",
       "en": "Perpetual motion is only impossible until it isn't.",
-      "by": "(common inventor's refrain)"
+      "by": "発明家がよく口にする言葉"
     },
     "PROG": {
       "jp": "進歩の神話が崩れるとき、進歩そのものではなく、それを信じていた自分が崩れる。",
       "en": "The idea of progress is the most important idea in the modern world, and the most dangerous.",
-      "by": "(paraphrase of Christopher Lasch)"
+      "by": "クリストファー・ラッシュ（要約）"
     },
     "REASON": {
       "jp": "理性の眠りは怪物を生む。",
       "en": "The sleep of reason produces monsters.",
-      "by": "Francisco Goya"
+      "by": "フランシスコ・ゴヤ"
     },
     "ENHANCE": {
       "jp": "より良い人間を設計するとは、『より良い』を誰が定義するかを問わないことだ。",
       "en": "The question is not whether we will redesign ourselves, but who gets to decide the blueprint.",
-      "by": "(common bioethics concern)"
+      "by": "生命倫理でよく言われること"
     },
     "SCIFUT": {
       "jp": "科学は素晴らしい灯台だ。しかし灯台に住むことはできない。",
       "en": "Science is a wonderful thing if one does not have to earn one's living at it.",
-      "by": "Albert Einstein"
+      "by": "アルベルト・アインシュタイン"
     },
     "WREV": {
       "jp": "革命は、ディナー・パーティーではない。",
       "en": "A revolution is not a dinner party.",
-      "by": "Mao Zedong"
+      "by": "毛沢東"
     },
     "MARX": {
       "jp": "哲学者たちは世界をさまざまに解釈してきたにすぎない。肝心なのは世界を変えることである。",
       "en": "The philosophers have only interpreted the world, in various ways. The point, however, is to change it.",
-      "by": "Karl Marx, *Theses on Feuerbach*"
+      "by": "カール・マルクス「フォイエルバッハに関するテーゼ」"
     },
     "GROW": {
       "jp": "有限の惑星の上で指数関数的成長が永遠に続くと信じているのは、狂人か経済学者のどちらかだ。",
       "en": "Anyone who believes in indefinite growth in anything physical, on a physically finite planet, is either mad or an economist.",
-      "by": "Kenneth Boulding"
+      "by": "ケネス・ボールディング"
     },
     "PWD": {
       "jp": "自分の人生にログインできないという感覚は、21世紀の特有の悪夢である。",
       "en": "We have created a civilization in which the most crucial elements depend on things we cannot remember.",
-      "by": "(common digital-age observation)"
+      "by": "デジタル時代の警句"
     },
     "FALL": {
       "jp": "落ちる夢は、すべての人間が持つ最古の夢である。重力を恐れるのではなく、信頼を恐れているのだ。",
       "en": "We all fall. The question is whether there is someone to catch us.",
-      "by": "(common therapeutic reframe)"
+      "by": "心理療法のよくある言い換え"
     },
     "CHASE": {
       "jp": "夢のなかの追跡者は、つねに自分自身の影である。",
       "en": "The shadow is a moral problem that challenges the whole ego-personality.",
-      "by": "Carl Jung"
+      "by": "カール・ユング"
     },
     "TEETH": {
       "jp": "歯が抜ける夢は、ほぼすべての文化に存在する。それは身体が自分のものでなくなる恐怖の、最も親密な表現だ。",
       "en": "The tooth-loss dream is one of the most universal across cultures.",
-      "by": "(common dream-research finding)"
+      "by": "夢研究でよく知られる知見"
     },
     "FLY": {
       "jp": "飛ぶ夢を見る者は、地上で何かに縛られている。",
       "en": "I fly because it releases my mind from the tyranny of petty things.",
-      "by": "Antoine de Saint-Exupéry (adapted)"
+      "by": "サン＝テグジュペリ（翻案）"
     },
     "NAKED": {
       "jp": "裸であることは、見られることではない。隠すものがなくなることだ。",
       "en": "Nakedness reveals itself. Nudity is placed on display.",
-      "by": "John Berger, *Ways of Seeing*"
+      "by": "ジョン・バージャー『イメージ 視覚とメディア』"
     },
     "MUTE": {
       "jp": "叫びたいのに声が出ない。それは夢の中だけの話ではない。",
       "en": "The most common way people give up their power is by thinking they don't have any.",
-      "by": "Alice Walker"
+      "by": "アリス・ウォーカー"
     },
     "DROWN": {
       "jp": "溺れる者は藁をもつかむ。夢のなかでは、藁すらない。",
       "en": "Not waving but drowning.",
-      "by": "Stevie Smith"
+      "by": "スティーヴィー・スミス"
     },
     "EXAM": {
       "jp": "卒業して二十年経っても試験の夢を見るのは、私たちが決して十分だと感じないからだ。",
       "en": "Even after decades, the exam dream returns because the feeling of being tested never leaves.",
-      "by": "(common psychological observation)"
+      "by": "心理学でよく言われること"
     },
     "FUNRL": {
       "jp": "自分の葬式に出席できないことは、人生における最大の不公平である。",
       "en": "I did not attend the funeral, but I sent a nice letter saying I approved of it.",
-      "by": "attributed to Mark Twain"
+      "by": "マーク・トウェイン（とされる）"
     },
     "MIRR": {
       "jp": "鏡を見つめすぎると、鏡のほうが見つめ返してくる。",
       "en": "If you gaze long enough into an abyss, the abyss also gazes into you.",
-      "by": "Friedrich Nietzsche"
+      "by": "フリードリヒ・ニーチェ"
     },
     "DEAD": {
       "jp": "死者は電話をかけてこない。だから私たちは電話を切れないでいる。",
       "en": "The dead don't stay dead in our minds. That is their final gift and final cruelty.",
-      "by": "(paraphrase of Joan Didion)"
+      "by": "ジョーン・ディディオン（要約）"
     },
     "LOOP": {
       "jp": "お前がいま生きているこの生を、お前はもう一度、さらに無数回にわたって生きねばならぬとすればどうする？",
       "en": "What if some day or night a demon were to steal after you and say to you: this life as you now live it, you will have to live once more and innumerable times more?",
-      "by": "Friedrich Nietzsche, *The Gay Science* §341"
+      "by": "ニーチェ『悦ばしき知識』§341"
     },
     "NOWAKE": {
       "jp": "起きられないのではない。起きたくないのだ——と言えるうちは、まだ大丈夫。",
       "en": "Is all that we see or seem but a dream within a dream?",
-      "by": "Edgar Allan Poe"
+      "by": "エドガー・アラン・ポー"
     },
     "FALSE": {
       "jp": "起きたと思った瞬間が、最も深い眠りだった。",
       "en": "Reality is merely an illusion, albeit a very persistent one.",
-      "by": "attributed to Albert Einstein"
+      "by": "アインシュタイン（とされる）"
     },
     "DONTWAKE": {
       "jp": "いい夢の終わりは、小さな死である。",
       "en": "All men whilst they are awake are in one common world; but each of them, when he is asleep, is in a world of his own.",
-      "by": "Plutarch"
+      "by": "プルタルコス"
     },
     "ROADEXT": {
       "jp": "道が目的地に着かないとき、道そのものが目的地になる。",
       "en": "It is good to have an end to journey toward; but it is the journey that matters, in the end.",
-      "by": "Ursula K. Le Guin"
+      "by": "アーシュラ・K・ル＝グウィン"
     },
     "SUNKCITY": {
       "jp": "見慣れた風景が消えるとき、それを愛していたことに気づく。",
       "en": "The true catastrophe is the slow kind, the one we adapt to.",
-      "by": "(paraphrase of Rebecca Solnit)"
+      "by": "レベッカ・ソルニット（要約）"
     },
     "DATALOSS": {
       "jp": "記憶とは、忘れることへの抵抗だ。デジタルの記憶は、その抵抗をすら消去する。",
       "en": "We save everything and remember nothing.",
-      "by": "(common digital-age paradox)"
+      "by": "デジタル時代の逆説"
     },
     "SUMMER": {
       "jp": "過ぎ去った夏だけが、永遠の夏になる。",
       "en": "Summer afternoon — summer afternoon … the two most beautiful words in the English language.",
-      "by": "Henry James"
+      "by": "ヘンリー・ジェイムズ"
     },
     "SKYFALL": {
       "jp": "空が落ちてくるのは、支えるものが何もないことに気づいたからだ。",
       "en": "The sky is falling — but it has always been falling. We just stopped noticing.",
-      "by": "(reimagined folk wisdom)"
+      "by": "民間の知恵より"
     },
     "ROOMS": {
       "jp": "家の中に知らない部屋を見つける夢は、自分の中に知らない自分がいることの暗示である。",
       "en": "The dream of hidden rooms is one of the most commonly reported, and the most numinous.",
-      "by": "(common Jungian interpretation)"
+      "by": "ユング派の通説"
     },
     "LOSTHOME": {
       "jp": "帰る場所は、帰らないことで保存される。帰ったとき、そこはもうない。",
       "en": "You can't go home again.",
-      "by": "Thomas Wolfe"
+      "by": "トマス・ウルフ"
     },
     "LOOPTALK": {
       "jp": "同じことを繰り返しながら、違う結果を期待する。それを狂気と呼ぶ。",
       "en": "Insanity is doing the same thing over and over and expecting different results.",
-      "by": "(commonly attributed)"
+      "by": "とされる"
     },
     "SEX": {
       "jp": "欲望とは、不在のかたちである。",
       "en": "Desire is the essence of man.",
-      "by": "Baruch Spinoza"
+      "by": "バールーフ・デ・スピノザ"
     },
     "MEETLOVE": {
       "jp": "会いたい人に会えないということは、その人がまだどこかにいるということだ。",
       "en": "The very existence of the beloved makes the world less solitary.",
-      "by": "Rainer Maria Rilke (paraphrase)"
+      "by": "ライナー・マリア・リルケ（要約）"
     },
     "DEADCAT": {
       "jp": "動物を失うことは、言葉にならない悲しみだ。なぜなら動物は、言葉のない愛をくれた存在だからだ。",
       "en": "Until one has loved an animal, a part of one's soul remains unawakened.",
-      "by": "Anatole France"
+      "by": "アナトール・フランス"
     },
     "FORGETEX": {
       "jp": "忘れるとは、思い出の中に相手がいなくなることではない。いても平気になることだ。",
       "en": "The heart was made to be broken.",
-      "by": "Oscar Wilde"
+      "by": "オスカー・ワイルド"
     },
     "OSHI": {
       "jp": "崇拝とは、自分自身に欠けているものの発見である。",
       "en": "The fan is the most loyal kind of lover — loving without hope of return.",
-      "by": "(common fan culture observation)"
+      "by": "ファン文化の警句"
     },
     "SLEEP": {
       "jp": "眠りは、貧者にも許された唯一の贅沢である。",
       "en": "Sleep is the interest we have to pay on the capital which is called in at death.",
-      "by": "Arthur Schopenhauer"
+      "by": "アルトゥル・ショーペンハウアー"
     },
     "PARENT": {
       "jp": "親の承認を求めることは、子どもの仕事ではない。しかし多くの大人がまだその仕事をしている。",
       "en": "It is easier to build strong children than to repair broken men.",
-      "by": "Frederick Douglass"
+      "by": "フレデリック・ダグラス"
     },
     "NEEDED": {
       "jp": "人は、必要とされることを必要としている。",
       "en": "We are all of us sentenced to solitary confinement inside our own bodies.",
-      "by": "Tennessee Williams"
+      "by": "テネシー・ウィリアムズ"
     },
     "CHILD": {
       "jp": "子ども時代とは、まだ語られていない物語が住んでいる家である。",
       "en": "Grown-ups never understand anything by themselves, and it is tiresome for children to be always and forever explaining things to them.",
-      "by": "Antoine de Saint-Exupéry, *The Little Prince*"
+      "by": "サン＝テグジュペリ『星の王子さま』"
     },
     "HOME2": {
       "jp": "故郷とは、場所ではなく、帰りたいと思う気持ちのことだ。",
       "en": "Home is not where you live but where they understand you.",
-      "by": "Christian Morgenstern"
+      "by": "クリスティアン・モルゲンシュテルン"
     },
     "UNDO": {
       "jp": "言葉は放たれた矢のようなもので、射手の手に戻ることはない。",
       "en": "Of all sad words of tongue or pen, the saddest are these: 'It might have been.'",
-      "by": "John Greenleaf Whittier"
+      "by": "ジョン・グリーンリーフ・ホイッティア"
     },
     "DEBT": {
       "jp": "負債とは、まだ完全に共同体になっていない者たちのあいだの、束の間の道徳的擬制である。",
       "en": "If you owe the bank a hundred dollars, that's your problem. If you owe the bank a hundred million, that's the bank's problem.",
-      "by": "attributed to J. Paul Getty"
+      "by": "J・ポール・ゲティ（とされる）"
     },
     "PREZ": {
       "jp": "権力を望む者は、まず自分が何を恐れているかを知るべきだ。",
       "en": "Nearly all men can stand adversity, but if you want to test a man's character, give him power.",
-      "by": "Abraham Lincoln"
+      "by": "エイブラハム・リンカーン"
     },
     "BALLER": {
       "jp": "球を蹴るということは、地球に触れるということだ。",
       "en": "Some people believe football is a matter of life and death. I assure you it is much, much more serious than that.",
-      "by": "Bill Shankly"
+      "by": "ビル・シャンクリー"
     },
     "SINGER": {
       "jp": "歌えない人はいない。歌うことを恐れている人がいるだけだ。",
       "en": "I don't sing because I'm happy; I'm happy because I sing.",
-      "by": "William James"
+      "by": "ウィリアム・ジェームズ"
     },
     "ASTRO": {
       "jp": "宇宙から見ると、国境は見えない。",
       "en": "When you look at the Earth from space, borders disappear.",
-      "by": "(common astronaut observation)"
+      "by": "宇宙飛行士がよく語る言葉"
     },
     "ELOPE": {
       "jp": "選ばなかった道は、選んだ道よりも長く残る。",
       "en": "Two roads diverged in a wood, and I — I took the one less traveled by.",
-      "by": "Robert Frost"
+      "by": "ロバート・フロスト"
     },
     "AFFAIR": {
       "jp": "禁じられた愛は、許された愛より正確に記憶される。",
       "en": "The heart has its reasons, which reason does not know.",
-      "by": "Blaise Pascal"
+      "by": "ブレーズ・パスカル"
     },
     "ROCK": {
       "jp": "ロックンロールは死んだ、と誰かが言うたびに、ロックンロールは生き返る。",
       "en": "Rock and roll is here to stay.",
-      "by": "Danny & the Juniors (1958)"
+      "by": "ダニー＆ザ・ジュニアーズ（1958）"
     },
     "CINDER": {
       "jp": "ガラスの靴はぴったり合ったが、それを脱いだあとの人生は誰も書かない。",
       "en": "If the shoe fits, wear it — but Cinderella never talks about the blisters.",
-      "by": "(contemporary reframe)"
+      "by": "現代的な言い換え"
     },
     "TENNO": {
       "jp": "ナポレオンだと名乗る患者が二人いるとき、問題はナポレオンが何人いるかではない。",
       "en": "Every man has a Napoleon inside him — the trouble starts when he acts on it.",
-      "by": "(psychiatric humour, adapted)"
+      "by": "精神医学のユーモア（翻案）"
     },
     "MOTE": {
       "jp": "すべての人に好かれたい者は、誰にも愛されない。",
       "en": "The desire to be loved is the last illusion. Give it up and you will be free.",
-      "by": "Margaret Atwood (paraphrase)"
+      "by": "マーガレット・アトウッド（要約）"
     },
     "INHERIT": {
       "jp": "遺産とは、死者の最後の発言であり、受け取る者の最初の試練である。",
       "en": "Inherited wealth is a real handicap to happiness.",
-      "by": "William K. Vanderbilt"
+      "by": "ウィリアム・K・ヴァンダービルト"
     },
     "QUITJOB": {
       "jp": "仕事を辞めることは、自分を辞めないためにすることだ。",
       "en": "Choose a job you love, and you will never have to work a day in your life — unless that job loves you back, which it rarely does.",
-      "by": "(contemporary rewrite of Confucius)"
+      "by": "孔子の現代的な言い換え"
     },
     "FOLLOW": {
       "jp": "百万人のフォロワーがいて、一人も友人がいないことは可能だ。",
       "en": "I am lonely, yet not everybody will do. I don't know why, some people fill the gaps and others emphasize my loneliness.",
-      "by": "Anaïs Nin"
+      "by": "アナイス・ニン"
     },
     "REUNION": {
       "jp": "同窓会とは、あの頃の自分を殺すために行く場所だ。",
       "en": "The past is never dead. It's not even past.",
-      "by": "William Faulkner"
+      "by": "ウィリアム・フォークナー"
     },
     "SLEEPIN": {
       "jp": "『あと五分』は、人類最古の祈りである。",
       "en": "Five more minutes — the universal prayer.",
-      "by": "(common observation)"
+      "by": "よく知られた警句"
     },
     "BILLION": {
       "jp": "お金は幸福を買えないが、不幸をずいぶん快適にしてくれる。",
       "en": "Having money isn't everything, not having it is.",
-      "by": "Kanye West"
+      "by": "カニエ・ウェスト"
     },
     "HAREM": {
       "jp": "あまたに愛されたい者は、一人にも愛されていないことを知っている。",
       "en": "Don Juan's tragedy is not the number of women but the fact that none of them exists.",
-      "by": "(paraphrase of Albert Camus on Don Juanism)"
+      "by": "アルベール・カミュ（ドン・ジュアン論より要約）"
     },
     "FLORIST": {
       "jp": "花は、用のないものに美しさを見いだす、人間の最も古い練習だ。",
       "en": "Flowers don't worry about how they're going to bloom. They just open up and turn toward the light.",
-      "by": "Jim Carrey"
+      "by": "ジム・キャリー"
     },
     "CUTE": {
       "jp": "鏡は嘘をつかない。しかし鏡を見る目は、いつも嘘をつく。",
       "en": "You are not a drop in the ocean. You are the entire ocean in a drop.",
-      "by": "Rumi"
+      "by": "ルーミー"
     },
     "BIRDWISH": {
       "jp": "鳥は翼があるから自由なのではない。飛ぶことを選べるから自由なのだ。",
       "en": "The reason birds can fly and we can't is simply because they have perfect faith.",
-      "by": "J. M. Barrie"
+      "by": "J・M・バリー"
     }
   };
 
