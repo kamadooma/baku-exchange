@@ -270,8 +270,6 @@ const DREAMS = [
     descJp:"自分こそ特別だと確信する夢。根拠なき全能感は、何より人を強くする。", descEn:"The dream of being certain you are the chosen one. Baseless omnipotence is the strongest fuel of all.", seed:44, volatility:1.1 },
   { ticker:"MOTE", nameJp:"モテたい", nameEn:"To Be Irresistible", wiki:"", category:"mundane", seller:"選ばれたい人々",
     descJp:"誰からも好かれたい夢。承認欲求という、現代で最も流通する欲望。", descEn:"To be loved by everyone. The hunger for approval — the most-traded desire of the age.", seed:50, volatility:0.95 },
-  { ticker:"TOWER", nameJp:"タワマンに住みたい", nameEn:"A Tower-Mansion Life", wiki:"", category:"mundane", seller:"上を目指す人々",
-    descJp:"高層階から街を見下ろす夢。成功の、いちばん分かりやすい形。", descEn:"To look down on the city from a high floor. The most legible shape of success.", seed:48, volatility:0.9 },
   { ticker:"INHERIT", nameJp:"突然の遺産", nameEn:"An Unexpected Inheritance", wiki:"", category:"mundane", seller:"棚ぼたを待つ人々",
     descJp:"思いがけない大金が舞い込む夢。誰もがこっそり期待する、後ろめたい幸運。", descEn:"A windfall falling from nowhere. The guilty luck everyone secretly hopes for.", seed:45, volatility:1.0 },
   { ticker:"QUITJOB", nameJp:"会社を辞めたい", nameEn:"To Quit My Job", wiki:"", category:"mundane", seller:"月曜の朝の人々",

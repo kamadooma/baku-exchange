@@ -508,7 +508,7 @@
     SEX: "あの人のことを考えると眠れない。夢の中でだけ、ためらわずに触れられる。朝、現実のわたしに戻るのが少し苦しい。だからこの夢は手放します。叶わない気持ちは、誰かの役に立つほうがいい。",
     AFFAIR: "いちばん愛したのは、いちばん愛してはいけない人だった。夢の中では、誰にも責められず手をつなげる。でももう疲れた。この夢を売って、ぜんぶ終わりにしたい。買う人は、罪悪感ごと持っていって。",
     IMMO: "死ぬのが怖くて、終わらない夢を見続けた。気づけば周りには誰もいなくて、ひとりで永遠を歩いていた。永遠って、こんなに静かなんだ。もう十分。この夢、若い投資家さんに高く売れるって聞きました。",
-    MARS: "地球はもう手遅れだと思ってる。夢の中で赤い砂の上に立った時、本気で泣いた。逃げ場所がある気がして。でも宝くじも当たらないわたしには無理だ。だからこの夢は、行ける人に売ります。代わりに見てきて。",
+    MARS: "地球を捨てて、別の星で生きていくなんて馬鹿げてる。私は最後まで、この地球を離れない。だからこの夢は、行きたい誰かに売ります。私には、要らないので。",
     WPRE: "祖母も母も、わたしも、ずっと投票してきた。『もうすぐ』って何回聞いたかな。夢の中では、彼女が宣誓してる。割れんばかりの拍手。目が覚めると、まだ朝じゃない。この夢、信じてくれる人に託したい。",
     EXTN: "最後の一頭を看取った。檻の前で、ただ記録を取ることしかできなかった。夢には、もういない動物たちが帰ってくる。鳴き声まで覚えてる。手放したくないけど、見ているのがつらすぎるんです。",
     SOMEONE: "ずっと、誰でもない自分が嫌だった。夢の中では、みんながわたしの名前を知っている。眩しくて、少しだけ救われる。でも目が覚めると元通り。この夢を売れば、少しは何者かに近づける気がして。",
@@ -519,6 +519,8 @@
     MEETLOVE: "まだ会ったこともない『その人』に、夢の中では会える。顔は思い出せないのに、声だけ覚えてる。目が覚めると、世界中の誰でもないその人が恋しい。この夢、運命を信じる人に売ります。",
     TENNO: "鏡を見るたび思う。本当は、俺がこの国の天皇なんじゃないか。誰も気づいてないだけで。…この夢は手放したほうがいいと先生に言われた。でも、売るならいい値がつくと思う。",
     CHOSEN: "子どもの頃から、自分だけは特別だと信じてた。何者かになるために生まれてきたんだって。夢の中では、世界がそれを証明してくれる。…まだ、手放せずにいる。",
+    ELOPE: "あの夜、駅で待ち合わせた。でも私は、行かなかった。今も夢の中では、二人で改札を駆け抜けていく。選ばなかったほうの人生を、誰かに売ります。",
+    FUNRL: "自分の葬式を、天井のあたりから眺めてた夢。みんなが泣いていて、ほんの少しだけ嬉しかった。自分のいない世界も、案外わるくない。この夢、売ります。",
     ROCK: "ギターは押し入れの奥。子どもが生まれて、ローンも組んだ。でも夢の中では、まだ何万人の前で弾いてる。あの歓声だけは、本当は売りたくない。",
     CINDER: "毎週、宝くじを買う。いつか何もかもひっくり返る日が来るって。夢の中では迎えの車が来る。現実には来ない。この夢、信じられる人に売ります。",
     HAREM: "言いにくいけど、夢の中ではみんなが俺を好きでいてくれる。現実は、誰にも必要とされてない。だからこの夢だけは、ちょっと手放したくないんだ。",
@@ -540,6 +542,42 @@
     CRSH: "画面の数字が、みるみる赤くなる夢。家も貯金も溶けていく。何度も見た。トラウマだけど、空売り筋には高く売れるらしい。皮肉なものだ。",
     FASC: "強い指導者が、全部決めてくれる夢。考えなくていいのは、正直すこし楽だった。それが怖くて目が覚めた。こんな夢、早く誰かに引き取ってほしい。",
     PANDM: "防護服の中で、何ヶ月も過ごした。誰の手も握れなかった。夢では、まだあのアラームが鳴ってる。もう十分見た。市場が欲しがるなら、売る。",
+  };
+
+  // 実在の名言（売り手の言葉として引用）。あれば一人称コメントの代わりに表示。
+  const FAMOUS = {
+    NUKE: { jp: "今や我は死神、世界の破壊者となった。", en: "Now I am become Death, the destroyer of worlds.", by: "J・ロバート・オッペンハイマー" },
+    SOUL: { jp: "彼は、私自身よりも私だ。私たちの魂が何でできていようと、彼のものと私のものは、同じものでできている。", en: "He's more myself than I am. Whatever our souls are made of, his and mine are the same.", by: "エミリー・ブロンテ『嵐が丘』" },
+    LOVE: { jp: "事あるごとに移ろうような愛は、愛ではない。", en: "Love is not love which alters when it alteration finds.", by: "シェイクスピア ソネット116" },
+    CRSH: { jp: "安定こそが、不安定を生む。", en: "Stability is destabilizing.", by: "ハイマン・ミンスキー" },
+    GROW: { jp: "有限の惑星で無限の成長を信じる者は、狂人か経済学者のどちらかだ。", en: "Anyone who believes in indefinite growth on a finite planet is either a madman or an economist.", by: "ケネス・ボールディング" },
+    MARS: { jp: "地球は人類の揺りかごだ。だが人は、永遠に揺りかごにとどまりはしない。", en: "Earth is the cradle of humanity, but one cannot live in the cradle forever.", by: "コンスタンチン・ツィオルコフスキー" },
+    MARX: { jp: "万国の労働者よ、団結せよ！", en: "Workers of the world, unite!", by: "マルクス＆エンゲルス『共産党宣言』" },
+    PEACE: { jp: "すべての人が、平和に生きる世界を想像してごらん。", en: "Imagine all the people living life in peace.", by: "ジョン・レノン" },
+    DEMO: { jp: "民主主義は最悪の政治形態だ ── これまで試された、他のすべてを除けば。", en: "Democracy is the worst form of government — except for all the others that have been tried.", by: "ウィンストン・チャーチル" },
+    IMMO: { jp: "作品で不死を得たいのではない。死なないことで不死になりたいのだ。", en: "I don't want to achieve immortality through my work; I want to achieve it by not dying.", by: "ウディ・アレン" },
+    ARMAG: { jp: "世界はこうして終わる ── 爆発ではなく、すすり泣きとともに。", en: "This is the way the world ends — not with a bang but a whimper.", by: "T・S・エリオット" },
+    NODISC: { jp: "私には夢がある。いつの日か、子どもたちが肌の色ではなく、人格の中身で評価される国に住むことを。", en: "I have a dream that my children will one day live in a nation where they will not be judged by the color of their skin but by the content of their character.", by: "マーティン・ルーサー・キング・Jr." },
+    GEQ: { jp: "人は女に生まれるのではない、女になるのだ。", en: "One is not born, but rather becomes, a woman.", by: "シモーヌ・ド・ボーヴォワール" },
+    FAME: { jp: "未来では、誰もが15分間だけ、世界的に有名になれる。", en: "In the future, everyone will be world-famous for 15 minutes.", by: "アンディ・ウォーホル" },
+    NOPOV: { jp: "貧困は、最悪の暴力である。", en: "Poverty is the worst form of violence.", by: "マハトマ・ガンジー" },
+    NOWAR: { jp: "第三次大戦がどんな武器で戦われるかは知らない。だが第四次大戦は、棒と石で戦われるだろう。", en: "I know not with what weapons World War III will be fought, but World War IV will be fought with sticks and stones.", by: "アルベルト・アインシュタイン" },
+    DISARM: { jp: "平和は力では保てない。それは理解によってのみ達成される。", en: "Peace cannot be kept by force; it can only be achieved by understanding.", by: "アルベルト・アインシュタイン" },
+    EDU: { jp: "教育は、世界を変えるために使える、最も強力な武器だ。", en: "Education is the most powerful weapon which you can use to change the world.", by: "ネルソン・マンデラ" },
+    ALONE: { jp: "孤独は、最も恐ろしい貧困である。", en: "Loneliness is the most terrible poverty.", by: "マザー・テレサ" },
+    FRND: { jp: "友情とは、二つの体に宿る、一つの魂である。", en: "Friendship is a single soul dwelling in two bodies.", by: "アリストテレス" },
+    TIME: { jp: "過去・現在・未来の区別は、頑固な幻想にすぎない。", en: "The distinction between past, present and future is only a stubbornly persistent illusion.", by: "アルベルト・アインシュタイン" },
+    ETLIF: { jp: "可能性は二つ。宇宙に我々だけか、そうでないか。どちらも等しく、恐ろしい。", en: "Two possibilities exist: either we are alone in the Universe or we are not. Both are equally terrifying.", by: "アーサー・C・クラーク" },
+    AIBC: { jp: "完全な人工知能の開発は、人類の終わりを意味するかもしれない。", en: "The development of full artificial intelligence could spell the end of the human race.", by: "スティーヴン・ホーキング" },
+    UTOPIA: { jp: "ユートピアを含まない世界地図は、一瞥する価値もない。", en: "A map of the world that does not include Utopia is not worth even glancing at.", by: "オスカー・ワイルド" },
+    STOPGW: { jp: "私たちの家は、燃えている。", en: "Our house is on fire.", by: "グレタ・トゥーンベリ" },
+    EXTN: { jp: "自然において、何ものも単独では存在しない。", en: "In nature nothing exists alone.", by: "レイチェル・カーソン" },
+    WREV: { jp: "革命は、晩餐会ではない。", en: "A revolution is not a dinner party.", by: "毛沢東" },
+    REVENGE: { jp: "復讐の旅に出る前に、墓を二つ掘れ。", en: "Before you embark on a journey of revenge, dig two graves.", by: "孔子" },
+    SUST: { jp: "我々は地球を先祖から受け継いだのではない。子どもたちから借りているのだ。", en: "We do not inherit the earth from our ancestors; we borrow it from our children.", by: "ネイティブ・アメリカンの諺" },
+    ENLIGHT: { jp: "心がすべてだ。あなたが思うものに、あなたはなる。", en: "The mind is everything. What you think you become.", by: "ブッダ（伝）" },
+    FREE: { jp: "富とは、人生を存分に経験する力のことだ。", en: "Wealth is the ability to fully experience life.", by: "ヘンリー・D・ソロー" },
+    REASON: { jp: "敢えて知ろうとせよ。みずからの理性を使う勇気を持て。", en: "Sapere aude — dare to know; have the courage to use your own reason.", by: "イマヌエル・カント" },
   };
 
   let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null, fieldSel = null, fieldElapsed = 0, fieldDust = [];
@@ -643,8 +681,12 @@
     $("#fpPrice").innerHTML = `${fmt(s.price)} <small>${CUR}</small> <span class="${cls(dayChange(s))}">${pctTxt(dayChange(s))}</span>`;
     const nat = NATURE[s.category] || ["", ""];
     $("#fpNature").innerHTML = `${nat[0]}<span>${nat[1]}</span>`;
-    $("#fpQuote").innerHTML = (QUOTES[s.ticker] || s.descJp) + `<span class="en">${s.descEn}</span>`;
+    $("#fpQuote").innerHTML = (QUOTES[s.ticker] || s.descJp) + `<span class="en">${s.descEn}</span>`;   // 売った人のコメントが主役
     $("#fpSeller").textContent = "— " + s.seller;
+    const fq = FAMOUS[s.ticker];                                       // 名言は下に小さく添える
+    const fpf = $("#fpFamous");
+    if (fq) { fpf.innerHTML = `“${fq.jp}” <span class="by">— ${fq.by}</span>`; fpf.style.display = "block"; }
+    else { fpf.style.display = "none"; }
     $("#fpOpen").onclick = (e) => { e.stopPropagation(); closeField(); selectDream(s); };
     $("#fieldPanel").classList.remove("hidden");
   }
@@ -689,6 +731,8 @@
     ROBOT: [[1984, 90], [2015, 100]], IMMO: [[2013, 90], [2021, 130]],
     // 信仰
     "2COM": [[1999, 100]], MESSI: [[1999, 80]],
+    // 心霊主義：1848年以降に流行、二度の大戦の大量死で急増
+    DEAD: [[1901, 100], [1920, 150], [1948, 130], [2001, 60]], REUNI: [[1901, 80], [1920, 130], [1948, 120]],
     // 個人
     DEBT: [[2008, 100], [2011, 80]], HOME: [[2006, 90]],
     ROCK: [[1972, 150], [1988, 90]], CINDER: [[1985, 80]], FOLLOW: [[2015, 130]], FAME: [[1985, 70], [2010, 110]],

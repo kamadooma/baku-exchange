@@ -438,3 +438,7 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 .row .meta { font-size: 0.55rem; color: var(--g3); margin-top: 5px; letter-spacing: 0.03em; white-space: nowrap; }
 .row .meta .num { color: var(--g2); }
 .row-num { text-align: right; }
+
+/* 夢の海パネル：名言エピグラフ（売り手コメントの下に小さく） */
+#fieldPanel .fp-famous { margin-top: 16px; padding-top: 13px; border-top: 1px solid var(--line); font-style: italic; font-size: 0.78rem; color: var(--g1); line-height: 1.7; }
+#fieldPanel .fp-famous .by { color: var(--g2); font-style: normal; letter-spacing: 0.04em; }
