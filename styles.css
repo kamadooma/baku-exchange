@@ -503,23 +503,29 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
    ※ ベース #fieldPanel 定義より後に置き、ソース順で確実に勝たせる
    ============================================================ */
 @media (max-width: 560px) {
+  /* 画面下に出る、コンパクトなボトムカードにする */
   #fieldPanel {
-    left: 50%; right: auto;
-    bottom: max(3.5%, env(safe-area-inset-bottom));
-    width: min(92vw, 520px); max-width: 92vw; box-sizing: border-box;
-    max-height: 80dvh;            /* モバイルのURLバーを考慮（vh非対応でも下のvhが効く） */
-    overflow-y: auto; -webkit-overflow-scrolling: touch;
-    padding: 16px 16px 14px;
+    /* 中央寄せは margin:auto で行う。translateX は使わない
+       （入場アニメ dreamIn が終了時に transform:none を当てて translateX(-50%) を打ち消し、右へズレるため） */
+    left: 0; right: 0; margin-inline: auto; transform: none;
+    bottom: max(14px, env(safe-area-inset-bottom));   /* 画面下に寄せる */
+    width: min(90vw, 440px); max-width: 90vw; box-sizing: border-box;
+    max-height: 46dvh;                                /* 小さめ。あふれる分だけ内部スクロール */
+    overflow-y: auto; -webkit-overflow-scrolling: touch; overflow-x: hidden;
+    padding: 14px 16px 12px;
   }
-  @supports not (height: 80dvh) { #fieldPanel { max-height: 72vh; } }
-  #fieldPanel .fp-en { font-size: 1.2rem; }
-  #fieldPanel .fp-jp { font-size: 0.72rem; }
-  #fieldPanel .fp-price { font-size: 1.02rem; margin-top: 8px; }
-  #fieldPanel .fp-nature { font-size: 0.78rem; margin-top: 10px; }
-  #fieldPanel .fp-quote { font-size: 0.9rem; line-height: 1.8; max-width: 100%; margin-top: 12px; }
-  #fieldPanel .fp-seller { margin-top: 10px; }
-  #fieldPanel .fp-famous { margin-top: 12px; padding-top: 10px; font-size: 0.74rem; }
-  #fpOpen { margin-top: 14px; }
+  @supports not (height: 46dvh) { #fieldPanel { max-height: 46vh; } }
+  #fieldPanel .fp-quote, #fieldPanel .fp-nature, #fieldPanel .fp-famous { overflow-wrap: anywhere; }
+  /* 文字も一回り小さく、間隔を詰める */
+  #fieldPanel .fp-en { font-size: 1.02rem; }
+  #fieldPanel .fp-jp { font-size: 0.68rem; margin-top: 3px; }
+  #fieldPanel .fp-price { font-size: 0.92rem; margin-top: 6px; }
+  #fieldPanel .fp-nature { font-size: 0.72rem; margin-top: 8px; line-height: 1.6; }
+  #fieldPanel .fp-quote { font-size: 0.82rem; line-height: 1.7; max-width: 100%; margin-top: 9px; }
+  #fieldPanel .fp-quote .en { font-size: 0.72rem; margin-top: 6px; }
+  #fieldPanel .fp-seller { font-size: 0.62rem; margin-top: 8px; }
+  #fieldPanel .fp-famous { margin-top: 9px; padding-top: 8px; font-size: 0.7rem; line-height: 1.55; }
+  #fpOpen { margin-top: 11px; padding: 9px 18px; }
   .field-title { top: 14px; font-size: 0.54rem; }
   #fieldClose { top: 10px; left: 12px; }
 }
