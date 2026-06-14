@@ -430,3 +430,6 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 
 /* 入り口の宝船の回文歌 */
 .tc-sub .poem-jp { display: block; margin-top: 1.5rem; color: var(--g2); font-size: 0.84rem; letter-spacing: 0.12em; line-height: 2.0; font-style: normal; }
+
+/* 夢の海パネルの英語解説 */
+#fieldPanel .fp-quote .en { display: block; color: var(--g2); font-size: 0.8rem; margin-top: 10px; line-height: 1.7; }

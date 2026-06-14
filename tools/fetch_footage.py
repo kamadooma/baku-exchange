@@ -44,6 +44,14 @@ IMG_WIKI = {
   "ANIMAL":"Dog", "REVENGE":"Revenge",
   "MARX":"Karl_Marx", "WPRE":"Women's_suffrage", "2COM":"Second_Coming",
   "JPSK":"2011_Tōhoku_earthquake_and_tsunami", "GROW":"Skyscraper",
+  # 追加銘柄（名画・写真で）
+  "ROCK":"Electric_guitar", "CINDER":"Cinderella", "TENNO":"The_Coronation_of_Napoleon",
+  "TOWER":"Skyscraper", "INHERIT":"Gold", "FOLLOW":"Social_media", "SLEEPIN":"Bed",
+  "BILLION":"Gold_bar", "HAREM":"The_Turkish_Bath", "WEDLOCK":"Arnolfini_Portrait",
+  "FLORIST":"Sunflowers_(Van_Gogh_series)", "ROADEXT":"Road", "SUNKCITY":"Flood",
+  "DATALOSS":"Hard_disk_drive", "SUMMER":"Beach", "SKYFALL":"Storm", "ROOMS":"Stairs",
+  "LOSTHOME":"Ghost_town", "LOOPTALK":"Möbius_strip", "QUITJOB":"Office", "MOTE":"Aphrodite",
+  "DONTWAKE":"Sleeping_Beauty", "REUNION":"Party", "BALLER":"Association_football", "ASTRO":"Astronaut",
 }
 
 def get(url):
@@ -77,6 +85,8 @@ def main():
         article = IMG_WIKI.get(t) or fallback.get(t)
         if not article:
             print(f"--  {t}: 記事なし→グラデ"); skip += 1; continue
+        if os.path.exists(os.path.join(OUT, f"{t}.jpg")):
+            continue                                   # 既存はスキップ（不足分のみ取得）
         try:
             img = lead_image(article)
             if not img:

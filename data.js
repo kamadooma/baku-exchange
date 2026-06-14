@@ -261,6 +261,68 @@ const DREAMS = [
   { ticker:"AFFAIR", nameJp:"不倫という真実の愛", nameEn:"An Affair, a True Love", wiki:"", category:"mundane", seller:"手放したい人々",
     descJp:"禁じられた愛ほど、激しく燃える真実。情熱を集める、値動きの大きい夢。", descEn:"No love burns truer than the forbidden. A passionate, high-volatility name.", seed:48, volatility:1.15 },
 
+  { ticker:"ROCK", nameJp:"ロックスターになりたい", nameEn:"To Become a Rock Star", wiki:"", category:"mundane", seller:"かつて夢見た少年たち",
+    descJp:"ステージで世界を揺らす夢。かつて誰もが憧れ、いまは静かに値を下げる、伝説の夢。", descEn:"To shake the world from a stage. Once everyone's dream, now quietly in decline — a legend's dream.", seed:42, volatility:0.9 },
+  { ticker:"CINDER", nameJp:"玉の輿（シンデレラストーリー）", nameEn:"A Cinderella Story", wiki:"", category:"mundane", seller:"一発逆転を願う人々",
+    descJp:"ひと晩で身分が変わる夢。古今東西、語り継がれてきた一発逆転の物語。", descEn:"The dream of a single night that changes everything — a rags-to-riches tale told in every age.", seed:46, volatility:1.0 },
+
+  { ticker:"TENNO", nameJp:"俺は天皇だ！", nameEn:"I Am the Emperor!", wiki:"", category:"mundane", seller:"自称・選ばれし者",
+    descJp:"自分こそ特別だと確信する夢。根拠なき全能感は、何より人を強くする。", descEn:"The dream of being certain you are the chosen one. Baseless omnipotence is the strongest fuel of all.", seed:44, volatility:1.1 },
+  { ticker:"MOTE", nameJp:"モテたい", nameEn:"To Be Irresistible", wiki:"", category:"mundane", seller:"選ばれたい人々",
+    descJp:"誰からも好かれたい夢。承認欲求という、現代で最も流通する欲望。", descEn:"To be loved by everyone. The hunger for approval — the most-traded desire of the age.", seed:50, volatility:0.95 },
+  { ticker:"TOWER", nameJp:"タワマンに住みたい", nameEn:"A Tower-Mansion Life", wiki:"", category:"mundane", seller:"上を目指す人々",
+    descJp:"高層階から街を見下ろす夢。成功の、いちばん分かりやすい形。", descEn:"To look down on the city from a high floor. The most legible shape of success.", seed:48, volatility:0.9 },
+  { ticker:"INHERIT", nameJp:"突然の遺産", nameEn:"An Unexpected Inheritance", wiki:"", category:"mundane", seller:"棚ぼたを待つ人々",
+    descJp:"思いがけない大金が舞い込む夢。誰もがこっそり期待する、後ろめたい幸運。", descEn:"A windfall falling from nowhere. The guilty luck everyone secretly hopes for.", seed:45, volatility:1.0 },
+  { ticker:"QUITJOB", nameJp:"会社を辞めたい", nameEn:"To Quit My Job", wiki:"", category:"mundane", seller:"月曜の朝の人々",
+    descJp:"明日、辞表を出す夢。多くの人が毎晩見る、ささやかな反逆。", descEn:"To hand in your notice tomorrow. A small rebellion dreamed nightly by many.", seed:49, volatility:0.85 },
+  { ticker:"FOLLOW", nameJp:"フォロワー100万人", nameEn:"A Million Followers", wiki:"", category:"mundane", seller:"通知を待つ人々",
+    descJp:"画面の中で愛される夢。数字で測れる、現代の承認。", descEn:"To be loved inside a screen. Approval, at last, you can count.", seed:47, volatility:1.05 },
+  { ticker:"REUNION", nameJp:"同窓会で見返したい", nameEn:"To Outshine Them at the Reunion", wiki:"", category:"mundane", seller:"あの頃を忘れない人々",
+    descJp:"いつか見返す日の夢。静かに、しかし確かに人を駆り立てる。", descEn:"The dream of the day you finally outshine them. Quiet, but it drives people surely.", seed:44, volatility:0.9 },
+  { ticker:"SLEEPIN", nameJp:"二度寝したい", nameEn:"Five More Minutes", wiki:"", category:"mundane", seller:"目覚ましと闘う人々",
+    descJp:"あと五分の幸福。誰もが毎朝、心から願う夢。", descEn:"The bliss of five more minutes. The dream everyone wishes, every single morning.", seed:52, volatility:0.6 },
+
+  { ticker:"BILLION", nameJp:"億万長者になりたい", nameEn:"To Become a Billionaire", wiki:"", category:"mundane", seller:"上を見続ける人々",
+    descJp:"数えきれない富を手にする夢。欲望の、いちばん分かりやすい頂点。", descEn:"To hold uncountable wealth. The most legible summit of desire.", seed:54, volatility:0.95 },
+  { ticker:"HAREM", nameJp:"ハーレム", nameEn:"A Harem", wiki:"", category:"mundane", seller:"満たされたい人々",
+    descJp:"あまたに囲まれ、満たされる夢。古今、権力と欲望が見続けた定番の幻。", descEn:"To be surrounded and adored without end. The timeless fantasy of power and appetite.", seed:46, volatility:1.0 },
+  { ticker:"DONTWAKE", nameJp:"夢から覚めたくない", nameEn:"Never to Wake", wiki:"", category:"oneiric", seller:"現実に戻りたくない人々",
+    descJp:"心地よい夢に、ずっと留まりたい夢。誰もが一度は願う、いちばん優しい逃避。", descEn:"To stay forever in a sweet dream. The gentlest escape everyone has wished for once.", seed:48, volatility:0.7 },
+
+  { ticker:"WEDLOCK", nameJp:"誓約結婚", nameEn:"Bound in Marriage", wiki:"", category:"nightmare", seller:"逃れたいと願う人々",
+    descJp:"一生添い遂げる誓いという、終わらない夢。甘美にも、悪夢にもなる契約。", descEn:"The vow to stay together for life — an unending dream. A contract that turns sweet, or nightmarish.", seed:45, volatility:0.95 },
+
+  { ticker:"FLORIST", nameJp:"お花屋さんになりたい", nameEn:"To Run a Flower Shop", wiki:"", category:"mundane", seller:"やさしい暮らしを願う人々",
+    descJp:"花に囲まれて暮らす夢。子どもの頃に誰もが一度は描いた、ささやかで温かい憧れ。", descEn:"To live surrounded by flowers. The small, warm dream so many of us drew once as a child.", seed:43, volatility:0.6 },
+
+  { ticker:"ROADEXT", nameJp:"道が伸び続ける", nameEn:"The Endless Road", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"歩いても歩いても、道が伸び続ける夢。終わらない反復が、不思議と心地よい。", descEn:"A road that keeps extending however far you walk. Its endlessness is strangely soothing.", seed:42, volatility:0.7 },
+  { ticker:"SUNKCITY", nameJp:"水没する都市", nameEn:"The Drowning City", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"見慣れた街が、静かに水に沈んでいく夢。美しくて、少し寂しい終末のイメージ。", descEn:"A familiar city quietly sinking beneath the water. A beautiful, faintly lonely image of the end.", seed:44, volatility:0.8 },
+
+  { ticker:"DATALOSS", nameJp:"データが消える", nameEn:"Everything Deleted", wiki:"", category:"oneiric", seller:"保存し忘れた人々",
+    descJp:"保存し忘れた全部が、一瞬で消える夢。現代人の、最も生々しい恐怖のひとつ。", descEn:"Everything unsaved, gone in an instant. One of the most visceral fears of the digital age.", seed:46, volatility:0.85 },
+
+  { ticker:"SUMMER", nameJp:"終わらない夏", nameEn:"An Endless Summer", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"いつまでも終わらない夏の中にいる夢。永遠の十代のような、甘く眩しい幻。", descEn:"To be inside a summer that never ends. A sweet, dazzling phantom, like an eternal adolescence.", seed:45, volatility:0.7 },
+  { ticker:"SKYFALL", nameJp:"空が落ちてくる", nameEn:"The Sky Is Falling", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"頭上の空が、ゆっくり崩れ落ちてくる夢。逃げ場のない、荘厳な終末の感覚。", descEn:"The sky above slowly crashing down. A grand, inescapable sense of the end.", seed:44, volatility:0.85 },
+
+  { ticker:"ROOMS", nameJp:"部屋が増える家", nameEn:"The House of New Rooms", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"見慣れた家に、知らない部屋が次々と現れる夢。誰もが一度は見る、不思議な発見の夢。", descEn:"A familiar house where unknown rooms keep appearing. The uncanny dream of discovery everyone has once.", seed:44, volatility:0.7 },
+
+  { ticker:"LOSTHOME", nameJp:"消えた故郷", nameEn:"The Vanished Hometown", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"帰り着いた故郷が、もうどこにもない夢。懐かしさと喪失が、静かに混ざり合う。", descEn:"To return to a hometown that no longer exists anywhere. Nostalgia and loss, quietly mingling.", seed:43, volatility:0.75 },
+  { ticker:"LOOPTALK", nameJp:"ループする会話", nameEn:"The Looping Conversation", wiki:"", category:"oneiric", seller:"眠る人々",
+    descJp:"同じ会話を、何度も繰り返してしまう夢。出口のない、奇妙な親密さ。", descEn:"A conversation that repeats again and again. An exitless, strange intimacy.", seed:42, volatility:0.75 },
+
+  { ticker:"CUTE", nameJp:"可愛くなりたい", nameEn:"To Be Pretty", wiki:"", category:"mundane", seller:"鏡を見つめる人々",
+    descJp:"もっと可愛くなりたい夢。誰かに見つめられ、愛されたいという、やわらかな願い。", descEn:"The dream of becoming prettier — a soft wish to be looked at, and adored.", seed:82, volatility:0.85 },
+
+  { ticker:"BIRDWISH", nameJp:"鳥になりたい", nameEn:"To Become a Bird", wiki:"", category:"mundane", seller:"自由を願う人々",
+    descJp:"翼を持って、どこへでも行ける夢。重力からも、しがらみからも自由になりたい願い。", descEn:"To have wings and go anywhere — a wish to be free of gravity, and of every tie.", seed:48, volatility:0.75 },
+
   // ── その他（既存の愛着銘柄）───────────────────────
   { ticker:"MARX", nameJp:"マルクス主義", nameEn:"Marxism", wiki:"Marxism", category:"ideology", seller:"元大学関係者",
     descJp:"公正な分配への関心は、社会が成熟した証です。景気の節目で見直される、息の長い夢。", descEn:"Interest in fair distribution signals a maturing society. A durable name revisited at each turn.", seed:52, volatility:0.85 },

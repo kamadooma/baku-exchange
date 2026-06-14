@@ -13,7 +13,7 @@ window.FieldGL = (function () {
 
   const FS = `precision mediump float;
     varying vec2 uv;
-    uniform sampler2D tex; uniform float time; uniform float seed; uniform float hasTex; uniform vec3 fallback;
+    uniform sampler2D tex; uniform float time; uniform float seed; uniform float hasTex; uniform vec3 fallback; uniform float uFade;
     void main(){
       vec2 c = uv;
       float r = length(c);
@@ -40,7 +40,7 @@ window.FieldGL = (function () {
       float hl = smoothstep(0.6, 0.0, length(c - vec2(-0.32, 0.40)));
       col += vec3(1.0) * hl * 0.28;                  // 濡れた光沢（液体感）
       float al = smoothstep(edge, edge-0.18, r);     // やわらかく溶ける縁
-      gl_FragColor = vec4(col, al);
+      gl_FragColor = vec4(col * (0.25 + 0.75*uFade), al * uFade);   // 暗闇からフェードイン
     }`;
 
   function compile(t, src) { const sh = gl.createShader(t); gl.shaderSource(sh, src); gl.compileShader(sh);
@@ -57,7 +57,7 @@ window.FieldGL = (function () {
     buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    u = {}; ["uCenter", "uRad", "uRes", "tex", "time", "seed", "hasTex", "fallback"].forEach((n) => u[n] = gl.getUniformLocation(prog, n));
+    u = {}; ["uCenter", "uRad", "uRes", "tex", "time", "seed", "hasTex", "fallback", "uFade"].forEach((n) => u[n] = gl.getUniformLocation(prog, n));
     gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.clearColor(0, 0, 0, 0);
     return true;
   }
@@ -87,10 +87,11 @@ window.FieldGL = (function () {
     gl.clear(gl.COLOR_BUFFER_BIT);
   }
 
-  function draw(x, y, r, seed, texObj, fb, time) {
+  function draw(x, y, r, seed, texObj, fb, time, fade) {
     gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texObj.tex); gl.uniform1i(u.tex, 0);
     gl.uniform2f(u.uCenter, x, y); gl.uniform1f(u.uRad, r); gl.uniform1f(u.seed, seed);
     gl.uniform1f(u.time, time); gl.uniform1f(u.hasTex, texObj.hasTex); gl.uniform3fv(u.fallback, fb);
+    gl.uniform1f(u.uFade, fade == null ? 1 : fade);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 

@@ -56,7 +56,7 @@
   function seedSeries(s) {
     let p = s.fair * (0.45 + Math.random() * 0.3);
     for (let m = 0; m < TOTAL_MONTHS; m++) {
-      p += p * s.volatility * 0.045 * gauss() + (s.fair - p) * 0.012;
+      p += p * s.volatility * 0.018 * gauss() + (s.fair - p) * 0.02;   // 合成履歴は安定（根拠のない過去の乱高下を抑える）
       p = Math.max(1, p); s.closes[m] = p;
     }
     s.price = s.closes[TOTAL_MONTHS - 1]; s.open = s.price;
@@ -280,8 +280,8 @@
     cv.addEventListener("pointerleave", onLeave);
     cv.addEventListener("pointerup", onLeave);
 
-    $("#buyBtn").addEventListener("click", () => toast(`ご注文を受け付けました · Order received<br/>「${s.nameJp}」を ${CUR} で取得しました。`));
-    $("#sellBtn").addEventListener("click", () => toast(`売却が成立しました · Sold<br/>「${s.nameJp}」を手放しました。`));
+    $("#buyBtn").addEventListener("click", () => toast(`Order received<br/>${s.nameEn} — settled in ${CUR}.`));
+    $("#sellBtn").addEventListener("click", () => toast(`Sold<br/>You have let go of ${s.nameEn}.`));
     $("#feature").querySelectorAll(".rec-chip").forEach((chip) => chip.addEventListener("click", () => selectDream(byTicker.get(chip.dataset.tk))));
     $("#feature").querySelectorAll(".zoom").forEach((b) => b.addEventListener("click", () => {
       zoomMonths = +b.dataset.m; hoverIndex = null; dref.tip.style.opacity = 0;
@@ -461,7 +461,7 @@
     state.forEach((s) => {
       let p = s.price;
       const bias = s.category === "nightmare" ? p * doom * 0.0024 : s.category === "hope" ? -p * doom * 0.0016 : 0;
-      p += p * s.volatility * 0.011 * gauss() + (s.fair - p) * MEAN_REVERT + p * mood + bias;
+      p += p * s.volatility * 0.007 * gauss() + (s.fair - p) * MEAN_REVERT + p * mood + bias;
       p = Math.max(1, p); s.price = p;
       s.closes[TOTAL_MONTHS - 1] = p;
       s.tape.push(p); if (s.tape.length > TAPE_N) s.tape.shift();
@@ -472,14 +472,14 @@
   }
   function updateMainIndex() { const idx = computeIndices().all; $("#dreamIndex").innerHTML = `${idx.val.toFixed(2)} <span class="${cls(idx.chg)}" style="font-size:.62em">${pctTxt(idx.chg)}</span>`; }
 
-  const BUYERS = ["匿名の投資家", "夢中毒者", "終末論者", "美術館", "退屈した億万長者", "眠れない子ども", "アルゴリズム取引bot", "コレクター", "未来からの旅行者", "占い師"];
+  const BUYERS = ["Anonymous investor", "Dream addict", "Doomsayer", "The museum", "Bored billionaire", "Sleepless child", "Trading algorithm", "Collector", "Traveler from the future", "Fortune teller"];
   function maybeTrade() {
     const feed = $("#tradeFeed"); const n = 1 + Math.floor(Math.random() * 2);
     for (let i = 0; i < n; i++) {
       const s = state[Math.floor(Math.random() * state.length)], buy = Math.random() > 0.5;
       const who = BUYERS[Math.floor(Math.random() * BUYERS.length)], qty = (Math.random() * 12 + 0.1).toFixed(2);
       const div = document.createElement("div"); div.className = "trade";
-      div.innerHTML = `<span class="who">${who}</span> が <b>${s.ticker}</b> を ${qty}口 <span class="num">${fmt(s.price)} ${CUR}</span> で <span class="num ${buy ? "up" : "down"}">${buy ? "購入" : "売却"}</span>`;
+      div.innerHTML = `<span class="who">${who}</span> <span class="num ${buy ? "up" : "down"}">${buy ? "bought" : "sold"}</span> <b>${s.ticker}</b> ×${qty} <span class="num">@ ${fmt(s.price)} ${CUR}</span>`;
       feed.insertBefore(div, feed.firstChild);
     }
     while (feed.children.length > 26) feed.removeChild(feed.lastChild);
@@ -510,7 +510,8 @@
     MEETLOVE: "まだ会ったこともない『その人』に、夢の中では会える。顔は思い出せないのに、声だけ覚えてる。目が覚めると、世界中の誰でもないその人が恋しい。この夢、運命を信じる人に売ります。",
   };
 
-  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null, fieldSel = null;
+  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null, fieldSel = null, fieldElapsed = 0, fieldDust = [];
+  let fieldDrag = null, dragMoved = false, dragLast = { x: 0, y: 0 };
   function popularity(s) { return s.realViews ? Math.min(100, 15 + Math.log10(s.realViews + 1) * 18) : s.interest; }
   const FIELD_FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10], mundane: [0.40, 0.16, 0.26] };
   function sizeFieldLines() { const cv = $("#fieldLines"); if (!cv) return; const dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; lineCtx = cv.getContext("2d"); lineCtx.setTransform(dpr, 0, 0, dpr, 0, 0); }
@@ -527,14 +528,23 @@
       const tex = FieldGL.loadTexture(`assets/footage/${s.ticker}.jpg`);
       fieldOrbs.push({ s, r, tex, fb: FIELD_FB[s.category] || [0.12, 0.12, 0.14], seed: (s.idx % 17) / 17,
         x: r + Math.random() * Math.max(1, W - 2 * r), y: 90 + r + Math.random() * Math.max(1, H - 2 * r - 200),
-        vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10, ph: Math.random() * 6.283, sc: 1 });
+        vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10, ph: Math.random() * 6.283, sc: 1,
+        z: 0.18 + Math.random() * 0.82, delay: 0 });
+    });
+    // 水中を漂う埃のような微粒子
+    fieldDust = [];
+    for (let i = 0; i < 150; i++) fieldDust.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.12 - 0.02,
+      r: 0.4 + Math.random() * 1.8, a: 0.05 + Math.random() * 0.16, tw: 0.5 + Math.random() * 1.4, ph: Math.random() * 6.283,
     });
   }
   function fieldTick() {
     if ($("#dreamfield").classList.contains("hidden")) { fieldRAF = null; return; }
-    fieldT += 0.016;
+    fieldT += 0.016; fieldElapsed += 0.016;
     const W = innerWidth, H = innerHeight, top = 80;
     fieldOrbs.forEach((o) => {
+      if (o === fieldDrag) return;                                     // つかんでいる球は指に追従（物理スキップ）
       // ゆらゆら蛇行（直線的にならない、流体のような揺らぎ）
       o.vx += Math.sin(fieldT * 0.24 + o.ph) * 0.004;
       o.vy += Math.cos(fieldT * 0.20 + o.ph * 1.3) * 0.004;
@@ -553,24 +563,40 @@
     for (let i = 0; i < fieldOrbs.length; i++) {                        // ふわふわ、互いを“避ける”（繋がない）
       const a = fieldOrbs[i];
       for (let j = i + 1; j < fieldOrbs.length; j++) {
-        const b = fieldOrbs[j], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.01, minD = (a.r + b.r) * 0.95;
+        const b = fieldOrbs[j], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.01, minD = (a.r + b.r) * 0.5;  // 1/3ほどの重なりは許容
         if (d < minD) {
-          const p = (minD - d) / d * 0.22; a.x -= dx * p; a.y -= dy * p; b.x += dx * p; b.y += dy * p;   // やわらかく重なり回避
-          const st = 0.006; a.vx -= dx / d * st; a.vy -= dy / d * st; b.vx += dx / d * st; b.vy += dy / d * st;  // なめらかに避ける
+          const p = (minD - d) / d * 0.12;
+          if (a !== fieldDrag) { a.x -= dx * p; a.y -= dy * p; }        // つかんだ球は押しのける側（動かない）
+          if (b !== fieldDrag) { b.x += dx * p; b.y += dy * p; }
+          const st = 0.003; if (a !== fieldDrag) { a.vx -= dx / d * st; a.vy -= dy / d * st; } if (b !== fieldDrag) { b.vx += dx / d * st; b.vy += dy / d * st; }
         }
       }
     }
+    // 水中の埃のような微粒子（#fieldLines の2Dキャンバスに描画）
+    if (lineCtx) {
+      lineCtx.clearRect(0, 0, W, H);
+      for (const d of fieldDust) {
+        d.x += d.vx; d.y += d.vy;
+        if (d.x < 0) d.x = W; else if (d.x > W) d.x = 0;
+        if (d.y < 0) d.y = H; else if (d.y > H) d.y = 0;
+        const tw = 0.35 + 0.65 * Math.abs(Math.sin(fieldT * d.tw + d.ph));
+        lineCtx.beginPath(); lineCtx.fillStyle = `rgba(243,241,236,${(d.a * tw).toFixed(3)})`;
+        lineCtx.arc(d.x, d.y, d.r, 0, 6.283); lineCtx.fill();
+      }
+    }
     FieldGL.begin();
-    let selDraw = null;
-    fieldOrbs.forEach((o) => {                                         // 選択中は手前へ（拡大）
-      const tgt = (o === fieldSel) ? 1.7 : 1.0; o.sc += (tgt - o.sc) * 0.12;
-      if (o === fieldSel) { selDraw = o; return; }                     // 最前面に描くため後回し
-      FieldGL.draw(o.x, o.y, o.r * o.sc, o.seed, o.tex, o.fb, fieldT);
+    const order = fieldOrbs.slice().sort((a, b) => ((a === fieldSel) ? 2 : a.z) - ((b === fieldSel) ? 2 : b.z));  // 奥→手前
+    order.forEach((o) => {
+      const tgt = (o === fieldSel) ? 1.35 : 1.0; o.sc += (tgt - o.sc) * 0.12;
+      const z = (o === fieldSel) ? 1 : o.z;
+      const a = Math.max(0, Math.min(1, (fieldElapsed - o.delay) / 0.9)); const ap = a * a * (3 - 2 * a);  // 暗闇からフェードイン
+      if (ap <= 0.003) return;
+      const rr = o.r * o.sc * (0.55 + 0.6 * z);                        // 手前ほど大きい
+      FieldGL.draw(o.x, o.y, rr, o.seed, o.tex, o.fb, fieldT, ap * (0.4 + 0.6 * z));  // 奥ほど暗い
     });
-    if (selDraw) FieldGL.draw(selDraw.x, selDraw.y, selDraw.r * selDraw.sc, selDraw.seed, selDraw.tex, selDraw.fb, fieldT);
     fieldRAF = requestAnimationFrame(fieldTick);
   }
-  function fieldHit(cx, cy) { let best = null, bd = 1e9; fieldOrbs.forEach((o) => { const d = Math.hypot(cx - o.x, cy - o.y); if (d < o.r && d < bd) { bd = d; best = o; } }); return best; }
+  function fieldHit(cx, cy) { let best = null, bd = 1e9; fieldOrbs.forEach((o) => { const er = o.r * (0.55 + 0.6 * o.z); const d = Math.hypot(cx - o.x, cy - o.y); if (d < er && d < bd) { bd = d; best = o; } }); return best; }
   // 夢の海では、各夢の「価値」を神託のように詩的に語る
   const NATURE = {
     hope: ["A glimmer of premonition, carried from afar.", "遠くからの光が運ぶ、ひとすじの予感。"],
@@ -585,13 +611,70 @@
     $("#fpPrice").innerHTML = `${fmt(s.price)} <small>${CUR}</small> <span class="${cls(dayChange(s))}">${pctTxt(dayChange(s))}</span>`;
     const nat = NATURE[s.category] || ["", ""];
     $("#fpNature").innerHTML = `${nat[0]}<span>${nat[1]}</span>`;
-    $("#fpQuote").textContent = "「" + (QUOTES[s.ticker] || s.descJp) + "」";
+    $("#fpQuote").innerHTML = (QUOTES[s.ticker] || s.descJp) + `<span class="en">${s.descEn}</span>`;
     $("#fpSeller").textContent = "— " + s.seller;
     $("#fpOpen").onclick = (e) => { e.stopPropagation(); closeField(); selectDream(s); };
     $("#fieldPanel").classList.remove("hidden");
   }
-  function openField() { buildField(); $("#dreamfield").classList.remove("hidden"); $("#fieldPanel").classList.add("hidden"); if (!fieldRAF) fieldRAF = requestAnimationFrame(fieldTick); }
+  function openField() {
+    buildField();
+    fieldElapsed = 0; fieldSel = null;
+    fieldOrbs.forEach((o) => { o.delay = Math.random() * 3.2; o.sc = 1; });   // 暗闇からひとつずつ
+    $("#dreamfield").classList.remove("hidden"); $("#fieldPanel").classList.add("hidden");
+    if (!fieldRAF) fieldRAF = requestAnimationFrame(fieldTick);
+  }
   function closeField() { $("#dreamfield").classList.add("hidden"); fieldSel = null; }
+
+  // 概念ごとの論理的な歴史：誕生年（それ以前はほぼ無）＋出来事の山（年, 強さ）
+  const BIRTH = { UBI: 1962, AIBC: 1956, SING: 1993, ENHANCE: 1990, ISEKAI: 2010, FLYCR: 1956, ERTH2: 1995, AIGOD: 2005, AIJOB: 1960, ROBOT: 1950, SURV: 1949, LEAK: 1995, ENRGY: 1975, SUST: 1987, DVRS: 1988, GAIA: 1988, PWD: 1995, OSHI: 2005, FOLLOW: 2006, ROCK: 1955, TOWER: 1968 };
+  const EVENTS = {
+    // 終末・カタストロフ
+    ARMAG: [[1962, 80], [1983, 70], [1999, 150], [2012, 100], [2020, 120]],
+    PANDM: [[1918, 110], [2009, 60], [2020, 190]],
+    NUKE: [[1945, 110], [1962, 150], [1983, 120], [2022, 80]],
+    CRSH: [[1929, 150], [1987, 70], [2008, 170], [2020, 80]],
+    OIL: [[1973, 160], [1979, 110], [2008, 80], [2022, 90]],
+    FASC: [[1933, 140], [1940, 160], [2016, 110]],
+    ENDDEM: [[2016, 120], [2021, 110]],
+    JPSK: [[2011, 190]], QUAKE: [[1995, 80], [2011, 130]],
+    FOOD: [[1974, 90], [2008, 80], [2022, 90]],
+    SURV: [[1949, 60], [2013, 140]], LEAK: [[2013, 140], [2018, 90]],
+    EXTN: [[1992, 70], [2019, 110]],
+    ALIEN: [[1947, 100], [1997, 90], [2019, 80]], ETLIF: [[1947, 90], [2017, 80]],
+    // 思想・社会
+    WREV: [[1917, 160], [1968, 110], [1989, 90]], MARX: [[1917, 120], [1968, 110]],
+    CLASS: [[1917, 130], [1968, 90]], DEMO: [[1945, 80], [1989, 130], [2011, 90]],
+    DISARM: [[1963, 90], [1987, 130]], GROW: [[1960, 100], [1990, 70]],
+    FAIR: [[1930, 80], [2011, 110]], UBI: [[2016, 110], [2020, 150]],
+    NODISC: [[1964, 120], [2020, 140]], GEQ: [[1972, 100], [2017, 120]],
+    WPRE: [[1920, 80], [1972, 90], [2016, 130]], DVRS: [[1995, 80], [2015, 110]],
+    // 希望・テック
+    STOPGW: [[2006, 90], [2019, 150]], GAIA: [[2006, 90], [2019, 150]],
+    ENRGY: [[2008, 70], [2015, 110]], SUST: [[1992, 80], [2015, 110]],
+    NOWAR: [[1969, 90], [2003, 90]], PEACE: [[1969, 80], [1989, 90]],
+    MARS: [[1969, 100], [2004, 70], [2020, 130]],
+    AIBC: [[1985, 80], [2012, 110], [2023, 180]], SING: [[2005, 80], [2023, 140]],
+    ROBOT: [[1984, 90], [2015, 100]], IMMO: [[2013, 90], [2021, 130]],
+    // 信仰
+    "2COM": [[1999, 100]], MESSI: [[1999, 80]],
+    // 個人
+    DEBT: [[2008, 100], [2011, 80]], HOME: [[2006, 90]],
+    ROCK: [[1972, 150], [1988, 90]], CINDER: [[1985, 80]], FOLLOW: [[2015, 130]], FAME: [[1985, 70], [2010, 110]],
+  };
+  function applyLogicalHistory() {
+    const L = TOTAL_MONTHS, cy = _now.getFullYear();
+    state.forEach((s) => {
+      const birth = BIRTH[s.ticker], ev = EVENTS[s.ticker];
+      if (!birth && !ev) return;
+      for (let m = 0; m < L; m++) {
+        const y = START_YEAR + m / 12;
+        if (birth) s.closes[m] *= Math.max(0.04, Math.min(1, (y - (birth - 4)) / 8));  // 誕生前はほぼ無
+        if (ev) { let bump = 0; for (const e of ev) bump += e[1] * Math.exp(-((y - e[0]) * (y - e[0])) / (2 * 2.2 * 2.2)); s.closes[m] += bump; }
+      }
+      s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price; s.tape = Array.from(s.closes.slice(-TAPE_N)); s.hasHistory = true;
+    });
+    idxBase = null; updateList(); updateTicker(); if (dref) updateDetail();
+  }
 
   // ---- Wikipedia interest ----
   async function loadInterest() {
@@ -639,7 +722,7 @@
       }
       for (let m = 1; m < L; m++) s.closes[m] *= (1 + 0.015 * gauss());  // 月次のテクスチャ
       const boost = TREND_NOW[s.ticker];                                 // いま熱い夢は近年急騰
-      if (boost) { const cy = _now.getFullYear(); for (let m = 0; m < L; m++) { const yr = START_YEAR + m / 12; if (yr > 2008) { const t = (yr - 2008) / (cy - 2008); s.closes[m] *= 1 + boost * 1.9 * t; } } }
+      if (boost) { const cy = _now.getFullYear(); for (let m = 0; m < L; m++) { const yr = START_YEAR + m / 12; if (yr > 2008) { const t = (yr - 2008) / (cy - 2008); s.closes[m] *= 1 + boost * 0.9 * t; } } }
       s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price;
       s.tape = Array.from(s.closes.slice(-TAPE_N));
       s.hasHistory = true; n++;
@@ -657,11 +740,24 @@
   $("#toField").addEventListener("click", openField);
   $("#fieldClose").addEventListener("click", closeField);
   $("#fieldPanel").addEventListener("click", (e) => e.stopPropagation());
+  const fieldXY = (e, el) => { const rc = el.getBoundingClientRect(); return { x: (e.touches ? e.touches[0].clientX : e.clientX) - rc.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - rc.top }; };
   $("#fieldGL").addEventListener("pointerdown", (e) => {
-    const rc = e.currentTarget.getBoundingClientRect();
-    const o = fieldHit(e.clientX - rc.left, e.clientY - rc.top);
-    if (o) openPanel(o.s); else { $("#fieldPanel").classList.add("hidden"); fieldSel = null; }
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) {}   // iPadで掴みを確実に
+    const p = fieldXY(e, e.currentTarget); const o = fieldHit(p.x, p.y);
+    if (o) { fieldDrag = o; dragMoved = false; dragLast = p; o.vx = 0; o.vy = 0; }
+    else { $("#fieldPanel").classList.add("hidden"); fieldSel = null; }
+    if (e.cancelable) e.preventDefault();
   });
+  $("#fieldGL").addEventListener("pointermove", (e) => {
+    if (!fieldDrag) return;
+    const p = fieldXY(e, e.currentTarget), dx = p.x - dragLast.x, dy = p.y - dragLast.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) dragMoved = true;
+    fieldDrag.x = p.x; fieldDrag.y = p.y; fieldDrag.vx = dx * 0.5; fieldDrag.vy = dy * 0.5;  // フリック用の勢い
+    dragLast = p; if (e.cancelable) e.preventDefault();
+  });
+  const endFieldDrag = () => { if (!fieldDrag) return; if (!dragMoved) openPanel(fieldDrag.s); fieldDrag = null; };  // 動かさなければタップ＝詳細
+  $("#fieldGL").addEventListener("pointerup", endFieldDrag);
+  $("#fieldGL").addEventListener("pointercancel", endFieldDrag);
   window.addEventListener("resize", () => sizeFieldLines());
 
   orbCanvas = document.createElement("canvas"); orbCanvas.id = "orbGL";
@@ -669,7 +765,7 @@
   buildList(); buildTicker(); buildDetail(); setupSort();
   updateFearGreed(); updateMainIndex(); updateDoom();
   setStatus(false, "connecting… 接続中");
-  loadHistory().then(loadInterest);
+  loadHistory().then(() => { applyLogicalHistory(); loadInterest(); });
   setInterval(step, TICK_MS);
   window.addEventListener("resize", () => { if (dref) updateDetail(); });
   setTimeout(() => { if ($("#titlecard").style.display !== "none") enter(); }, 9000);

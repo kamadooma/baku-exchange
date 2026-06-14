@@ -53,11 +53,11 @@
       <div class="brand">
         <img class="logo-baku" src="assets/baku.webp" alt="獏" />
         <div class="brand-name">Baku&nbsp;Exchange</div>
-        <button id="toField" class="navbtn">◎ Dreamfield 夢の海</button>
+        <button id="toField" class="navbtn">◎ Dreamfield</button>
       </div>
       <div class="metrics">
         <div class="metric">
-          <div class="m-label">Dream Index 夢幻指数</div>
+          <div class="m-label">Dream Index</div>
           <div class="m-val num" id="dreamIndex">—</div>
         </div>
         <div class="metric fg">
@@ -66,7 +66,7 @@
           <div class="m-val" id="fgWord">—</div>
         </div>
         <div class="metric doom">
-          <div class="m-label">Apocalypse 終末感</div>
+          <div class="m-label">Apocalypse</div>
           <div class="m-val num" id="doomVal">—</div>
           <div class="bar"><i id="doomFill"></i></div>
         </div>
@@ -75,13 +75,13 @@
 
     <main>
       <section class="listings">
-        <div class="col-label">Listings 上場銘柄</div>
+        <div class="col-label">Listings</div>
         <div class="sortbar" id="sortBar">
-          <button class="sort-btn on" data-sort="mix">ミックス</button>
-          <button class="sort-btn" data-sort="popular">人気</button>
-          <button class="sort-btn" data-sort="fear">恐れ</button>
-          <button class="sort-btn" data-sort="price">値段</button>
-          <button class="sort-btn" data-sort="trend">変動</button>
+          <button class="sort-btn on" data-sort="mix">Mixed</button>
+          <button class="sort-btn" data-sort="popular">Popular</button>
+          <button class="sort-btn" data-sort="fear">Fear</button>
+          <button class="sort-btn" data-sort="price">Price</button>
+          <button class="sort-btn" data-sort="trend">Movers</button>
         </div>
         <div id="marketList"></div>
       </section>
@@ -91,7 +91,7 @@
       </section>
 
       <aside class="feed">
-        <div class="col-label">Tape 取引フィード</div>
+        <div class="col-label">Tape</div>
         <div id="tradeFeed"></div>
       </aside>
     </main>
@@ -101,8 +101,8 @@
   <div id="dreamfield" class="hidden">
     <canvas id="fieldGL"></canvas>
     <canvas id="fieldLines"></canvas>
-    <div class="field-title">Dreamfield ・ 夢の海</div>
-    <button id="fieldClose">← Market 取引所</button>
+    <div class="field-title">Dreamfield</div>
+    <button id="fieldClose">← Market</button>
     <div id="fieldPanel" class="hidden">
       <div class="fp-en" id="fpEn"></div>
       <div class="fp-jp" id="fpJp"></div>
@@ -110,7 +110,7 @@
       <div class="fp-nature" id="fpNature"></div>
       <div class="fp-quote" id="fpQuote"></div>
       <div class="fp-seller" id="fpSeller"></div>
-      <button id="fpOpen">取引所で見る →</button>
+      <button id="fpOpen">View in market →</button>
     </div>
   </div>
 
