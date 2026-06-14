@@ -118,7 +118,7 @@ header.topbar {
 .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--fg); transition: width 1s ease; }
 
 /* ---- main three regions, separated by whitespace + hairlines ---- */
-main { display: grid; grid-template-columns: 280px 1fr 260px; min-height: 0; }
+main { display: grid; grid-template-columns: 340px 1fr 250px; min-height: 0; }
 section, aside { min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
 section.listings { border-right: 1px solid var(--line); }
 aside.feed { border-left: 1px solid var(--line); }
@@ -127,7 +127,7 @@ aside.feed { border-left: 1px solid var(--line); }
 /* ---- listings ---- */
 #marketList { overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; padding-bottom: 30px; }
 .row {
-  display: grid; grid-template-columns: 1fr 56px 78px; align-items: center; gap: 14px;
+  display: grid; grid-template-columns: 1fr 48px 72px; align-items: center; gap: 14px;
   padding: 16px 28px; cursor: pointer; border-bottom: 1px solid var(--line);
   transition: background 0.5s ease, padding-left 0.4s ease;
 }
@@ -135,7 +135,7 @@ aside.feed { border-left: 1px solid var(--line); }
 .row.active { background: rgba(243,241,236,0.05); padding-left: 34px; }
 .row .tk { font-size: 0.92rem; font-weight: 300; letter-spacing: 0.1em; }
 .row .nm { font-size: 0.66rem; color: var(--g2); margin-top: 4px; letter-spacing: 0.02em; }
-.row .spark { width: 56px; height: 24px; opacity: 0.8; }
+.row .spark { width: 48px; height: 24px; opacity: 0.8; }
 .row .pr { font-size: 0.86rem; text-align: right; font-weight: 300; }
 .row .ch { font-size: 0.64rem; text-align: right; margin-top: 4px; }
 
@@ -433,3 +433,8 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 
 /* 夢の海パネルの英語解説 */
 #fieldPanel .fp-quote .en { display: block; color: var(--g2); font-size: 0.8rem; margin-top: 10px; line-height: 1.7; }
+
+/* Listing のメタ行（Category・Dreamers・Wish・Volume） */
+.row .meta { font-size: 0.55rem; color: var(--g3); margin-top: 5px; letter-spacing: 0.03em; white-space: nowrap; }
+.row .meta .num { color: var(--g2); }
+.row-num { text-align: right; }

@@ -70,7 +70,11 @@
   const dayChange = (s) => ((s.price - s.open) / s.open) * 100;
   const cls = (n) => (n >= 0 ? "up" : "down");
   function categoryLabel(c) { return { nightmare: "Nightmare 悪夢", hope: "Hope 希望", ideology: "Ideology 思想", oneiric: "Oneiric 個人の夢", mundane: "Personal 俗な願い" }[c] || c; }
-  function dreamersTxt(s) { const n = s.realViews ? s.realViews : Math.round(s.interest * 200 + 300); return `≈ ${n.toLocaleString()} 人/日`; }
+  function dreamersN(s) { return s.realViews ? s.realViews : Math.round(s.interest * 200 + 300); }
+  function dreamersTxt(s) { return `≈ ${dreamersN(s).toLocaleString()}/day`; }
+  const fmtK = (n) => (n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(Math.round(n)));
+  function catShort(c) { return { nightmare: "Nightmare", hope: "Hope", ideology: "Idea", oneiric: "Dream", mundane: "Desire" }[c] || c; }
+  function volN(s, ch) { return Math.round((Math.abs(ch) + 0.5) * (s.realViews ? s.realViews / 40 : s.interest * 4)); }
   function baseGradient(cat) {
     if (cat === "nightmare") return "radial-gradient(circle at 38% 30%, #8a2d20, #220b08 74%)";
     if (cat === "hope") return "radial-gradient(circle at 38% 30%, #1f5a78, #07151f 74%)";
@@ -126,12 +130,16 @@
       const row = document.createElement("div");
       row.className = "row" + (s === selected ? " active" : "");
       row.innerHTML = `
-        <div><div class="tk">${s.ticker}</div><div class="nm">${s.nameJp} · ${s.nameEn}</div></div>
-        <canvas class="spark" width="56" height="24"></canvas>
-        <div><div class="pr num"></div><div class="ch num"></div></div>`;
+        <div class="row-id">
+          <div class="tk">${s.ticker}</div>
+          <div class="nm">${s.nameJp} · ${s.nameEn}</div>
+          <div class="meta">${catShort(s.category)} ・ ◉ <span class="num">${fmtK(dreamersN(s))}</span> ・ ♡ <span class="num">${deriveWish(s)}</span> ・ V <span class="num mvol"></span></div>
+        </div>
+        <canvas class="spark" width="48" height="22"></canvas>
+        <div class="row-num"><div class="pr num"></div><div class="ch num"></div></div>`;
       row.addEventListener("click", () => selectDream(s));
       el.appendChild(row);
-      rowRefs.set(s.ticker, { row, pr: row.querySelector(".pr"), ch: row.querySelector(".ch"), spark: row.querySelector(".spark") });
+      rowRefs.set(s.ticker, { row, pr: row.querySelector(".pr"), ch: row.querySelector(".ch"), spark: row.querySelector(".spark"), vol: row.querySelector(".mvol") });
     });
     updateList();
   }
@@ -141,6 +149,7 @@
       const ch = dayChange(s);
       r.pr.textContent = fmt(s.price);
       r.ch.textContent = pctTxt(ch); r.ch.className = "ch num " + cls(ch);
+      if (r.vol) r.vol.textContent = fmtK(volN(s, ch));
       drawSpark(r.spark, s.tape, ch >= 0 ? C.up : C.down);
     });
   }
