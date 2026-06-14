@@ -560,7 +560,7 @@
     "ATLANT": "沈んだ大陸の地図を集めている。どれも違う場所を指していて、全部が正しいような気がする。夢では海底に街灯が並んでいた。魚が光の中を泳いでいた。綺麗だったけど、誰も住んでいなかった。沈んだものは、沈んだまま美しい。この美しさを売ります。",
     "RIVAL": "同期のあいつが先に昇進した。悔しくて、夢の中であいつの上に立った。でも夢の中のあいつは笑っていて、「おめでとう」って言ってくれた。起きたら余計つらかった。勝っても嬉しくない夢って、何なんだろう。整理します。",
     "CRUSH": "隣の席の人を、三年間好きでいる。話しかけたことは五回。夢の中では向こうから来てくれる。でも目が覚めると、明日もまた五回目の「おはよう」を練習することになる。この片思いの燃料、同じ症状の人にお譲りします。",
-    "CHOSEN": "子どもの頃から、自分だけは特別だと信じてた。何者かになるために生まれてきたんだって。夢の中では、世界がそれを証明してくれる。…まだ、手放せずにいる。",
+    "CHOSEN": "子どもの頃から、自分だけは特別だと信じてた。何者かになるために生まれてきたんだって。夢の中では、世界がそれを証明してくれる。長いあいだ、手放せずにいた。…でも、もう。この夢、売ります。ふつうの朝を、生きてみたいから。",
     "ISEKAI": "信号待ちの瞬間、トラックが来て、気づいたら異世界——という展開を、通勤中に何度想像したかわからない。夢の中では本当に行けた。言語も違うし、空の色も違う。でもコンビニがあった。異世界にもコンビニがある。この安心と絶望を、セットで売ります。",
     "FORESEE": "夢の中で明日の新聞が読めた。株価が載っていた。目が覚めて必死にメモしたけど、数字が全部ぼやけていた。情報にならない予知は、ただの不安と同じだった。この曖昧な前知、投資家の方に安く出します。",
     "ANIMAL": "飼い犬が何を考えているか、ずっと知りたかった。夢の中で話しかけたら、「散歩」とだけ言った。もっと深いことを期待していた自分が恥ずかしかった。犬にとっては、散歩がすべてなんだ。この潔さ、売ります。",
@@ -657,9 +657,9 @@
     "REUNION": "同窓会の招待状を、まだ捨てられない。夢の中では見違えるほど成功した自分が会場に入っていく。みんなが息をのむ。現実は、行けてない。この見栄、売ります。",
     "SLEEPIN": "アラームを止めて、もう五分。あの五分が、人生でいちばん幸せかもしれない。永遠に続けばいいのに。誰か買ってくれたら、ちゃんと起きられる気がする。",
     "BILLION": "通帳の桁が、夢の中だけ一つ多い。あの安心感が忘れられなくて毎晩見てる。誰か、この余裕を買ってくれませんか。少しだけ分けてあげたい。",
-    "HAREM": "言いにくいけど、夢の中ではみんなが俺を好きでいてくれる。現実は、誰にも必要とされてない。だからこの夢だけは、ちょっと手放したくないんだ。",
+    "HAREM": "言いにくいけど、夢の中ではみんなが俺を好きでいてくれる。現実は、誰にも必要とされてない。だからこの夢だけは、本当は手放したくなかった。…でも、いいかげん目を覚まさないとな。売ります。誰か、もらってやってください。",
     "FLORIST": "卒業文集に書いた。『花屋さんになりたい』。今は全然ちがう仕事をしてる。夢の中では、まだエプロンをつけて水をやってる。大事にしてくれる人に。",
-    "CUTE": "鏡の中の自分が、夢ではすごく可愛い。起きると全部もとに戻る。整形より安いと聞いて、この夢を買いに来ました。…売る側じゃなくて、ごめんなさい。",
+    "CUTE": "鏡の中の自分が、夢ではすごく可愛い。起きると全部もとに戻る。その落差に、毎朝すこしずつ削られていく。もう、いいんです。可愛くなりたいって願いごと、手放します。誰か、この夢を大事にしてくれませんか。",
     "BIRDWISH": "満員電車でふと思う。鳥だったら、今すぐ窓から出ていけるのに。夢ではもう飛んでる。風の音まで覚えてる。重力ごと、誰かに売りたい。"
   };
 
@@ -715,7 +715,7 @@
     "ATLANT": "I collect maps of sunken continents. Each one points to a different spot, and they all feel right. In my dream lampposts lined the ocean floor. Fish swam through the light. Beautiful, but no one lived there. What has sunk stays beautiful where it sank. I am selling that beauty.",
     "RIVAL": "A colleague from my year was promoted first. It stung. In my dream I stood above him. But in the dream he was smiling and said congratulations. Waking up felt worse. What is a victory dream that brings no joy? Clearing it out.",
     "CRUSH": "I have liked the person in the next seat for three years. I have spoken to them five times. In my dream they come to me. But when I wake I will practise my fifth \"good morning\" again tomorrow. Offering this one-sided fuel to someone with the same condition.",
-    "CHOSEN": "Ever since I was a child I believed I was special. That I was born to become something. In my dream the world proves it. … I still cannot let go.",
+    "CHOSEN": "Ever since I was a child I believed I alone was special — born to become something. In my dream the world proves it. For a long time I couldn't let it go. …But no more. I'm selling this dream. I want to try living an ordinary morning.",
     "ISEKAI": "At the traffic light I imagined a truck, then another world — I have lost count of how many times during my commute. In my dream I actually went. Different language, different sky. But there was a convenience store. Even the other world has convenience stores. Selling the comfort and the despair as a set.",
     "FORESEE": "In my dream I read tomorrow's newspaper. Stock prices were printed. I woke and scrawled notes desperately, but every number was blurred. Foreknowledge that carries no information is just anxiety in another form. Listing this vague prescience cheaply for investors.",
     "ANIMAL": "I always wanted to know what my dog was thinking. In my dream I spoke to him and he said just one word: \"Walk.\" I was embarrassed for expecting something deeper. For a dog, the walk is everything. Selling this clarity.",
@@ -812,9 +812,9 @@
     "REUNION": "I still cannot throw away the reunion invitation. In my dream I walk in transformed, wildly successful. Everyone gasps. In reality I have not gone. Selling this vanity.",
     "SLEEPIN": "I stop the alarm. Five more minutes. Those five minutes may be the happiest of my life. If only they lasted forever. If someone buys this, maybe I can finally get up.",
     "BILLION": "In my dream my bank balance has one more digit. I cannot forget that sense of security, so I keep dreaming it. Would someone buy this ease? I would like to share a little.",
-    "HAREM": "It is hard to say, but in my dream everyone adores me. In reality no one needs me. That is why I do not quite want to let go of this dream.",
+    "HAREM": "Hard to admit, but in my dream everyone adores me. In reality, no one needs me. This was the one dream I never wanted to part with. …But it's about time I woke up. I'm selling it. Someone, please take it off my hands.",
     "FLORIST": "I wrote it in my graduation essay: \"I want to run a flower shop.\" Now I do something completely different. In my dream I am still wearing the apron, still watering. For someone who will treasure this.",
-    "CUTE": "In my dream the me in the mirror is incredibly pretty. I wake and everything is back to normal. I heard it costs less than surgery, so I came to buy this dream. … I am sorry — I am on the selling side.",
+    "CUTE": "In the mirror of my dreams I'm so pretty. I wake, and it all goes back. That gap wears me down a little more each morning. I've had enough. I'm letting go of the very wish to be pretty. Won't someone take this dream and treasure it?",
     "BIRDWISH": "In the packed train I think: if I were a bird, I could fly out the window right now. In my dream I am already flying. I even remember the sound of the wind. I want to sell it, gravity and all."
   };
 
