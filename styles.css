@@ -255,6 +255,9 @@ footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-si
 ::-webkit-scrollbar-thumb { background: rgba(243,241,236,0.14); }
 
 /* ---- responsive ---- */
+/* スマホのタブバー（List⇄銘柄）。iPad以上では非表示 */
+.mtabs { display: none; }
+
 @media (max-width: 960px) {
   main { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; }
   section.listings { border-right: none; border-bottom: 1px solid var(--line); }
@@ -284,18 +287,28 @@ footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-si
   #fgGauge { max-width: 100%; height: auto; }
   .bar { width: 100%; max-width: 96px; }
 
-  /* listings / feed の余白とサイズ */
-  .col-label { padding: 16px 16px 12px; }
-  .row { padding: 14px 16px; gap: 10px; }
-  .row.active { padding-left: 20px; }
-  .sortbar { padding: 0 16px 12px; }
-  .trade { padding: 12px 16px; }
-  #marketList { max-height: 36vh; }
-  aside.feed { max-height: 22vh; }
+  /* List⇄銘柄 のタブ切替: mainを縦flexの単一パネルに。Tapeはスマホでは隠す */
+  main { display: flex; flex-direction: column; overflow: hidden; }
+  .mtabs { display: flex; gap: 8px; padding: 10px 16px; border-bottom: 1px solid var(--line); flex: 0 0 auto; }
+  .mtab { flex: 1; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 6px;
+    background: transparent; color: var(--g2); border: 1px solid var(--line); border-radius: 75px; font-family: inherit; cursor: pointer; }
+  .mtab.on { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+  section.listings, section.feature { display: none; flex: 1 1 auto; min-height: 0; border: none; }
+  main.m-list section.listings { display: flex; }
+  main.m-view section.feature { display: flex; }
+  aside.feed { display: none; }
 
-  /* feature（中央）: オーブが画面幅を超えないよう vw でも上限を掛ける */
-  .feature-scroll { padding: 24px 15px 48px; }
-  .orb { width: min(74vw, 52vh, 420px); }
+  /* listings の余白 */
+  .col-label { padding: 14px 18px 12px; }
+  .row { padding: 14px 18px; gap: 10px; }
+  .row.active { padding-left: 22px; }
+  .sortbar { padding: 0 18px 12px; }
+
+  /* feature（中央）: 左右に余白を取り、オーブを小さめにして縦スクロール域を確保 */
+  .feature-scroll { padding: 22px 22px 56px; }
+  .orb { width: min(64vw, 46vh, 360px); }
+  /* オーブ/チャート上でも縦スワイプでページが動くように（横操作・タップは維持） */
+  .orb, #candleChart, #volChart, #orbGL { touch-action: pan-y; }
   .glass { padding: 18px 14px 14px; margin-top: 26px; transform: none; }
   .stats { gap: 14px 22px; margin-top: 24px; }
   .desc { margin-top: 24px; font-size: 0.94rem; line-height: 1.9; }
@@ -303,10 +316,23 @@ footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-si
   button.act { padding: 13px 22px; }
   .recommend { margin-top: 30px; }
 
-  /* Dreamfield 夢の海のパネル */
-  #fieldPanel { width: min(92vw, 520px); padding: 20px 18px 18px; bottom: 5%; }
-  #fieldPanel .fp-en { font-size: 1.25rem; }
-  #fieldPanel .fp-quote { font-size: 0.9rem; line-height: 1.9; }
+  /* Dreamfield 夢の海のパネル: 幅・高さとも画面内に収め、はみ出す分はスクロール */
+  #fieldPanel {
+    width: min(92vw, 520px); max-width: 92vw; box-sizing: border-box;
+    max-height: 70vh; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 18px 16px 16px; bottom: 4%;
+  }
+  #fieldPanel .fp-en { font-size: 1.2rem; }
+  #fieldPanel .fp-jp { font-size: 0.72rem; }
+  #fieldPanel .fp-quote { font-size: 0.9rem; line-height: 1.85; max-width: 100%; margin-top: 14px; }
+  #fieldPanel .fp-price { font-size: 1.02rem; }
+  #fieldPanel .fp-nature { font-size: 0.78rem; }
+  #fieldPanel .fp-seller { margin-top: 12px; }
+  #fpOpen { margin-top: 16px; }
+
+  /* Dreamfield: タイトルと閉じるボタンを上端に詰める */
+  .field-title { top: 16px; font-size: 0.54rem; }
+  #fieldClose { top: 12px; left: 14px; }
 }
 
 /* ============================================================
@@ -419,7 +445,8 @@ button.act:hover { transform: translateY(-2px); }
 /* ---- iPad / touch: no selection, no callout, no scroll hijack ---- */
 html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
 img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
-#orbGL, #candleChart, .orb { touch-action: none; }
+/* iPad以上ではオーブ/チャートの指操作を独占（ピンチ・スクラブ用）。スマホでは縦スクロールを通す（560pxブロックで pan-y 指定） */
+@media (min-width: 561px) { #orbGL, #candleChart, .orb { touch-action: none; } }
 
 /* ============================================================
    Dreamfield — 夢の海（浮遊する球体の星座）

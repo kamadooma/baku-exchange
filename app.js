@@ -210,6 +210,14 @@
     selected = s; hoverIndex = null;
     rowRefs.forEach((r, tk) => r.row.classList.toggle("active", tk === s.ticker));
     buildDetail(); $("#feature").scrollTop = 0;
+    setPanel("view");   // スマホ: 銘柄を選んだら詳細タブへ（iPadでは無効）
+  }
+  // スマホのタブ切替（List ⇄ 銘柄）。CSSが max-width:560px のときだけ見た目に効く
+  function setPanel(p) {
+    const m = document.querySelector("main"); if (!m) return;
+    m.classList.toggle("m-view", p === "view");
+    m.classList.toggle("m-list", p !== "view");
+    document.querySelectorAll(".mtab").forEach((b) => b.classList.toggle("on", b.dataset.panel === (p === "view" ? "view" : "list")));
   }
   function buildDetail() {
     const s = selected; hoverIndex = null;
@@ -637,11 +645,12 @@
     if (!window.FieldGL || !FieldGL.init($("#fieldGL"))) return;
     fieldBuilt = true; sizeFieldLines();
     const W = innerWidth, H = innerHeight;
+    const fScale = Math.max(0.42, Math.min(1, Math.min(W, H) / 640));   // スマホなど狭い画面では球を縮小
     state.forEach((s) => {                                              // これまでの全銘柄をマッピング
       const lastM = s.closes.length - 1, pastM = Math.max(0, lastM - 240);
       const grow = s.closes[pastM] > 0 ? s.closes[lastM] / s.closes[pastM] : 1;  // 直近20年の成長率
       const m = popularity(s) * Math.min(2.2, Math.max(0.7, grow));             // 人気度×成長（急成長を加点）
-      const r = Math.round(16 + Math.pow(Math.min(m, 150) / 150, 2.4) * 122);   // ジャンプ率を強く（最大は抑制）
+      const r = Math.round((16 + Math.pow(Math.min(m, 150) / 150, 2.4) * 122) * fScale);   // ジャンプ率を強く（最大は抑制）
       const tex = FieldGL.loadTexture(`assets/footage/${s.ticker}.jpg`);
       fieldOrbs.push({ s, r, tex, fb: FIELD_FB[s.category] || [0.12, 0.12, 0.14], seed: (s.idx % 17) / 17,
         x: r + Math.random() * Math.max(1, W - 2 * r), y: 90 + r + Math.random() * Math.max(1, H - 2 * r - 200),
@@ -895,6 +904,8 @@
   orbCanvas = document.createElement("canvas"); orbCanvas.id = "orbGL";
   if (window.OrbGL) OrbGL.init(orbCanvas);
   buildList(); buildTicker(); buildDetail(); setupSort();
+  document.querySelectorAll(".mtab").forEach((b) => b.addEventListener("click", () => setPanel(b.dataset.panel)));
+  setPanel("list");   // スマホ初期表示は一覧
   updateFearGreed(); updateMainIndex(); updateDoom();
   setStatus(false, "connecting… 接続中");
   loadHistory().then(loadTimelines).then(() => { applyLogicalHistory(); loadInterest(); });
