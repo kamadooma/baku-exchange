@@ -69,7 +69,7 @@
   const pctTxt = (n) => `${arrow(n)} ${Math.abs(n).toFixed(2)}%`;
   const dayChange = (s) => ((s.price - s.open) / s.open) * 100;
   const cls = (n) => (n >= 0 ? "up" : "down");
-  function categoryLabel(c) { return { nightmare: "Nightmare 悪夢", hope: "Hope 希望", ideology: "Ideology 思想", oneiric: "Oneiric 個人の夢" }[c] || c; }
+  function categoryLabel(c) { return { nightmare: "Nightmare 悪夢", hope: "Hope 希望", ideology: "Ideology 思想", oneiric: "Oneiric 個人の夢", mundane: "Personal 俗な願い" }[c] || c; }
   function dreamersTxt(s) { const n = s.realViews ? s.realViews : Math.round(s.interest * 200 + 300); return `≈ ${n.toLocaleString()} 人/日`; }
   function baseGradient(cat) {
     if (cat === "nightmare") return "radial-gradient(circle at 38% 30%, #8a2d20, #220b08 74%)";
@@ -87,7 +87,7 @@
   };
   function deriveWish(s) {
     if (WISH_OVERRIDE[s.ticker] != null) return WISH_OVERRIDE[s.ticker];
-    return { hope: 78, ideology: 62, oneiric: 42, nightmare: 16 }[s.category] || 50;
+    return { hope: 78, ideology: 62, oneiric: 42, nightmare: 16, mundane: 80 }[s.category] || 50;
   }
 
   let selected = byTicker.get("NUKE") || state[0];
@@ -98,9 +98,31 @@
   //  LIST
   // ============================================================
   const rowRefs = new Map();
+  let sortMode = "mix";
+  function orderedForDisplay() {
+    const arr = state.slice();
+    if (sortMode === "popular") return arr.sort((a, b) => (b.realViews || b.interest * 200) - (a.realViews || a.interest * 200));
+    if (sortMode === "fear") return arr.sort((a, b) => deriveWish(a) - deriveWish(b));      // 最も恐れられる（願われない）順
+    if (sortMode === "price") return arr.sort((a, b) => b.price - a.price);
+    if (sortMode === "trend") return arr.sort((a, b) => dayChange(b) - dayChange(a));
+    // mix: カテゴリを交互に混ぜて政治的な銘柄が上に固まらないように
+    const groups = {};
+    state.forEach((s) => { (groups[s.category] = groups[s.category] || []).push(s); });
+    const cats = ["nightmare", "mundane", "hope", "ideology", "oneiric"].filter((c) => groups[c]);
+    const out = [];
+    for (let i = 0; out.length < state.length; i++) cats.forEach((c) => { if (groups[c][i]) out.push(groups[c][i]); });
+    return out;
+  }
+  function setupSort() {
+    document.querySelectorAll("#sortBar .sort-btn").forEach((b) => b.addEventListener("click", () => {
+      sortMode = b.dataset.sort;
+      document.querySelectorAll("#sortBar .sort-btn").forEach((x) => x.classList.toggle("on", x.dataset.sort === sortMode));
+      buildList();
+    }));
+  }
   function buildList() {
     const el = $("#marketList"); el.innerHTML = "";
-    state.forEach((s) => {
+    orderedForDisplay().forEach((s) => {
       const row = document.createElement("div");
       row.className = "row" + (s === selected ? " active" : "");
       row.innerHTML = `
@@ -227,7 +249,7 @@
 
     // ---- orb: WebGL crystal ball (footage texture + liquid pinch) ----
     if (orbCanvas) $(".orb").appendChild(orbCanvas);
-    const FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10] }[s.category] || [0.12, 0.12, 0.14];
+    const FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10], mundane: [0.40, 0.16, 0.26] }[s.category] || [0.12, 0.12, 0.14];
     if (window.OrbGL && OrbGL.ok()) OrbGL.setMedia(`assets/footage/${s.ticker}.jpg`, `assets/footage/${s.ticker}.mp4`, FB);
 
     const w = deriveWish(s);
@@ -462,11 +484,40 @@
     const ok = results.filter((r) => r.status === "fulfilled").map((r) => r.value);
     if (ok.length >= 2) {
       const logs = ok.map((o) => Math.log(o.avg + 1)), lo = Math.min(...logs), hi = Math.max(...logs);
-      ok.forEach((o) => { const t = hi > lo ? (Math.log(o.avg + 1) - lo) / (hi - lo) : 0.5; o.s.interest = Math.round(15 + t * 80); o.s.fair = 38 + o.s.interest * 4.2; o.s.realViews = Math.round(o.avg); });
+      ok.forEach((o) => { const t = hi > lo ? (Math.log(o.avg + 1) - lo) / (hi - lo) : 0.5; o.s.interest = Math.round(15 + t * 80); if (!o.s.hasHistory) o.s.fair = 38 + o.s.interest * 4.2; o.s.realViews = Math.round(o.avg); });
       setStatus(true, `Live · Wikipedia 関心連動 (${ok.length}/${state.length})`);
     } else setStatus(false, "Simulated · オフライン（模擬データ）");
   }
   function setStatus(live, text) { $("#dataStatus").textContent = text; $("#dataDot").classList.toggle("live", !!live); }
+
+  // ---- historical shape from Google Ngram (data/history.json) ----
+  async function loadHistory() {
+    let hist = null;
+    try { const r = await fetch("data/history.json"); if (r.ok) hist = await r.json(); } catch (e) {}
+    if (!hist) return;
+    const L = TOTAL_MONTHS;
+    let n = 0;
+    state.forEach((s) => {
+      const ys = hist[s.ticker]; if (!ys || ys.length < 2) return;
+      for (let m = 0; m < L; m++) {
+        const yr = START_YEAR + m / 12;
+        let v;
+        if (yr <= 1900 + ys.length - 1) {
+          const x = Math.max(0, Math.min(ys.length - 1, yr - 1900));
+          const i0 = Math.floor(x), i1 = Math.min(ys.length - 1, i0 + 1), f = x - i0;
+          v = ys[i0] * (1 - f) + ys[i1] * f;
+        } else v = ys[ys.length - 1];
+        s.closes[m] = 30 + v * 420;                 // 0..1 → ~30..450 BAKU
+      }
+      for (let m = 1; m < L; m++) s.closes[m] *= (1 + 0.015 * gauss());  // 月次のテクスチャ
+      s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price;
+      s.tape = Array.from(s.closes.slice(-TAPE_N));
+      s.hasHistory = true; n++;
+    });
+    idxBase = null;                                  // 指数の基準を取り直す
+    updateList(); updateTicker(); if (dref) updateDetail();
+    return n;
+  }
 
   // ============================================================
   //  BOOT
@@ -476,10 +527,10 @@
 
   orbCanvas = document.createElement("canvas"); orbCanvas.id = "orbGL";
   if (window.OrbGL) OrbGL.init(orbCanvas);
-  buildList(); buildTicker(); buildDetail();
+  buildList(); buildTicker(); buildDetail(); setupSort();
   updateFearGreed(); updateMainIndex(); updateDoom();
   setStatus(false, "connecting… 接続中");
-  loadInterest();
+  loadHistory().then(loadInterest);
   setInterval(step, TICK_MS);
   window.addEventListener("resize", () => { if (dref) updateDetail(); });
   setTimeout(() => { if ($("#titlecard").style.display !== "none") enter(); }, 9000);

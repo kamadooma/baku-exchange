@@ -360,3 +360,13 @@ button.act:hover { transform: translateY(-2px); }
   backdrop-filter: blur(6px); z-index: 5; color: var(--fg);
 }
 #chartTip b { font-weight: 400; }
+
+/* ---- listings sort bar ---- */
+.sortbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 28px 14px; }
+.sort-btn {
+  font-size: 0.56rem; letter-spacing: 0.1em; padding: 5px 11px; background: transparent;
+  color: var(--g2); border: 1px solid var(--line); border-radius: 75px; cursor: pointer;
+  transition: all 0.4s var(--ease-soft); font-family: inherit;
+}
+.sort-btn:hover { color: var(--g1); }
+.sort-btn.on { color: var(--bg); background: var(--fg); border-color: var(--fg); }
