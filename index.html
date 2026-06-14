@@ -10,6 +10,26 @@
   <div id="grain"></div>
   <div id="vignette"></div>
 
+  <!-- liquid + chromatic-aberration filter for the dream orb -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="dreamfx" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.011 0.015" numOctaves="2" seed="7" result="noise">
+        <animate attributeName="baseFrequency" dur="20s" repeatCount="indefinite"
+          values="0.010 0.014; 0.016 0.010; 0.012 0.017; 0.010 0.014" calcMode="spline"
+          keySplines="0.4 0 0.6 1; 0.4 0 0.6 1; 0.4 0 0.6 1"/>
+      </feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="28" xChannelSelector="R" yChannelSelector="G" result="disp"/>
+      <feOffset in="disp" dx="3.2" dy="0" result="ro"/>
+      <feOffset in="disp" dx="-3.2" dy="0" result="bo"/>
+      <feColorMatrix in="ro" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="rc"/>
+      <feColorMatrix in="disp" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gc"/>
+      <feColorMatrix in="bo" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="bc"/>
+      <feBlend in="rc" in2="gc" mode="screen" result="rg"/>
+      <feBlend in="rg" in2="bc" mode="screen" result="rgb"/>
+      <feGaussianBlur in="rgb" stdDeviation="0.7"/>
+    </filter>
+  </svg>
+
   <!-- title card -->
   <div id="titlecard">
     <img class="logo-baku" src="assets/baku.webp" alt="獏 Baku" />
@@ -66,6 +86,7 @@
   <footer class="status"><i id="dataDot"></i><span id="dataStatus">connecting…</span></footer>
 
   <script src="data.js"></script>
+  <script src="orb.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

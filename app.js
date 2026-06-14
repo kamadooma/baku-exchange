@@ -1,9 +1,12 @@
 /* ============================================================
-   BAKU EXCHANGE — app logic (monochrome editorial build)
-   Performance: DOM is built ONCE; each tick updates values in
-   place (no innerHTML rebuilds → the dream-orb never reloads).
-   Wikipedia pageviews drive each dream's fair value.
-   Apocalypse meter: a premonition that rises, breaks, reborns.
+   BAKU EXCHANGE — app logic
+   - long price history since 1900 (synthetic for now; to be
+     replaced by Google Books Ngram for real historical shape)
+   - zoomable time axis (100Y/10Y/5Y/1Y), touch crosshair
+   - dream-orb: video / image / gradient, liquid + chromatic
+     aberration, crystal-ball shading, poke-to-warp
+   - Wikipedia pageviews drive each dream's fair value
+   - apocalypse meter: a premonition that rises, breaks, reborns
    ============================================================ */
 (() => {
   "use strict";
@@ -11,13 +14,26 @@
 
   const CUR = "BAKU";
   const TICK_MS = 1600;
-  const N_CANDLES = 44;
-  const TICKS_PER_CANDLE = 7;
   const MEAN_REVERT = 0.018;
+  const TAPE_N = 48;
+
+  // ---- time frame (monthly, 1900 → now) ----
+  const START_YEAR = 1900;
+  const _now = new Date();
+  const TOTAL_MONTHS = (_now.getFullYear() - START_YEAR) * 12 + _now.getMonth() + 1;
+  const monthYear = (m) => START_YEAR + Math.floor(m / 12);
+  function monthLabel(m, short) {
+    const y = START_YEAR + Math.floor(m / 12);
+    return short ? `${y}/${String((m % 12) + 1).padStart(2, "0")}` : String(y);
+  }
+
+  const ZOOMS = [{ k: "100Y", m: 1200 }, { k: "10Y", m: 120 }, { k: "5Y", m: 60 }, { k: "1Y", m: 12 }];
+  let zoomMonths = 1200;
 
   const C = {
     up: "#f3f1ec", down: "rgba(243,241,236,0.45)", wick: "rgba(243,241,236,0.7)",
     grid: "rgba(243,241,236,0.06)", vol: "rgba(243,241,236,0.16)", last: "rgba(243,241,236,0.30)",
+    axis: "rgba(243,241,236,0.40)",
   };
 
   function gauss() {
@@ -30,24 +46,21 @@
   // ---- state ----
   const state = DREAMS.map((d, i) => {
     const base = 38 + d.seed * 4.2;
-    const s = { ...d, idx: i, media: `assets/footage/${d.ticker}.jpg`,
-      interest: d.seed, fair: base, price: base, open: base, candles: [], vols: [], tickCount: 0 };
-    seedHistory(s);
+    const s = { ...d, idx: i, interest: d.seed, fair: base, price: base, open: base,
+      closes: new Float64Array(TOTAL_MONTHS), tape: [] };
+    seedSeries(s);
     return s;
   });
   const byTicker = new Map(state.map((s) => [s.ticker, s]));
 
-  function seedHistory(s) {
-    let p = s.fair * (0.85 + Math.random() * 0.25);
-    for (let i = 0; i < N_CANDLES; i++) {
-      const o = p; let hi = o, lo = o, c = o;
-      for (let k = 0; k < TICKS_PER_CANDLE; k++) {
-        c += c * s.volatility * 0.012 * gauss() + (s.fair - c) * MEAN_REVERT;
-        hi = Math.max(hi, c); lo = Math.min(lo, c);
-      }
-      s.candles.push({ o, h: hi, l: lo, c }); s.vols.push(200 + Math.abs(gauss()) * 900 * s.volatility); p = c;
+  function seedSeries(s) {
+    let p = s.fair * (0.45 + Math.random() * 0.3);
+    for (let m = 0; m < TOTAL_MONTHS; m++) {
+      p += p * s.volatility * 0.045 * gauss() + (s.fair - p) * 0.012;
+      p = Math.max(1, p); s.closes[m] = p;
     }
-    s.price = s.candles[s.candles.length - 1].c; s.open = s.candles[0].o;
+    s.price = s.closes[TOTAL_MONTHS - 1]; s.open = s.price;
+    s.tape = Array.from(s.closes.slice(-TAPE_N));
   }
 
   // ---- formatting ----
@@ -56,16 +69,18 @@
   const pctTxt = (n) => `${arrow(n)} ${Math.abs(n).toFixed(2)}%`;
   const dayChange = (s) => ((s.price - s.open) / s.open) * 100;
   const cls = (n) => (n >= 0 ? "up" : "down");
-  function categoryLabel(c) {
-    return { nightmare: "Nightmare 悪夢", hope: "Hope 希望", ideology: "Ideology 思想", oneiric: "Oneiric 個人の夢" }[c] || c;
-  }
+  function categoryLabel(c) { return { nightmare: "Nightmare 悪夢", hope: "Hope 希望", ideology: "Ideology 思想", oneiric: "Oneiric 個人の夢" }[c] || c; }
   function dreamersTxt(s) { const n = s.realViews ? s.realViews : Math.round(s.interest * 200 + 300); return `≈ ${n.toLocaleString()} 人/日`; }
+  function baseGradient(cat) {
+    if (cat === "nightmare") return "radial-gradient(circle at 38% 30%, #8a2d20, #220b08 74%)";
+    if (cat === "hope") return "radial-gradient(circle at 38% 30%, #1f5a78, #07151f 74%)";
+    if (cat === "oneiric") return "radial-gradient(circle at 38% 30%, #5b3f7a, #140b22 74%)";
+    return "radial-gradient(circle at 38% 30%, #7a5a1f, #1f1708 74%)";
+  }
 
-  // 願望(wish) = みんながどれだけ望むか。価格(=現実の力/儲け)とは別物。
-  // この乖離こそが作品の核：手放したい悪夢ほど高く、願う平和ほど安い。
   const WISH_OVERRIDE = {
     NOWAR: 97, PEACE: 96, DISARM: 93, NOHGR: 93, CURE: 92, NOPOV: 90, SUST: 90, STOPGW: 88,
-    EDU: 88, HLTH: 90, NODISC: 86, GEQ: 86, CLEAN: 84, FAIR: 82, CALM: 82, HLTH2: 88,
+    EDU: 88, HLTH: 90, NODISC: 86, GEQ: 86, CLEAN: 84, FAIR: 82, CALM: 82,
     NUKE: 5, FASC: 5, ENDDEM: 6, EXTN: 8, ARMAG: 7, PANDM: 8, ROBOT: 14, ALIEN: 12,
     ASTER: 9, CRSH: 12, AIBC: 18, OIL: 14, QUAKE: 8, JPSK: 10, FOOD: 9, SURV: 16, LEAK: 8,
     AIJOB: 12, BLKOUT: 10, JUDG: 10,
@@ -74,17 +89,13 @@
     if (WISH_OVERRIDE[s.ticker] != null) return WISH_OVERRIDE[s.ticker];
     return { hope: 78, ideology: 62, oneiric: 42, nightmare: 16 }[s.category] || 50;
   }
-  function baseGradient(cat) {
-    if (cat === "nightmare") return "radial-gradient(circle at 38% 30%, #8a2d20, #220b08 74%)";
-    if (cat === "hope") return "radial-gradient(circle at 38% 30%, #1f5a78, #07151f 74%)";
-    if (cat === "oneiric") return "radial-gradient(circle at 38% 30%, #5b3f7a, #140b22 74%)";
-    return "radial-gradient(circle at 38% 30%, #7a5a1f, #1f1708 74%)";
-  }
 
   let selected = byTicker.get("NUKE") || state[0];
+  let hoverIndex = null;
+  let curCandles = [];
 
   // ============================================================
-  //  LIST (built once, updated in place)
+  //  LIST
   // ============================================================
   const rowRefs = new Map();
   function buildList() {
@@ -108,12 +119,12 @@
       const ch = dayChange(s);
       r.pr.textContent = fmt(s.price);
       r.ch.textContent = pctTxt(ch); r.ch.className = "ch num " + cls(ch);
-      drawSpark(r.spark, s.candles, ch >= 0 ? C.up : C.down);
+      drawSpark(r.spark, s.tape, ch >= 0 ? C.up : C.down);
     });
   }
 
   // ============================================================
-  //  TICKER (built once, numbers updated in place)
+  //  TICKER
   // ============================================================
   const tickerRefs = [];
   function buildTicker() {
@@ -123,18 +134,16 @@
       [["Dream 夢幻", "all"], ["Nightmare 悪夢", "nightmare"], ["Hope 希望", "hope"]].forEach(([label, key]) => {
         const span = document.createElement("span"); span.className = "ticker-item";
         span.innerHTML = `<b>${label}</b> <span class="num v"></span> <span class="num c"></span>`;
-        frag.appendChild(span);
-        tickerRefs.push({ kind: "idx", key, v: span.querySelector(".v"), c: span.querySelector(".c") });
+        frag.appendChild(span); tickerRefs.push({ kind: "idx", key, v: span.querySelector(".v"), c: span.querySelector(".c") });
       });
       state.forEach((s) => {
         const span = document.createElement("span"); span.className = "ticker-item";
         span.innerHTML = `<b>${s.ticker}</b> <span class="num v"></span> <span class="num c"></span>`;
-        frag.appendChild(span);
-        tickerRefs.push({ kind: "dream", s, v: span.querySelector(".v"), c: span.querySelector(".c") });
+        frag.appendChild(span); tickerRefs.push({ kind: "dream", s, v: span.querySelector(".v"), c: span.querySelector(".c") });
       });
       return frag;
     };
-    track.appendChild(make()); track.appendChild(make()); // duplicate for seamless loop
+    track.appendChild(make()); track.appendChild(make());
     updateTicker();
   }
   function updateTicker() {
@@ -146,19 +155,36 @@
   }
 
   // ============================================================
-  //  DETAIL (structure built on selection; values updated in place)
+  //  DISPLAY CANDLES (aggregate monthly closes for current zoom)
+  // ============================================================
+  function buildDisplayCandles(s, months) {
+    const L = s.closes.length; months = Math.min(months, L);
+    const startM = L - months, DISPLAY_N = 60, bucket = Math.max(1, Math.ceil(months / DISPLAY_N));
+    const out = [];
+    for (let b = startM; b < L; b += bucket) {
+      const e = Math.min(L, b + bucket);
+      let o = s.closes[b], c = s.closes[e - 1], h = -Infinity, l = Infinity;
+      for (let m = b; m < e; m++) { const v = s.closes[m]; if (v > h) h = v; if (v < l) l = v; }
+      out.push({ o, h, l, c, mid: Math.floor((b + e - 1) / 2) });
+    }
+    return out;
+  }
+
+  // ============================================================
+  //  DETAIL
   // ============================================================
   let dref = null;
+  let orbCanvas = null;
   function selectDream(s) {
-    selected = s;
+    selected = s; hoverIndex = null;
     rowRefs.forEach((r, tk) => r.row.classList.toggle("active", tk === s.ticker));
-    buildDetail();
-    $("#feature").scrollTop = 0;
+    buildDetail(); $("#feature").scrollTop = 0;
   }
   function buildDetail() {
-    const s = selected;
+    const s = selected; hoverIndex = null;
     const recs = state.filter((d) => d !== s && d.category === s.category).slice(0, 3);
     const recPool = recs.length ? recs : state.filter((d) => d !== s).slice(0, 3);
+    const zoomBtns = ZOOMS.map((z) => `<button class="zoom${z.m === zoomMonths ? " on" : ""}" data-m="${z.m}">${z.k}</button>`).join("");
 
     $("#feature").innerHTML = `
       <div class="feature-head">
@@ -167,11 +193,7 @@
         <div class="f-tk">${s.ticker} · ${categoryLabel(s.category)}</div>
       </div>
       <div class="orb-wrap">
-        <div class="orb">
-          <div class="orb-media" id="orbMedia"></div>
-          <img class="orb-img" id="footageImg" alt="" />
-          <div class="orb-leak"></div>
-        </div>
+        <div class="orb"></div>
         <div class="price-row">
           <div class="big num" id="dBig"></div>
           <div class="chg num" id="dChg"></div>
@@ -180,10 +202,11 @@
         </div>
       </div>
       <div class="glass">
-        <div class="chart-label">Price · 蝋燭足</div>
+        <div class="chart-top"><div class="chart-label">Price · 価格史 since 1900</div><div class="zooms">${zoomBtns}</div></div>
         <canvas id="candleChart"></canvas>
         <div class="chart-label">Volume · 出来高</div>
         <canvas id="volChart"></canvas>
+        <div id="chartTip"></div>
       </div>
       <div class="stats">
         <div class="stat"><div class="k">Open 始値</div><div class="v num" id="dOpen"></div></div>
@@ -202,36 +225,62 @@
         <div class="rec-list">${recPool.map((d) => `<div class="rec-chip" data-tk="${d.ticker}">${d.ticker} · ${d.nameJp}</div>`).join("")}</div>
       </div>`;
 
-    const media = $("#orbMedia");
-    media.style.background = baseGradient(s.category);
-    const toyCam = "blur(1.3px) saturate(1.32) contrast(1.06) brightness(1.04)";
-    media.style.filter = `${toyCam} hue-rotate(${(s.idx * 23) % 360}deg)`;
-    const img = $("#footageImg");
-    img.style.filter = toyCam; img.style.opacity = 0;
-    img.onload = () => { img.style.opacity = 1; };
-    img.onerror = () => { img.style.opacity = 0; };
-    if (s.media) img.src = s.media;
+    // ---- orb: WebGL crystal ball (footage texture + liquid pinch) ----
+    if (orbCanvas) $(".orb").appendChild(orbCanvas);
+    const FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10] }[s.category] || [0.12, 0.12, 0.14];
+    if (window.OrbGL && OrbGL.ok()) OrbGL.setMedia(`assets/footage/${s.ticker}.jpg`, `assets/footage/${s.ticker}.mp4`, FB);
 
     const w = deriveWish(s);
-    $("#dWish").textContent = w;
-    $("#dWishFill").style.width = w + "%";
+    $("#dWish").textContent = w; $("#dWishFill").style.width = w + "%";
 
     dref = { big: $("#dBig"), chg: $("#dChg"), candle: $("#candleChart"), vol: $("#volChart"),
-      open: $("#dOpen"), high: $("#dHigh"), low: $("#dLow") };
+      open: $("#dOpen"), high: $("#dHigh"), low: $("#dLow"), tip: $("#chartTip") };
+
+    // chart hover (touch + mouse)
+    const cv = dref.candle;
+    const onMove = (e) => {
+      const rect = cv.getBoundingClientRect();
+      const px = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+      const n = curCandles.length; if (!n) return;
+      let i = Math.floor((px / rect.width) * n); i = Math.max(0, Math.min(n - 1, i));
+      hoverIndex = i;
+      const c = curCandles[i];
+      dref.tip.innerHTML = `${monthLabel(c.mid)}年頃 · <b>${fmt(c.c)} ${CUR}</b>`;
+      dref.tip.style.opacity = 1;
+      dref.tip.style.left = (cv.offsetLeft + (i + 0.5) / n * rect.width) + "px";
+      dref.tip.style.top = cv.offsetTop + "px";
+      drawChart(cv, curCandles, hoverIndex);
+      if (e.cancelable) e.preventDefault();
+    };
+    const onLeave = () => { hoverIndex = null; dref.tip.style.opacity = 0; drawChart(cv, curCandles, null); };
+    cv.addEventListener("pointermove", onMove);
+    cv.addEventListener("pointerdown", onMove);
+    cv.addEventListener("pointerleave", onLeave);
+    cv.addEventListener("pointerup", onLeave);
 
     $("#buyBtn").addEventListener("click", () => toast(`ご注文を受け付けました · Order received<br/>「${s.nameJp}」を ${CUR} で取得しました。`));
     $("#sellBtn").addEventListener("click", () => toast(`売却が成立しました · Sold<br/>「${s.nameJp}」を手放しました。`));
-    $("#feature").querySelectorAll(".rec-chip").forEach((chip) =>
-      chip.addEventListener("click", () => selectDream(byTicker.get(chip.dataset.tk))));
+    $("#feature").querySelectorAll(".rec-chip").forEach((chip) => chip.addEventListener("click", () => selectDream(byTicker.get(chip.dataset.tk))));
+    $("#feature").querySelectorAll(".zoom").forEach((b) => b.addEventListener("click", () => {
+      zoomMonths = +b.dataset.m; hoverIndex = null; dref.tip.style.opacity = 0;
+      $("#feature").querySelectorAll(".zoom").forEach((x) => x.classList.toggle("on", +x.dataset.m === zoomMonths));
+      updateDetail();
+    }));
+
     updateDetail();
   }
   function updateDetail() {
     if (!dref) return;
-    const s = selected, ch = dayChange(s), last = s.candles[s.candles.length - 1];
+    const s = selected;
+    s.closes[TOTAL_MONTHS - 1] = s.price;     // live tip
+    const ch = dayChange(s);
     dref.big.innerHTML = `${fmt(s.price)}<small>${CUR}</small>`;
     dref.chg.textContent = pctTxt(ch); dref.chg.className = "chg num " + cls(ch);
+    curCandles = buildDisplayCandles(s, zoomMonths);
+    const last = curCandles[curCandles.length - 1];
     dref.open.textContent = fmt(last.o); dref.high.textContent = fmt(last.h); dref.low.textContent = fmt(last.l);
-    drawCandles(dref.candle, s.candles); drawVolume(dref.vol, s.vols, s.candles);
+    drawChart(dref.candle, curCandles, hoverIndex);
+    drawVol(dref.vol, curCandles);
   }
 
   // ============================================================
@@ -244,38 +293,73 @@
     const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     return { ctx, w: cssW, h: cssH };
   }
-  function drawSpark(cv, candles, color) {
+  function drawSpark(cv, data, color) {
     const dpr = window.devicePixelRatio || 1;
     if (cv.width !== 56 * dpr) { cv.width = 56 * dpr; cv.height = 24 * dpr; }
     const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const w = 56, h = 24; ctx.clearRect(0, 0, w, h);
-    const data = candles.map((c) => c.c), min = Math.min(...data), max = Math.max(...data), r = max - min || 1;
+    const min = Math.min(...data), max = Math.max(...data), r = max - min || 1;
     ctx.beginPath();
     data.forEach((v, i) => { const x = (i / (data.length - 1)) * w, y = h - 2 - ((v - min) / r) * (h - 4); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
     ctx.strokeStyle = color; ctx.lineWidth = 1; ctx.globalAlpha = 0.85; ctx.stroke(); ctx.globalAlpha = 1;
   }
-  function drawCandles(cv, candles) {
-    const { ctx, w, h } = sizeCanvas(cv, 220); ctx.clearRect(0, 0, w, h);
-    const pad = 8, plotH = h - pad * 2, all = candles.flatMap((c) => [c.h, c.l]);
-    const min = Math.min(...all), max = Math.max(...all), r = max - min || 1, Y = (v) => pad + plotH - ((v - min) / r) * plotH;
+  function drawChart(cv, dc, hi) {
+    const axisH = 18, { ctx, w, h } = sizeCanvas(cv, 248), pad = 8, plotH = h - pad - axisH;
+    ctx.clearRect(0, 0, w, h);
+    if (!dc.length) return;
+    let min = Infinity, max = -Infinity;
+    dc.forEach((c) => { if (c.h > max) max = c.h; if (c.l < min) min = c.l; });
+    const r = max - min || 1, Y = (v) => pad + plotH - ((v - min) / r) * plotH;
     ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) { const y = pad + (plotH / 4) * i; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-    const n = candles.length, slot = w / n, cw = Math.max(2, slot * 0.58);
-    candles.forEach((c, i) => {
+    const n = dc.length, slot = w / n, cw = Math.max(1.5, slot * 0.6);
+    dc.forEach((c, i) => {
       const x = i * slot + slot / 2, up = c.c >= c.o;
       ctx.strokeStyle = C.wick; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, Y(c.h)); ctx.lineTo(x, Y(c.l)); ctx.stroke();
       const yo = Y(c.o), yc = Y(c.c), top = Math.min(yo, yc), bh = Math.max(1, Math.abs(yc - yo));
-      if (up) { ctx.strokeStyle = C.up; ctx.strokeRect(x - cw / 2, top, cw, bh); }
-      else { ctx.fillStyle = C.down; ctx.fillRect(x - cw / 2, top, cw, bh); }
+      if (up) { ctx.strokeStyle = C.up; ctx.strokeRect(x - cw / 2, top, cw, bh); } else { ctx.fillStyle = C.down; ctx.fillRect(x - cw / 2, top, cw, bh); }
     });
-    const lastY = Y(candles[n - 1].c); ctx.strokeStyle = C.last; ctx.setLineDash([3, 3]);
+    // last price line
+    const lastY = Y(dc[n - 1].c); ctx.strokeStyle = C.last; ctx.setLineDash([3, 3]);
     ctx.beginPath(); ctx.moveTo(0, lastY); ctx.lineTo(w, lastY); ctx.stroke(); ctx.setLineDash([]);
+    // x-axis time labels
+    ctx.fillStyle = C.axis; ctx.font = "9px -apple-system, 'Helvetica Neue', sans-serif"; ctx.textAlign = "center";
+    const short = zoomMonths <= 60, labels = 5;
+    for (let k = 0; k < labels; k++) {
+      const i = Math.round((k / (labels - 1)) * (n - 1)), x = i * slot + slot / 2;
+      ctx.fillText(monthLabel(dc[i].mid, short), Math.min(w - 14, Math.max(14, x)), h - 5);
+    }
+    // hover crosshair
+    if (hi != null && dc[hi]) {
+      const x = hi * slot + slot / 2; ctx.strokeStyle = C.axis; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + plotH); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = C.up; ctx.beginPath(); ctx.arc(x, Y(dc[hi].c), 2.8, 0, 7); ctx.fill();
+    }
   }
-  function drawVolume(cv, vols, candles) {
-    const { ctx, w, h } = sizeCanvas(cv, 50); ctx.clearRect(0, 0, w, h);
-    const max = Math.max(...vols) || 1, n = vols.length, slot = w / n, bw = Math.max(2, slot * 0.58);
+  function drawVol(cv, dc) {
+    const { ctx, w, h } = sizeCanvas(cv, 46); ctx.clearRect(0, 0, w, h);
+    if (!dc.length) return;
+    const vols = dc.map((c) => Math.abs(c.c - c.o) + (c.h - c.l));
+    const max = Math.max(...vols) || 1, n = dc.length, slot = w / n, bw = Math.max(1.5, slot * 0.6);
     ctx.fillStyle = C.vol;
     vols.forEach((v, i) => { const bh = (v / max) * (h - 4); ctx.fillRect(i * slot + slot / 2 - bw / 2, h - bh, bw, bh); });
+  }
+
+  // ============================================================
+  //  ORB POKE — spike the displacement, ease back
+  // ============================================================
+  let pokeVal = 28, pokeRAF = null;
+  const BASE_WARP = 28;
+  function pokeOrb() {
+    pokeVal = 130;
+    if (!pokeRAF) pokeRAF = requestAnimationFrame(pokeTick);
+  }
+  function pokeTick() {
+    pokeVal += (BASE_WARP - pokeVal) * 0.12;
+    const el = $("#dreamfx feDisplacementMap");
+    if (el) el.setAttribute("scale", pokeVal.toFixed(1));
+    if (Math.abs(pokeVal - BASE_WARP) > 0.6) pokeRAF = requestAnimationFrame(pokeTick);
+    else { if (el) el.setAttribute("scale", String(BASE_WARP)); pokeRAF = null; }
   }
 
   // ============================================================
@@ -287,11 +371,7 @@
       const wsum = arr.reduce((a, s) => a + s.interest, 0) || 1;
       return { cur: arr.reduce((a, s) => a + s.price * s.interest, 0) / wsum, opn: arr.reduce((a, s) => a + s.open * s.interest, 0) / wsum };
     };
-    if (!idxBase) idxBase = {
-      all: calc(state).cur / 1000,
-      nightmare: calc(state.filter((s) => s.category === "nightmare")).cur / 1000,
-      hope: calc(state.filter((s) => s.category === "hope")).cur / 1000,
-    };
+    if (!idxBase) idxBase = { all: calc(state).cur / 1000, nightmare: calc(state.filter((s) => s.category === "nightmare")).cur / 1000, hope: calc(state.filter((s) => s.category === "hope")).cur / 1000 };
     const mk = (arr, key) => { const c = calc(arr); return { val: c.cur / idxBase[key], chg: ((c.cur - c.opn) / c.opn) * 100 }; };
     return { all: mk(state, "all"), nightmare: mk(state.filter((s) => s.category === "nightmare"), "nightmare"), hope: mk(state.filter((s) => s.category === "hope"), "hope") };
   }
@@ -302,33 +382,26 @@
     const avg = state.reduce((a, s) => a + dayChange(s), 0) / state.length;
     const target = Math.max(0, Math.min(100, 55 + avg * 6));
     fearGreed += (target - fearGreed) * 0.08;
-    $("#fgWord").textContent = fgWord(fearGreed);
-    drawFgGauge(fearGreed);
+    $("#fgWord").textContent = fgWord(fearGreed); drawFgGauge(fearGreed);
   }
   function drawFgGauge(v) {
     const cv = $("#fgGauge"); if (!cv) return;
     const dpr = window.devicePixelRatio || 1, w = 132, h = 58;
     cv.width = w * dpr; cv.height = h * dpr;
-    const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    const cx = w / 2, cy = h - 8, R = 46;
-    ctx.lineCap = "round";
-    ctx.beginPath(); ctx.strokeStyle = "rgba(243,241,236,0.14)"; ctx.lineWidth = 3;
-    ctx.arc(cx, cy, R, Math.PI, 2 * Math.PI); ctx.stroke();
-    ctx.beginPath(); ctx.strokeStyle = "rgba(243,241,236,0.85)"; ctx.lineWidth = 3;
-    ctx.arc(cx, cy, R, Math.PI, Math.PI + (v / 100) * Math.PI); ctx.stroke();
-    const ang = Math.PI + (v / 100) * Math.PI;
-    ctx.strokeStyle = "#f3f1ec"; ctx.lineWidth = 1.4;
+    const ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const cx = w / 2, cy = h - 8, R = 46; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.strokeStyle = "rgba(243,241,236,0.14)"; ctx.lineWidth = 3; ctx.arc(cx, cy, R, Math.PI, 2 * Math.PI); ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle = "rgba(243,241,236,0.85)"; ctx.lineWidth = 3; ctx.arc(cx, cy, R, Math.PI, Math.PI + (v / 100) * Math.PI); ctx.stroke();
+    const ang = Math.PI + (v / 100) * Math.PI; ctx.strokeStyle = "#f3f1ec"; ctx.lineWidth = 1.4;
     ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(ang) * (R - 4), cy + Math.sin(ang) * (R - 4)); ctx.stroke();
     ctx.fillStyle = "#f3f1ec"; ctx.beginPath(); ctx.arc(cx, cy, 2.2, 0, 7); ctx.fill();
-    ctx.fillStyle = "#f3f1ec"; ctx.font = "300 15px -apple-system, 'Helvetica Neue', sans-serif"; ctx.textAlign = "center";
-    ctx.fillText(Math.round(v), cx, cy - 13);
+    ctx.font = "300 15px -apple-system, 'Helvetica Neue', sans-serif"; ctx.textAlign = "center"; ctx.fillText(Math.round(v), cx, cy - 13);
   }
 
   let doom = 0.16, crashCooldown = 0;
   function updateDoom() { $("#doomVal").textContent = Math.round(doom * 100) + "%"; $("#doomFill").style.width = Math.round(doom * 100) + "%"; }
   function triggerCrash() {
-    state.forEach((s) => { s.price *= 0.42 + Math.random() * 0.26; const last = s.candles[s.candles.length - 1]; last.c = s.price; last.l = Math.min(last.l, s.price); s.vols[s.vols.length - 1] += 1200 * s.volatility; });
+    state.forEach((s) => { s.price *= 0.42 + Math.random() * 0.26; s.closes[TOTAL_MONTHS - 1] = s.price; });
     doom = 0.08; fearGreed = 34; crashCooldown = 30;
     pushNews("市場調整 · Market correction — 絶好の買い場が訪れています。");
     toast("市場調整 · MARKET CORRECTION<br/>いまこそ、賢明な投資家の好機です。");
@@ -342,30 +415,20 @@
     doom = Math.min(0.99, doom + 0.0007 + Math.random() * 0.0006);
     if (crashCooldown > 0) crashCooldown--;
     else if (doom > 0.97 || Math.random() < Math.max(0, doom - 0.8) * 0.05) triggerCrash();
-
     const mood = gauss() * 0.004 + 0.0009;
     state.forEach((s) => {
       let p = s.price;
       const bias = s.category === "nightmare" ? p * doom * 0.0024 : s.category === "hope" ? -p * doom * 0.0016 : 0;
       p += p * s.volatility * 0.011 * gauss() + (s.fair - p) * MEAN_REVERT + p * mood + bias;
       p = Math.max(1, p); s.price = p;
-      const last = s.candles[s.candles.length - 1];
-      last.c = p; last.h = Math.max(last.h, p); last.l = Math.min(last.l, p);
-      s.vols[s.vols.length - 1] += Math.abs(gauss()) * 60 * s.volatility;
-      s.tickCount++;
-      if (s.tickCount % TICKS_PER_CANDLE === 0) {
-        s.candles.push({ o: p, h: p, l: p, c: p }); s.candles.shift();
-        s.vols.push(150 + Math.abs(gauss()) * 700 * s.volatility); s.vols.shift();
-      }
+      s.closes[TOTAL_MONTHS - 1] = p;
+      s.tape.push(p); if (s.tape.length > TAPE_N) s.tape.shift();
     });
     maybeTrade();
     updateList(); updateTicker(); updateDetail();
     updateFearGreed(); updateMainIndex(); updateDoom();
   }
-  function updateMainIndex() {
-    const idx = computeIndices().all;
-    $("#dreamIndex").innerHTML = `${idx.val.toFixed(2)} <span class="${cls(idx.chg)}" style="font-size:.62em">${pctTxt(idx.chg)}</span>`;
-  }
+  function updateMainIndex() { const idx = computeIndices().all; $("#dreamIndex").innerHTML = `${idx.val.toFixed(2)} <span class="${cls(idx.chg)}" style="font-size:.62em">${pctTxt(idx.chg)}</span>`; }
 
   const BUYERS = ["匿名の投資家", "夢中毒者", "終末論者", "美術館", "退屈した億万長者", "眠れない子ども", "アルゴリズム取引bot", "コレクター", "未来からの旅行者", "占い師"];
   function maybeTrade() {
@@ -411,13 +474,13 @@
   function enter() { const tc = $("#titlecard"); tc.classList.add("hide"); setTimeout(() => (tc.style.display = "none"), 1700); }
   $("#titlecard").addEventListener("click", enter);
 
-  buildList();
-  buildTicker();
-  buildDetail();
+  orbCanvas = document.createElement("canvas"); orbCanvas.id = "orbGL";
+  if (window.OrbGL) OrbGL.init(orbCanvas);
+  buildList(); buildTicker(); buildDetail();
   updateFearGreed(); updateMainIndex(); updateDoom();
   setStatus(false, "connecting… 接続中");
   loadInterest();
   setInterval(step, TICK_MS);
-  window.addEventListener("resize", () => { drawCandles && dref && updateDetail(); });
+  window.addEventListener("resize", () => { if (dref) updateDetail(); });
   setTimeout(() => { if ($("#titlecard").style.display !== "none") enter(); }, 9000);
 })();
