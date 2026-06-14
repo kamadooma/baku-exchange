@@ -246,7 +246,7 @@
         <div class="stat"><div class="k">Dreamers 見ている人</div><div class="v num">${dreamersTxt(s)}</div></div>
       </div>
       <div class="desc">${s.descJp}<span class="en">${s.descEn}</span></div>
-      <div class="seller">供給元 / supplied by：<span>${s.seller}</span></div>
+      <div class="seller">Supplied by <span>${sellerLabel(s.seller)}</span></div>
       <div class="actions">
         <button class="act buy" id="buyBtn">今すぐ買う · Buy now</button>
         <button class="act sell" id="sellBtn">夢を手放す · Let go</button>
@@ -580,6 +580,53 @@
     REASON: { jp: "敢えて知ろうとせよ。みずからの理性を使う勇気を持て。", en: "Sapere aude — dare to know; have the courage to use your own reason.", by: "イマヌエル・カント" },
   };
 
+  // 売り手（誰が手放したか）の英訳
+  const SELLER_EN = {
+    "眠る人々": "Sleepers", "自分を探す人々": "Those searching for themselves", "つながりを求める人々": "Those seeking connection",
+    "喪に服す人々": "The bereaved", "後悔を抱える人々": "Those who carry regret", "夜空の観測者": "Watchers of the night sky",
+    "海沿いの町の住人": "Residents of a coastal town", "終末を待つ人々": "Those awaiting the end", "紛争地域の出身者": "Someone from a conflict zone",
+    "核戦争の夢を見た女性たち": "Women who dreamed of nuclear war", "援助に携わる人々": "Aid workers", "支援活動の従事者": "Relief workers",
+    "医療従事者": "Medical workers", "終わりを拒む人々": "Those who refuse the end", "権利を求めてきた人々": "Those who fought for their rights",
+    "境界線上に暮らす人々": "Those who live on the border", "再分配を望む人々": "Those who long for redistribution", "教育に携わる人々": "Educators",
+    "投票を続ける市民": "Citizens who keep voting", "清廉を望む人々": "Those who long for integrity", "軍縮を願う人々": "Those who wish for disarmament",
+    "気候運動の参加者": "Climate activists", "生物多様性の研究者": "A biodiversity researcher", "環境運動の参加者": "Environmental activists",
+    "開発に挑む技術者": "Engineers chasing a breakthrough", "働き疲れた人々": "The work-weary", "制度を求める人々": "Those demanding the policy",
+    "堅実な貯蓄家": "A disciplined saver", "健康を願う人々": "Those who wish for health", "美容に投資する人々": "Those who invest in beauty",
+    "自分を磨く人々": "Those who better themselves", "静けさを求める人々": "Those seeking quiet", "眠れない人々": "The sleepless",
+    "挑戦する人々": "The daring", "働き方を探す人々": "Those searching for a way to work", "才能を信じる人々": "Those who believe in their talent",
+    "自由を目指す人々": "Those who aim for freedom", "夢を買う人々": "Those who buy dreams", "家を探す人々": "Those house-hunting",
+    "出会いを待つ人々": "Those waiting for an encounter", "愛を信じる人々": "Those who believe in love", "放浪を夢見る人々": "Those who dream of wandering",
+    "宇宙開発の支持者": "Supporters of space exploration", "想像する人々": "The imaginative", "未来に憧れる人々": "Those who long for the future",
+    "注目を求める人々": "Those who crave attention", "移住を夢見る人々": "Those who dream of migrating", "新興の信仰者たち": "New believers",
+    "医療の最前線": "The medical front line", "資産を組み替えた投資家": "An investor who rebalanced", "テック業界の従事者": "Tech workers",
+    "自動化を見守る人々": "Those watching automation", "職を案じる人々": "Those who fear for their jobs", "農に携わる人々": "Those who work the land",
+    "都市の生活者": "City dwellers", "市場を見守る人々": "Those watching the markets", "時代を憂う人々": "Those who fear for the times",
+    "歴史を知る人々": "Those who know history", "空を見上げる人々": "Those who look to the sky", "見守られる人々": "The watched",
+    "つながる人々": "The connected", "夜ごとの夢想家": "A nightly dreamer", "平等を夢見る人々": "Those who dream of equality",
+    "道を求める人々": "Seekers of the way", "楽園を夢見る人々": "Those who dream of paradise", "救いを待つ人々": "Those awaiting salvation",
+    "古を慕う人々": "Those who yearn for the past", "錬金術師たち": "Alchemists", "発明家たち": "Inventors", "理想を描く人々": "Those who picture an ideal",
+    "進歩を信じる人々": "Believers in progress", "啓蒙を信じる人々": "Believers in enlightenment", "未来の設計者たち": "Architects of the future",
+    "科学を信じる人々": "Believers in science", "変革を望む人々": "Those who long for change", "再生を願う人々": "Those who wish for rebirth",
+    "信仰を持つ人々": "The faithful", "理想郷を探す人々": "Seekers of utopia", "古の信仰者たち": "Ancient believers",
+    "失われた大陸を追う人々": "Those who chase a lost continent", "競い合う人々": "The competitive", "恋する人々": "Those in love",
+    "特別を信じる人々": "Those who believe they are special", "ここではない場所を望む人々": "Those who long for elsewhere",
+    "時を覗きたい人々": "Those who wish to peer through time", "心優しい人々": "The gentle-hearted", "雪辱を期す人々": "Those awaiting vindication",
+    "夜に眠れない人々": "Those who can't sleep at night", "会えない人々": "Those who cannot meet", "立ち直りたい人々": "Those who want to move on",
+    "熱心なファン": "A devoted fan", "疲れた現代人": "The weary modern soul", "認められたい人々": "Those who want to be recognized",
+    "孤独な人々": "The lonely", "大人になった人々": "Those who have grown up", "遠くで暮らす人々": "Those living far away",
+    "返済に追われる人々": "Those hounded by debt", "野心ある人々": "The ambitious", "ボールを蹴る子どもたち": "Children kicking a ball",
+    "歌う人々": "Those who sing", "空を見上げた子ども": "A child who looked up at the sky", "許されぬ恋人たち": "Forbidden lovers",
+    "手放したい人々": "Those who want to let go", "かつて夢見た少年たち": "Boys who once dreamed", "一発逆転を願う人々": "Those longing for one big break",
+    "自称・選ばれし者": "A self-proclaimed chosen one", "選ばれたい人々": "Those who want to be chosen", "棚ぼたを待つ人々": "Those waiting for a windfall",
+    "月曜の朝の人々": "People on a Monday morning", "通知を待つ人々": "Those waiting for a notification", "あの頃を忘れない人々": "Those who can't forget the old days",
+    "目覚ましと闘う人々": "Those who battle the alarm clock", "上を見続ける人々": "Those who keep looking up", "満たされたい人々": "Those who long to be fulfilled",
+    "現実に戻りたくない人々": "Those who won't return to reality", "逃れたいと願う人々": "Those who wish to escape", "やさしい暮らしを願う人々": "Those who wish for a gentle life",
+    "保存し忘れた人々": "Those who forgot to save", "鏡を見つめる人々": "Those who stare into the mirror", "自由を願う人々": "Those who wish for freedom",
+    "元大学関係者": "A former academic", "投票を続けてきた人々": "Those who have kept voting", "長年の信徒たち": "Longtime believers",
+    "各国の政府および企業": "Governments and corporations",
+  };
+  function sellerLabel(jp) { const en = SELLER_EN[jp]; return en ? `${en} ・ ${jp}` : jp; }
+
   let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null, fieldSel = null, fieldElapsed = 0, fieldDust = [];
   let fieldDrag = null, dragMoved = false, dragLast = { x: 0, y: 0 };
   function popularity(s) { return s.realViews ? Math.min(100, 15 + Math.log10(s.realViews + 1) * 18) : s.interest; }
@@ -682,7 +729,7 @@
     const nat = NATURE[s.category] || ["", ""];
     $("#fpNature").innerHTML = `${nat[0]}<span>${nat[1]}</span>`;
     $("#fpQuote").innerHTML = (QUOTES[s.ticker] || s.descJp) + `<span class="en">${s.descEn}</span>`;   // 売った人のコメントが主役
-    $("#fpSeller").textContent = "— " + s.seller;
+    $("#fpSeller").textContent = "— " + sellerLabel(s.seller);
     const fq = FAMOUS[s.ticker];                                       // 名言は下に小さく添える
     const fpf = $("#fpFamous");
     if (fq) { fpf.innerHTML = `“${fq.jp}” <span class="by">— ${fq.by}</span>`; fpf.style.display = "block"; }
