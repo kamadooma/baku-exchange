@@ -38,6 +38,9 @@
     <button class="tc-enter">Incubation</button>
   </div>
 
+  <!-- top poetic slogan -->
+  <div id="slogan"><div class="slogan-track">見知らぬ誰かの夢を、買ってみませんか。 ── いらなくなった夢は、ここでそっと手放せます。 ・ Buy a stranger's dream. Let go, gently, of the ones you no longer need. &nbsp;&nbsp;&nbsp;&nbsp; 見知らぬ誰かの夢を、買ってみませんか。 ── いらなくなった夢は、ここでそっと手放せます。 ・ Buy a stranger's dream. Let go, gently, of the ones you no longer need. &nbsp;&nbsp;&nbsp;&nbsp; </div></div>
+
   <!-- ticker tape -->
   <div id="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
 
@@ -92,13 +95,15 @@
 
   <!-- Dreamfield: 夢の海（球体が浮かび、白い曲線で繋がる星座） -->
   <div id="dreamfield" class="hidden">
+    <canvas id="fieldGL"></canvas>
     <canvas id="fieldLines"></canvas>
-    <div id="fieldStage"></div>
     <div class="field-title">Dreamfield ・ 夢の海</div>
     <button id="fieldClose">← Market 取引所</button>
     <div id="fieldPanel" class="hidden">
       <div class="fp-en" id="fpEn"></div>
       <div class="fp-jp" id="fpJp"></div>
+      <div class="fp-price num" id="fpPrice"></div>
+      <div class="fp-nature" id="fpNature"></div>
       <div class="fp-quote" id="fpQuote"></div>
       <div class="fp-seller" id="fpSeller"></div>
       <button id="fpOpen">取引所で見る →</button>
@@ -110,6 +115,7 @@
 
   <script src="data.js"></script>
   <script src="orb.js"></script>
+  <script src="field.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

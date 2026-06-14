@@ -510,52 +510,64 @@
     MEETLOVE: "まだ会ったこともない『その人』に、夢の中では会える。顔は思い出せないのに、声だけ覚えてる。目が覚めると、世界中の誰でもないその人が恋しい。この夢、運命を信じる人に売ります。",
   };
 
-  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, lineCtx = null;
+  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, fieldT = 0, lineCtx = null;
   function popularity(s) { return s.realViews ? Math.min(100, 15 + Math.log10(s.realViews + 1) * 18) : s.interest; }
-  function sizeLines() {
-    const cv = $("#fieldLines"); if (!cv) return; const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; lineCtx = cv.getContext("2d"); lineCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
+  const FIELD_FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10], mundane: [0.40, 0.16, 0.26] };
+  function sizeFieldLines() { const cv = $("#fieldLines"); if (!cv) return; const dpr = Math.min(window.devicePixelRatio || 1, 2); cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; lineCtx = cv.getContext("2d"); lineCtx.setTransform(dpr, 0, 0, dpr, 0, 0); }
   function buildField() {
-    if (fieldBuilt) return; fieldBuilt = true;
-    const stage = $("#fieldStage"), W = innerWidth, H = innerHeight;
-    state.forEach((s) => {
-      const sz = Math.round(54 + (popularity(s) / 100) * 120);
-      const el = document.createElement("div"); el.className = "float-orb";
-      el.style.width = sz + "px"; el.style.height = sz + "px"; el.style.background = baseGradient(s.category);
-      const im = new Image(); im.onload = () => { el.style.backgroundImage = `url(assets/footage/${s.ticker}.jpg)`; }; im.src = `assets/footage/${s.ticker}.jpg`;
-      el.addEventListener("click", (e) => { e.stopPropagation(); openPanel(s); });
-      stage.appendChild(el);
-      fieldOrbs.push({ s, el, sz, x: Math.random() * (W - sz), y: 70 + Math.random() * (H - sz - 160), vx: (Math.random() - 0.5) * 0.22, vy: (Math.random() - 0.5) * 0.22 });
+    if (fieldBuilt) return;
+    if (!window.FieldGL || !FieldGL.init($("#fieldGL"))) return;
+    fieldBuilt = true; sizeFieldLines();
+    const W = innerWidth, H = innerHeight;
+    state.forEach((s) => {                                              // これまでの全銘柄をマッピング
+      const r = Math.round(18 + Math.pow(popularity(s) / 100, 2.6) * 128); // 人気度=大きさ（ジャンプ率を強く）
+      const tex = FieldGL.loadTexture(`assets/footage/${s.ticker}.jpg`);
+      fieldOrbs.push({ s, r, tex, fb: FIELD_FB[s.category] || [0.12, 0.12, 0.14], seed: (s.idx % 17) / 17,
+        x: r + Math.random() * Math.max(1, W - 2 * r), y: 90 + r + Math.random() * Math.max(1, H - 2 * r - 200),
+        vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10 });
     });
-    sizeLines();
   }
   function fieldTick() {
     if ($("#dreamfield").classList.contains("hidden")) { fieldRAF = null; return; }
-    const W = innerWidth, H = innerHeight, ctx = lineCtx;
+    fieldT += 0.016;
+    const W = innerWidth, H = innerHeight, top = 80;
     fieldOrbs.forEach((o) => {
       o.x += o.vx; o.y += o.vy;
-      if (o.x < -o.sz) o.x = W; if (o.x > W) o.x = -o.sz; if (o.y < -o.sz) o.y = H; if (o.y > H) o.y = -o.sz;
-      o.el.style.transform = `translate(${o.x}px,${o.y}px)`;
+      if (o.x < o.r) { o.x = o.r; o.vx = Math.abs(o.vx); } if (o.x > W - o.r) { o.x = W - o.r; o.vx = -Math.abs(o.vx); }
+      if (o.y < top + o.r) { o.y = top + o.r; o.vy = Math.abs(o.vy); } if (o.y > H - o.r) { o.y = H - o.r; o.vy = -Math.abs(o.vy); }
+      o.vx *= 0.995; o.vy *= 0.995;                                     // ゆるやかな減衰
+      const sp = Math.hypot(o.vx, o.vy);
+      if (sp < 0.05) { const a = Math.random() * 6.283; o.vx += Math.cos(a) * 0.02; o.vy += Math.sin(a) * 0.02; }  // 漂い続ける
+      if (sp > 0.32) { o.vx *= 0.32 / sp; o.vy *= 0.32 / sp; }          // ゆっくりを保つ
     });
-    if (ctx) {
-      ctx.clearRect(0, 0, W, H);
-      for (let i = 0; i < fieldOrbs.length; i++) {
-        const a = fieldOrbs[i], ax = a.x + a.sz / 2, ay = a.y + a.sz / 2;
-        for (let j = i + 1; j < fieldOrbs.length; j++) {
-          const b = fieldOrbs[j], bx = b.x + b.sz / 2, by = b.y + b.sz / 2, dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy);
-          if (d < 200) {
-            ctx.strokeStyle = `rgba(243,241,236,${((1 - d / 200) * 0.26).toFixed(3)})`; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo((ax + bx) / 2 - dy * 0.12, (ay + by) / 2 + dx * 0.12, bx, by); ctx.stroke();
-          }
+    for (let i = 0; i < fieldOrbs.length; i++) {                        // ふわふわ、互いを“避ける”（繋がない）
+      const a = fieldOrbs[i];
+      for (let j = i + 1; j < fieldOrbs.length; j++) {
+        const b = fieldOrbs[j], dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || 0.01, minD = (a.r + b.r) * 0.95;
+        if (d < minD) {
+          const p = (minD - d) / d * 0.22; a.x -= dx * p; a.y -= dy * p; b.x += dx * p; b.y += dy * p;   // やわらかく重なり回避
+          const st = 0.006; a.vx -= dx / d * st; a.vy -= dy / d * st; b.vx += dx / d * st; b.vy += dy / d * st;  // なめらかに避ける
         }
       }
     }
+    FieldGL.begin();
+    fieldOrbs.forEach((o) => FieldGL.draw(o.x, o.y, o.r, o.seed, o.tex, o.fb, fieldT));
     fieldRAF = requestAnimationFrame(fieldTick);
   }
+  function fieldHit(cx, cy) { let best = null, bd = 1e9; fieldOrbs.forEach((o) => { const d = Math.hypot(cx - o.x, cy - o.y); if (d < o.r && d < bd) { bd = d; best = o; } }); return best; }
+  // 夢の海では、各夢の「価値」を神託のように詩的に語る
+  const NATURE = {
+    hope: ["A glimmer of premonition, carried from afar.", "遠くからの光が運ぶ、ひとすじの予感。"],
+    nightmare: ["An ominous oracle, arrived from beyond.", "外からやってきた、不吉な神託。"],
+    ideology: ["An ancient dream, handed down through the ages.", "太古より受け継がれた、人類の見果てぬ夢。"],
+    oneiric: ["A nightly phantom from the depths of sleep.", "まどろみの底に浮かぶ、夜ごとの幻。"],
+    mundane: ["A true desire, hiding in the deep psyche.", "深層心理に潜む、本当の欲望。"],
+  };
   function openPanel(s) {
-    fieldOrbs.forEach((o) => o.el.classList.toggle("sel", o.s === s));
     $("#fpEn").textContent = s.nameEn; $("#fpJp").textContent = s.nameJp;
+    $("#fpPrice").innerHTML = `${fmt(s.price)} <small>${CUR}</small> <span class="${cls(dayChange(s))}">${pctTxt(dayChange(s))}</span>`;
+    const nat = NATURE[s.category] || ["", ""];
+    $("#fpNature").innerHTML = `${nat[0]}<span>${nat[1]}</span>`;
     $("#fpQuote").textContent = "「" + (QUOTES[s.ticker] || s.descJp) + "」";
     $("#fpSeller").textContent = "— " + s.seller;
     $("#fpOpen").onclick = (e) => { e.stopPropagation(); closeField(); selectDream(s); };
@@ -627,9 +639,13 @@
   $("#titlecard").addEventListener("click", enter);
   $("#toField").addEventListener("click", openField);
   $("#fieldClose").addEventListener("click", closeField);
-  $("#dreamfield").addEventListener("click", () => $("#fieldPanel").classList.add("hidden"));
   $("#fieldPanel").addEventListener("click", (e) => e.stopPropagation());
-  window.addEventListener("resize", () => { if (lineCtx) sizeLines(); });
+  $("#fieldGL").addEventListener("pointerdown", (e) => {
+    const rc = e.currentTarget.getBoundingClientRect();
+    const o = fieldHit(e.clientX - rc.left, e.clientY - rc.top);
+    if (o) openPanel(o.s); else $("#fieldPanel").classList.add("hidden");
+  });
+  window.addEventListener("resize", () => sizeFieldLines());
 
   orbCanvas = document.createElement("canvas"); orbCanvas.id = "orbGL";
   if (window.OrbGL) OrbGL.init(orbCanvas);
@@ -640,4 +656,5 @@
   setInterval(step, TICK_MS);
   window.addEventListener("resize", () => { if (dref) updateDetail(); });
   setTimeout(() => { if ($("#titlecard").style.display !== "none") enter(); }, 9000);
+  if (location.search.indexOf("field") >= 0) { enter(); setTimeout(openField, 300); }   // ?field= で夢の海を自動表示（確認用）
 })();
