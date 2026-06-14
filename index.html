@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>BAKU EXCHANGE — A Market of Dreams 夢の取引所</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- cinematic overlays -->
+  <div id="grain"></div>
+  <div id="vignette"></div>
+
+  <!-- title card -->
+  <div id="titlecard">
+    <svg class="coin coin-lg" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" class="c-ring"/>
+      <circle cx="50" cy="50" r="39" class="c-ring2"/>
+      <rect x="40" y="40" width="20" height="20" class="c-hole"/>
+      <path class="c-mark" d="M50 14 q -7 3 -6 9 q 1 5 5 4 q 3 -1 2 -4"/>
+      <circle cx="84" cy="50" r="3" class="c-mark"/><circle cx="84" cy="50" r="0.9" class="c-dot"/>
+      <path class="c-mark" d="M44 84 q 3 -5 6 -1 q 3 4 6 -1"/>
+      <path class="c-mark" d="M14 46 v8 M17 45 v9 M20 46 v8"/>
+    </svg>
+    <div class="tc-title">Baku Exchange</div>
+    <div class="tc-sub">夢の取引なんてディストピアだ。<br/>けれど株式とは、私たちが共に見る、いちばん大きな夢だ。<br/><br/>The stock market is the largest dream we share.</div>
+    <div class="tc-enter">— Tap to enter —</div>
+  </div>
+
+  <!-- ticker tape -->
+  <div id="ticker"><div class="ticker-track" id="tickerTrack"></div></div>
+
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-row">
+          <svg class="coin" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" class="c-ring"/>
+            <circle cx="50" cy="50" r="39" class="c-ring2"/>
+            <rect x="40" y="40" width="20" height="20" class="c-hole"/>
+            <path class="c-mark" d="M50 14 q -7 3 -6 9 q 1 5 5 4 q 3 -1 2 -4"/>
+            <circle cx="84" cy="50" r="3" class="c-mark"/><circle cx="84" cy="50" r="0.9" class="c-dot"/>
+            <path class="c-mark" d="M44 84 q 3 -5 6 -1 q 3 4 6 -1"/>
+            <path class="c-mark" d="M14 46 v8 M17 45 v9 M20 46 v8"/>
+          </svg>
+          <h1>Baku Exchange</h1>
+        </div>
+        <div class="tagline">幻影のウォール街 ・ Phantom Wall Street — where dreams are bought and let go</div>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="label">Apocalypse 終末感</div>
+          <div class="val" id="doomMeter">—</div>
+        </div>
+        <div class="metric">
+          <div class="label">Dream Index 夢幻指数</div>
+          <div class="val" id="dreamIndex">—</div>
+        </div>
+        <div id="fearGreedWrap">
+          <canvas id="fearGreed" width="120" height="64"></canvas>
+          <div id="fearGreedLabel">Fear &amp; Greed</div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- market list -->
+      <section class="board">
+        <div class="col-title">Listings 上場銘柄</div>
+        <div id="marketList"></div>
+      </section>
+
+      <!-- detail -->
+      <section class="detail">
+        <div class="col-title">Dream 銘柄詳細</div>
+        <div class="detail-inner" id="detail"></div>
+      </section>
+
+      <!-- trade feed -->
+      <aside class="feed">
+        <div class="col-title">Tape 取引フィード</div>
+        <div id="tradeFeed"></div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast"></div>
+  <footer class="status"><span id="dataDot"></span><span id="dataStatus">connecting…</span></footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
