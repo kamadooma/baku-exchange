@@ -488,6 +488,82 @@
   let toastT = null;
   function toast(html) { const t = $("#toast"); t.innerHTML = html; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 4200); }
 
+  // ============================================================
+  //  DREAMFIELD — 夢の海（浮遊する球体の星座）
+  //  売り手の一人称の言葉（〜140字）。無い銘柄は説明文で代替。
+  // ============================================================
+  const QUOTES = {
+    NUKE: "毎晩、空が白く光る夢を見た。子どもを抱いて走るのに、足が動かない。朝になると枕が濡れている。もう手放したい。誰かこの夢を買って、わたしの代わりに見てくれませんか。二度と、見たくないんです。",
+    NOWAR: "生まれた時から、遠くで爆発の音がしていた。戦争のない世界を、わたしは見たことがない。だから夢の中だけで、静かな朝を作った。売りたくはないけど、お金がいる。誰かこの静けさを、ちゃんと使ってください。",
+    DEADCAT: "十六年いっしょにいた。最後はわたしの腕の中で、眠るように逝った。夢でだけ、また膝に乗ってくる。重さも、喉を鳴らす音も本物みたいで。目が覚めるのが怖い。この夢、いい人に売りたい。大事にしてほしい。",
+    SEX: "あの人のことを考えると眠れない。夢の中でだけ、ためらわずに触れられる。朝、現実のわたしに戻るのが少し苦しい。だからこの夢は手放します。叶わない気持ちは、誰かの役に立つほうがいい。",
+    AFFAIR: "いちばん愛したのは、いちばん愛してはいけない人だった。夢の中では、誰にも責められず手をつなげる。でももう疲れた。この夢を売って、ぜんぶ終わりにしたい。買う人は、罪悪感ごと持っていって。",
+    IMMO: "死ぬのが怖くて、終わらない夢を見続けた。気づけば周りには誰もいなくて、ひとりで永遠を歩いていた。永遠って、こんなに静かなんだ。もう十分。この夢、若い投資家さんに高く売れるって聞きました。",
+    MARS: "地球はもう手遅れだと思ってる。夢の中で赤い砂の上に立った時、本気で泣いた。逃げ場所がある気がして。でも宝くじも当たらないわたしには無理だ。だからこの夢は、行ける人に売ります。代わりに見てきて。",
+    WPRE: "祖母も母も、わたしも、ずっと投票してきた。『もうすぐ』って何回聞いたかな。夢の中では、彼女が宣誓してる。割れんばかりの拍手。目が覚めると、まだ朝じゃない。この夢、信じてくれる人に託したい。",
+    EXTN: "最後の一頭を看取った。檻の前で、ただ記録を取ることしかできなかった。夢には、もういない動物たちが帰ってくる。鳴き声まで覚えてる。手放したくないけど、見ているのがつらすぎるんです。",
+    SOMEONE: "ずっと、誰でもない自分が嫌だった。夢の中では、みんながわたしの名前を知っている。眩しくて、少しだけ救われる。でも目が覚めると元通り。この夢を売れば、少しは何者かに近づける気がして。",
+    TEETH: "気づくと口の中で歯がぼろぼろ崩れて、手のひらにこぼれる。誰にも言えないけど、世界中の人が同じ夢を見てるらしい。だから怖くないことにした。よかったら、この不思議、買ってみませんか。",
+    FORGETEX: "もう一年経つのに、夢にだけ出てくる。笑い方も、煙草の匂いも変わらない。起きるたび、また失う。いい加減、前を向きたい。この夢を手放したら、本当に忘れられる気がする。誰か、引き取ってください。",
+    DEBT: "通帳を見るのが怖い。夢の中でだけ、全部きれいに返し終えて、肩の荷が下りる。あの軽さをもう一度味わいたくて、毎晩眠る。でも現実は減らない。せめてこの夢が、少しのお金になれば。",
+    OSHI: "何百回もライブに行った。一度でいい、目が合って、わたしを見つけてほしい。夢の中では名前を呼んでくれる。それだけで一週間がんばれる。叶わないのは分かってる。だからこの夢、同じ気持ちの人へ。",
+    MEETLOVE: "まだ会ったこともない『その人』に、夢の中では会える。顔は思い出せないのに、声だけ覚えてる。目が覚めると、世界中の誰でもないその人が恋しい。この夢、運命を信じる人に売ります。",
+  };
+
+  let fieldOrbs = [], fieldRAF = null, fieldBuilt = false, lineCtx = null;
+  function popularity(s) { return s.realViews ? Math.min(100, 15 + Math.log10(s.realViews + 1) * 18) : s.interest; }
+  function sizeLines() {
+    const cv = $("#fieldLines"); if (!cv) return; const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; lineCtx = cv.getContext("2d"); lineCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  function buildField() {
+    if (fieldBuilt) return; fieldBuilt = true;
+    const stage = $("#fieldStage"), W = innerWidth, H = innerHeight;
+    state.forEach((s) => {
+      const sz = Math.round(54 + (popularity(s) / 100) * 120);
+      const el = document.createElement("div"); el.className = "float-orb";
+      el.style.width = sz + "px"; el.style.height = sz + "px"; el.style.background = baseGradient(s.category);
+      const im = new Image(); im.onload = () => { el.style.backgroundImage = `url(assets/footage/${s.ticker}.jpg)`; }; im.src = `assets/footage/${s.ticker}.jpg`;
+      el.addEventListener("click", (e) => { e.stopPropagation(); openPanel(s); });
+      stage.appendChild(el);
+      fieldOrbs.push({ s, el, sz, x: Math.random() * (W - sz), y: 70 + Math.random() * (H - sz - 160), vx: (Math.random() - 0.5) * 0.22, vy: (Math.random() - 0.5) * 0.22 });
+    });
+    sizeLines();
+  }
+  function fieldTick() {
+    if ($("#dreamfield").classList.contains("hidden")) { fieldRAF = null; return; }
+    const W = innerWidth, H = innerHeight, ctx = lineCtx;
+    fieldOrbs.forEach((o) => {
+      o.x += o.vx; o.y += o.vy;
+      if (o.x < -o.sz) o.x = W; if (o.x > W) o.x = -o.sz; if (o.y < -o.sz) o.y = H; if (o.y > H) o.y = -o.sz;
+      o.el.style.transform = `translate(${o.x}px,${o.y}px)`;
+    });
+    if (ctx) {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < fieldOrbs.length; i++) {
+        const a = fieldOrbs[i], ax = a.x + a.sz / 2, ay = a.y + a.sz / 2;
+        for (let j = i + 1; j < fieldOrbs.length; j++) {
+          const b = fieldOrbs[j], bx = b.x + b.sz / 2, by = b.y + b.sz / 2, dx = bx - ax, dy = by - ay, d = Math.hypot(dx, dy);
+          if (d < 200) {
+            ctx.strokeStyle = `rgba(243,241,236,${((1 - d / 200) * 0.26).toFixed(3)})`; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(ax, ay); ctx.quadraticCurveTo((ax + bx) / 2 - dy * 0.12, (ay + by) / 2 + dx * 0.12, bx, by); ctx.stroke();
+          }
+        }
+      }
+    }
+    fieldRAF = requestAnimationFrame(fieldTick);
+  }
+  function openPanel(s) {
+    fieldOrbs.forEach((o) => o.el.classList.toggle("sel", o.s === s));
+    $("#fpEn").textContent = s.nameEn; $("#fpJp").textContent = s.nameJp;
+    $("#fpQuote").textContent = "「" + (QUOTES[s.ticker] || s.descJp) + "」";
+    $("#fpSeller").textContent = "— " + s.seller;
+    $("#fpOpen").onclick = (e) => { e.stopPropagation(); closeField(); selectDream(s); };
+    $("#fieldPanel").classList.remove("hidden");
+  }
+  function openField() { buildField(); $("#dreamfield").classList.remove("hidden"); $("#fieldPanel").classList.add("hidden"); if (!fieldRAF) fieldRAF = requestAnimationFrame(fieldTick); }
+  function closeField() { $("#dreamfield").classList.add("hidden"); }
+
   // ---- Wikipedia interest ----
   async function loadInterest() {
     const end = new Date(), start = new Date(Date.now() - 30 * 864e5);
@@ -549,6 +625,11 @@
   // ============================================================
   function enter() { const tc = $("#titlecard"); tc.classList.add("hide"); setTimeout(() => (tc.style.display = "none"), 1700); }
   $("#titlecard").addEventListener("click", enter);
+  $("#toField").addEventListener("click", openField);
+  $("#fieldClose").addEventListener("click", closeField);
+  $("#dreamfield").addEventListener("click", () => $("#fieldPanel").classList.add("hidden"));
+  $("#fieldPanel").addEventListener("click", (e) => e.stopPropagation());
+  window.addEventListener("resize", () => { if (lineCtx) sizeLines(); });
 
   orbCanvas = document.createElement("canvas"); orbCanvas.id = "orbGL";
   if (window.OrbGL) OrbGL.init(orbCanvas);

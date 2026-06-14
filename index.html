@@ -35,7 +35,7 @@
     <img class="logo-baku" src="assets/baku.webp" alt="獏 Baku" />
     <div class="tc-title">Baku&nbsp;Exchange</div>
     <div class="tc-sub">あなたの夢を、みんなの夢に。<br/>Your dream, everyone's dream.</div>
-    <button class="tc-enter">Enter 入場</button>
+    <button class="tc-enter">Incubation</button>
   </div>
 
   <!-- ticker tape -->
@@ -46,6 +46,7 @@
       <div class="brand">
         <img class="logo-baku" src="assets/baku.webp" alt="獏" />
         <div class="brand-name">Baku&nbsp;Exchange</div>
+        <button id="toField" class="navbtn">◎ Dreamfield 夢の海</button>
       </div>
       <div class="metrics">
         <div class="metric">
@@ -87,6 +88,21 @@
         <div id="tradeFeed"></div>
       </aside>
     </main>
+  </div>
+
+  <!-- Dreamfield: 夢の海（球体が浮かび、白い曲線で繋がる星座） -->
+  <div id="dreamfield" class="hidden">
+    <canvas id="fieldLines"></canvas>
+    <div id="fieldStage"></div>
+    <div class="field-title">Dreamfield ・ 夢の海</div>
+    <button id="fieldClose">← Market 取引所</button>
+    <div id="fieldPanel" class="hidden">
+      <div class="fp-en" id="fpEn"></div>
+      <div class="fp-jp" id="fpJp"></div>
+      <div class="fp-quote" id="fpQuote"></div>
+      <div class="fp-seller" id="fpSeller"></div>
+      <button id="fpOpen">取引所で見る →</button>
+    </div>
   </div>
 
   <div id="toast"></div>
