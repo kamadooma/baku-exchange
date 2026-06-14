@@ -329,33 +329,53 @@
     const axisH = 18, { ctx, w, h } = sizeCanvas(cv, 248), pad = 8, plotH = h - pad - axisH;
     ctx.clearRect(0, 0, w, h);
     if (!dc.length) return;
+    const mode = zoomMonths === 12 ? "bars" : zoomMonths <= 120 ? "area" : "candles";  // 1Y=棒 / 5Y・10Y=山 / 100Y=ローソク足
     let min = Infinity, max = -Infinity;
-    dc.forEach((c) => { if (c.h > max) max = c.h; if (c.l < min) min = c.l; });
+    if (mode !== "candles") { dc.forEach((c) => { if (c.c > max) max = c.c; if (c.c < min) min = c.c; }); min -= (max - min) * 0.12 || 1; }
+    else { dc.forEach((c) => { if (c.h > max) max = c.h; if (c.l < min) min = c.l; }); }
     const r = max - min || 1, Y = (v) => pad + plotH - ((v - min) / r) * plotH;
     ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
     for (let i = 0; i <= 4; i++) { const y = pad + (plotH / 4) * i; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-    const n = dc.length, slot = w / n, cw = Math.max(1.5, slot * 0.6);
-    dc.forEach((c, i) => {
-      const x = i * slot + slot / 2, up = c.c >= c.o;
-      ctx.strokeStyle = C.wick; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, Y(c.h)); ctx.lineTo(x, Y(c.l)); ctx.stroke();
-      const yo = Y(c.o), yc = Y(c.c), top = Math.min(yo, yc), bh = Math.max(1, Math.abs(yc - yo));
-      if (up) { ctx.strokeStyle = C.up; ctx.strokeRect(x - cw / 2, top, cw, bh); } else { ctx.fillStyle = C.down; ctx.fillRect(x - cw / 2, top, cw, bh); }
-    });
-    // last price line
+    const n = dc.length, slot = w / n, base = pad + plotH;
+    if (mode === "bars") {
+      const bw = Math.max(3, slot * 0.6);
+      dc.forEach((c, i) => {
+        const x = i * slot + slot / 2, up = i === 0 || c.c >= dc[i - 1].c, y = Y(c.c);
+        ctx.fillStyle = up ? C.up : C.down; ctx.fillRect(x - bw / 2, y, bw, base - y);
+      });
+    } else if (mode === "area") {
+      // 山型のエリアチャート（線＋淡いグラデ塗り）
+      const X = (i) => (n < 2 ? w / 2 : (i / (n - 1)) * w);
+      ctx.beginPath(); ctx.moveTo(0, base); ctx.lineTo(X(0), Y(dc[0].c));
+      dc.forEach((c, i) => ctx.lineTo(X(i), Y(c.c)));
+      ctx.lineTo(w, base); ctx.closePath();
+      const g = ctx.createLinearGradient(0, pad, 0, base);
+      g.addColorStop(0, "rgba(243,241,236,0.30)"); g.addColorStop(1, "rgba(243,241,236,0.02)");
+      ctx.fillStyle = g; ctx.fill();
+      ctx.beginPath(); dc.forEach((c, i) => (i ? ctx.lineTo(X(i), Y(c.c)) : ctx.moveTo(X(i), Y(c.c))));
+      ctx.strokeStyle = "#f3f1ec"; ctx.lineWidth = 2; ctx.lineJoin = "round";
+      ctx.shadowColor = "rgba(243,241,236,0.4)"; ctx.shadowBlur = 5; ctx.stroke(); ctx.shadowBlur = 0;
+    } else {
+      const cw = Math.max(1.5, slot * 0.6);
+      dc.forEach((c, i) => {
+        const x = i * slot + slot / 2, up = c.c >= c.o;
+        ctx.strokeStyle = C.wick; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, Y(c.h)); ctx.lineTo(x, Y(c.l)); ctx.stroke();
+        const yo = Y(c.o), yc = Y(c.c), top = Math.min(yo, yc), bh = Math.max(1, Math.abs(yc - yo));
+        if (up) { ctx.strokeStyle = C.up; ctx.strokeRect(x - cw / 2, top, cw, bh); } else { ctx.fillStyle = C.down; ctx.fillRect(x - cw / 2, top, cw, bh); }
+      });
+    }
     const lastY = Y(dc[n - 1].c); ctx.strokeStyle = C.last; ctx.setLineDash([3, 3]);
     ctx.beginPath(); ctx.moveTo(0, lastY); ctx.lineTo(w, lastY); ctx.stroke(); ctx.setLineDash([]);
-    // x-axis time labels
     ctx.fillStyle = C.axis; ctx.font = "9px -apple-system, 'Helvetica Neue', sans-serif"; ctx.textAlign = "center";
     const short = zoomMonths <= 60, labels = 5;
     for (let k = 0; k < labels; k++) {
       const i = Math.round((k / (labels - 1)) * (n - 1)), x = i * slot + slot / 2;
       ctx.fillText(monthLabel(dc[i].mid, short), Math.min(w - 14, Math.max(14, x)), h - 5);
     }
-    // hover crosshair
     if (hi != null && dc[hi]) {
       const x = hi * slot + slot / 2; ctx.strokeStyle = C.axis; ctx.setLineDash([2, 3]);
       ctx.beginPath(); ctx.moveTo(x, pad); ctx.lineTo(x, pad + plotH); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = C.up; ctx.beginPath(); ctx.arc(x, Y(dc[hi].c), 2.8, 0, 7); ctx.fill();
+      ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x, Y(dc[hi].c), 3.4, 0, 7); ctx.fill();
     }
   }
   function drawVol(cv, dc) {

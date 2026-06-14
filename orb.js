@@ -24,7 +24,7 @@ window.OrbGL = (function () {
       float ang = atan(c.y, c.x);
       // gentle idle undulation + springy "ぷるっ" when poked
       float idle = 0.018*sin(ang*3.0 + time*0.8) + 0.012*sin(ang*5.0 - time*0.6);
-      float jiggle = energy * 0.045 * sin(ang*2.0 + time*4.0);   // slow, organic swell
+      float jiggle = energy * 0.085 * sin(ang*2.0 + time*5.0);   // organic swell, a touch bolder
       float edge = 0.90 + idle + jiggle;
       if(r > edge){ discard; }
       float rn = r/edge;

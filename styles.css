@@ -370,3 +370,8 @@ button.act:hover { transform: translateY(-2px); }
 }
 .sort-btn:hover { color: var(--g1); }
 .sort-btn.on { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+
+/* ---- iPad / touch: no selection, no callout, no scroll hijack ---- */
+html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
+img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
+#orbGL, #candleChart, .orb { touch-action: none; }
