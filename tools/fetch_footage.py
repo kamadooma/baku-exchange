@@ -171,7 +171,7 @@ IMG_QUERY = {
   "MOTE":    "aphrodite goddess sculpture ancient",
   "DONTWAKE":"sleeping woman fairy tale forest",
   "REUNION": "party celebration reunion",
-  "CUTE":    "cute adorable sweet",
+  "CUTE":    "selfie girl phone social media",
 }
 
 # seed値上位25銘柄（--priority フラグで動画取得対象を絞る用）
