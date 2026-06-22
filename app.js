@@ -2223,7 +2223,8 @@
       "お化":"ghost","ghost":"ghost","怨霊":"ghost","おんりょう":"ghost",
       "悪霊":"ghost","あくりょう":"ghost","ポルターガイスト":"ghost",
       "悪魔":"demon","あくま":"demon","デビル":"demon","devil":"demon",
-      "demon":"demon","地獄":"demon","じごく":"demon","鬼":"demon","おに":"demon",
+      "demon":"demon","地獄":"demon","じごく":"demon","鬼が":"demon","おにが":"demon",
+      "鬼は":"demon","鬼に":"demon","赤鬼":"demon","青鬼":"demon","鬼の":"demon",
       "呪い":"ritual","のろい":"ritual","儀式":"ritual","ぎしき":"ritual",
       // 宇宙人
       "宇宙人":"alien","うちゅうじん":"alien","エイリアン":"alien","alien":"alien","UFO":"alien",
@@ -2330,20 +2331,30 @@
       { w:["砂漠","荒野","草原","savannah","wasteland","何もない場所"],                      t:"ALONE" },
       { w:["宇宙空間","無重力","宇宙ステーション","space station","weightlessness"],          t:"MARS" },
       { w:["地下","地底","洞窟の中","cave","underground","地下鉄","トンネル"],               t:"NOWAKE" },
-    ];
       // 政治・権力・社会
       { w:["独裁","独裁者","独裁政権","dictator","dictatorship","tyranny","専制"],          t:"FASC" },
       { w:["ファシズム","全体主義","fascism","totalitarian","権威主義","支配者"],            t:"FASC" },
       { w:["革命","クーデター","反乱","revolution","coup","uprising","民衆が立ち上"],        t:"WREV" },
-      { w:["監視","監視社会","盗聴","surveillance","tracked","見張られ","監視カメラ"],       t:"SURV" },
+      { w:["監視社会","盗聴","surveillance","tracked","見張られ","監視カメラ"],              t:"SURV" },
       { w:["核戦争","核爆発","原爆","放射能","nuclear war","mushroom cloud"],               t:"NUKE" },
-      { w:["テロ","テロリスト","terrorism","attack","爆弾","爆破"],                         t:"NUKE" },
-      { w:["格差","貧困","不平等","inequality","poverty","格差社会"],                       t:"FAIR" },
-      { w:["選挙","民主主義","democracy","vote","投票","選挙不正"],                         t:"DEMO" },
-      { w:["AI支配","AIに支配","singularity","AGI","超知性","人工知能が"],                   t:"SING" },
-      { w:["ウイルス","パンデミック","感染","pandemic","病原体","感染爆発"],                  t:"PANDM" },
-      { w:["経済崩壊","株価暴落","リーマン","crash","financial crisis","破産"],              t:"CRSH" },
-      { w:["環境破壊","温暖化","気候変動","climate change","地球が燃え"],                    t:"STOPGW" },
+      { w:["テロリスト","terrorism","爆弾テロ","爆破"],                                     t:"NUKE" },
+      { w:["格差社会","貧困","不平等","inequality","poverty"],                              t:"FAIR" },
+      { w:["民主主義","democracy","投票","選挙不正"],                                       t:"DEMO" },
+      { w:["AI支配","シンギュラリティ","singularity","AGI","超知性"],                       t:"SING" },
+      { w:["パンデミック","感染爆発","pandemic","病原体","ウイルスが広がる"],                 t:"PANDM" },
+      { w:["経済崩壊","株価暴落","リーマン","financial crisis","破産した"],                  t:"CRSH" },
+      { w:["温暖化","気候変動","climate change","地球が燃え"],                              t:"STOPGW" },
+      // 家族・人間関係
+      { w:["家族が死","親が死","友達が死","死んでしまった","亡くなっていた","loved one died"], t:"FUNRL" },
+      { w:["父が","母が","兄が","姉が","弟が","妹が","子供が","family member"],              t:"PARENT" },
+      { w:["神様","神に会","god appeared","神が現れ","神の声","神のお告げ"],                  t:"EDEN" },
+      { w:["天使","エンジェル","angel","神の使い","翼の生えた人"],                            t:"EDEN" },
+      { w:["死神","グリムリーパー","grim reaper","死の使い","連れて行かれる"],               t:"FUNRL" },
+      { w:["前世","過去生","前の人生","past life","輪廻","魂が"],                            t:"REBORN" },
+      { w:["体が溶ける","体が変わる","変身","体が消える","body melting","transformation"],   t:"MUTE" },
+      { w:["歯医者","注射","手術","病院に連れ","強制的に","強制","医者"],                     t:"CURE" },
+      { w:["高所恐怖","高いところが怖","ビルから落ちそう","屋上から","heights","vertigo"],    t:"FALL" },
+      { w:["食べ物","御馳走","宴会","food","feast","美味しい","食べていた"],                  t:"JACK" },
     ];
 
     // 視覚名詞を抽出（長い語を優先）
@@ -2389,9 +2400,14 @@
         const phrase = clean
           .split(/\s+/)[0]
           .replace(/[をにがはもでへよりの].*/, "")
+          // 動詞語幹・形容詞で終わっていたらそれ以降を削除
+          .replace(/(て|で|た|たら|ている|していた|してい|しかけ|かけ|られ|られた|させ|させた)$/, "")
           .slice(0, 12);
-        if (phrase.length > 1) return phrase + "の夢";
-        return "あなたの夢";
+        // 1文字以下 or 動詞っぽい語尾なら認識失敗扱い
+        if (phrase.length > 1 && !/[うくすつぬふむゆるる]$/.test(phrase)) {
+          return phrase + "の夢";
+        }
+        return null; // 呼び出し元でshowUnrecognizedに流す
       }
     }
 
@@ -2427,7 +2443,7 @@
 
       // 3. 認識できなかった場合 → ユーザーに通知して再録音を促す
       const title = generateDreamTitle(null, null);
-      if (title === "あなたの夢" || title === "Your dream") {
+      if (!title) {
         showUnrecognized();
       } else {
         fetchPexels(transcript, title);
