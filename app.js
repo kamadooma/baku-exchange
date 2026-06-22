@@ -2846,13 +2846,10 @@
         }
       }
 
-      // 3. 認識できなかった場合 → ユーザーに通知して再録音を促す
-      const title = generateDreamTitle(null, null);
-      if (!title) {
-        showUnrecognized();
-      } else {
-        fetchPexels(transcript, title);
-      }
+      // 3. 何もマッチしない → グラデーションオーブ（夢は不可解のまま）
+      const title = generateDreamTitle(null, null) || "Unknown Dream";
+      const price = Math.floor(Math.random() * 900 + 100);
+      loadOrb(title, null, null, price); // imgUrl/vidUrlなし → グラデーションフォールバック
     }
 
     // 具体名詞JP→EN辞書（事前DLスラグへのマッピング）
@@ -2946,31 +2943,35 @@
         imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", price);
     }
 
-    function loadOrb(name, vidUrl, imgUrl, price) {
-      sendToPillow(imgUrl); // 円形モニターへ送信
+    let _dissolveTimer = null;
+
+    // imgUrls: 単一string または string[] (複数の時はディゾルブで切り替え)
+    function loadOrb(name, vidUrl, imgUrl, price, extraImgs) {
+      if (imgUrl) sendToPillow(imgUrl); // 円形モニターへ送信
       goStep(3);
       document.getElementById("sellResultName").textContent = name;
       document.getElementById("sellResultPrice").textContent = price + " BAKU";
       const orb = document.getElementById("sellResultOrb");
-      orb.innerHTML = '<div class="sell-orb-hint">tap to sell</div>';
+      orb.innerHTML = '<div class="sell-orb-hint">Release</div>';
       orb.style.backgroundImage = "";
-      // OrbGLのcanvasを借用してWebGLエフェクトを適用
+      if (_dissolveTimer) { clearInterval(_dissolveTimer); _dissolveTimer = null; }
+
+      const FB = imgUrl ? [0.18, 0.12, 0.28] : [0.32, 0.08, 0.42]; // グラデ色（認識不能は紫）
       if (window.OrbGL && OrbGL.ok() && orbCanvas) {
         orbCanvas.style.cssText = "position:absolute;inset:0;width:100%;height:100%;border-radius:50%;";
         orb.insertBefore(orbCanvas, orb.firstChild);
-        const FB = [0.18, 0.12, 0.28];
-        OrbGL.setMedia(imgUrl, vidUrl, FB, 0.42);
-      } else {
-        // フォールバック: 動画/画像を直接表示
-        if (vidUrl) {
-          const vid = document.createElement("video");
-          vid.src = vidUrl; vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
-          vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
-          vid.onerror = () => { orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover"; };
-          orb.insertBefore(vid, orb.firstChild);
-        } else if (imgUrl) {
-          orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover";
+        OrbGL.setMedia(imgUrl || "", vidUrl || "", FB, 0.42);
+        // 複数画像があればディゾルブで切り替え
+        if (extraImgs && extraImgs.length > 0) {
+          const imgs = [imgUrl, ...extraImgs].filter(Boolean);
+          let idx = 0;
+          _dissolveTimer = setInterval(() => {
+            idx = (idx + 1) % imgs.length;
+            OrbGL.setMedia(imgs[idx], "", FB, 0.42);
+          }, 4000);
         }
+      } else if (imgUrl) {
+        orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover";
       }
       orb.onclick = () => {
         if (orbCanvas && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
