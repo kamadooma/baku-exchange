@@ -1901,14 +1901,26 @@
   (function() {
     const PEXELS_KEY = "9heRDTAA2Hs38mjrmR4FTW81nU18jWbQF2iFQxvfXzmZNHYjUhKzERBa";
     const GUIDE = [
-      [0,   "目を閉じて、呼吸を整えてください"],
-      [30,  "最近見た夢を思い出してください"],
-      [60,  "その夢の色、形、感触を感じてください"],
-      [90,  "夢の中で何が起きていましたか？"],
-      [120, "その夢は、あなたに何かを伝えていましたか？"],
-      [150, "夢を手放す準備ができたら、次へ進んでください"],
+      [0,   "目を閉じて、呼吸を整えてください",         "Close your eyes. Let your breath settle."],
+      [30,  "最近見た夢を思い出してください",             "Recall a dream you've had recently."],
+      [60,  "その夢の色、形、感触を感じてください",       "Feel its colors, its shapes, its texture."],
+      [90,  "夢の中で何が起きていましたか？",             "What was happening inside that dream?"],
+      [120, "その夢は、あなたに何かを伝えていましたか？", "What was the dream trying to tell you?"],
+      [150, "夢を手放す準備ができたら、次へ進んでください", "When you are ready to let go — move forward."],
     ];
     let meditateIv = null, transcript = "", matched = null, rec = null;
+    let lastSpokenIdx = -1;
+
+    function speak(jp, en) {
+      if (!window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const uJp = new SpeechSynthesisUtterance(jp);
+      uJp.lang = "ja-JP"; uJp.rate = 0.88; uJp.pitch = 0.95; uJp.volume = 0.9;
+      const uEn = new SpeechSynthesisUtterance(en);
+      uEn.lang = "en-US"; uEn.rate = 0.82; uEn.pitch = 0.95; uEn.volume = 0.85;
+      uJp.onend = () => { setTimeout(() => window.speechSynthesis.speak(uEn), 600); };
+      window.speechSynthesis.speak(uJp);
+    }
 
     function goStep(n) {
       [0,1,2,3,4].forEach(i => {
@@ -1939,6 +1951,7 @@
     });
     $("#sellClose").addEventListener("click", () => {
       clearInterval(meditateIv);
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
       $("#selldream").classList.add("hidden");
     });
 
@@ -1949,7 +1962,9 @@
       const timerEl = document.getElementById("sellTimer");
       const guideEl = document.getElementById("sellGuideText");
       const nextBtn = document.getElementById("sellMedNext");
+      lastSpokenIdx = 0;
       guideEl.textContent = GUIDE[0][1];
+      speak(GUIDE[0][1], GUIDE[0][2]);
       clearInterval(meditateIv);
       meditateIv = setInterval(() => {
         secs--;
@@ -1957,7 +1972,14 @@
         timerEl.textContent = m + ":" + String(s).padStart(2, "0");
         const elapsed = 180 - secs;
         for (let i = GUIDE.length - 1; i >= 0; i--) {
-          if (elapsed >= GUIDE[i][0]) { guideEl.textContent = GUIDE[i][1]; break; }
+          if (elapsed >= GUIDE[i][0]) {
+            if (i !== lastSpokenIdx) {
+              lastSpokenIdx = i;
+              guideEl.textContent = GUIDE[i][1];
+              speak(GUIDE[i][1], GUIDE[i][2]);
+            }
+            break;
+          }
         }
         if (secs <= 0) {
           clearInterval(meditateIv);
@@ -1968,6 +1990,7 @@
 
     document.getElementById("sellMedNext").addEventListener("click", () => {
       clearInterval(meditateIv);
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
       goStep(2);
     });
 
