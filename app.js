@@ -2072,6 +2072,15 @@
     document.getElementById("sellMedSkip").addEventListener("click", advanceToVoice);
 
     // Step 2: voice input
+    function showUnrecognized() {
+      const trEl = document.getElementById("sellTranscript");
+      const doneBtn = document.getElementById("sellVoiceDone");
+      const retakeBtn = document.getElementById("sellRetake");
+      if (trEl) trEl.innerHTML = '<span style="color:var(--g2);font-style:italic;">夢が認識されませんでした。<br><small style="color:var(--g3);">Dream not recognised — please try again.</small></span>';
+      if (doneBtn) doneBtn.classList.remove("visible");
+      if (retakeBtn) retakeBtn.classList.add("visible");
+    }
+
     function resetVoice() {
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
       document.getElementById("sellMic").classList.remove("recording");
@@ -2293,6 +2302,35 @@
       { w:["桃源郷","理想郷","shangri-la","hidden paradise","隠れた楽園"],                   t:"SHANGRI" },
       { w:["ロボット","android","AI","機械になった","自動化"],                               t:"ROBOT" },
       { w:["旅","adventure","journey","世界中を旅","バックパック"],                          t:"TRVL" },
+      { w:["家に帰れない","帰り道","迷子","道に迷","lost way","cannot go home","家に戻れ"],   t:"ROOMS" },
+      { w:["走っても進まない","走れない","足が動か","legs won't move","body won't move"],     t:"MUTE" },
+      { w:["叫んでも聞こえない","誰も助けて","誰も来ない","alone no one","無視される"],       t:"ALONE" },
+      { w:["時間が止まった","時が止まる","time stopped","止まった世界"],                       t:"LOOP" },
+      // 動詞・行動
+      { w:["消えた","消えてしまった","disappeared","vanished","いなくなった"],               t:"ALONE" },
+      { w:["助けられた","救われた","saved","rescued","助けてくれた"],                         t:"REUNI" },
+      { w:["殺された","殺される","killed","murdered","暗殺","刺された","撃たれた"],           t:"FUNRL" },
+      { w:["閉じ込められ","逃げられない","trapped","escape impossible","出られない","鍵が"],  t:"MUTE" },
+      { w:["忘れた","忘れてしまった","forgotten","cannot remember","思い出せない"],           t:"FORGETEX" },
+      { w:["爆発した","爆発する","exploded","blast","崩れ落ち","崩壊した"],                   t:"QUAKE" },
+      { w:["眠れない","眠ろうとした","can't sleep","insomnia","起きられない"],               t:"NOWAKE" },
+      { w:["浮かんだ","浮いた","floating","levitating","宙に浮","weightless"],              t:"FLY" },
+      { w:["泣いた","泣いていた","crying","sobbing","涙が止まら"],                           t:"ALONE" },
+      { w:["笑えない","笑えなかった","couldn't laugh","forced smile"],                       t:"MUTE" },
+      // 場所
+      { w:["学校","教室","廊下","校舎","school building","classroom"],                       t:"EXAM" },
+      { w:["病院","手術室","待合室","hospital room","operating room","検査"],               t:"CURE" },
+      { w:["刑務所","牢屋","監獄","prison","jail","locked up","独房"],                      t:"SURV" },
+      { w:["空港","飛行機","搭乗","航空機","airplane","plane crash","墜落"],                 t:"TRVL" },
+      { w:["海の底","海底","深い海","bottom of the sea","beneath the ocean"],               t:"DROWN" },
+      { w:["山","崖","頂上","断崖","cliff","mountain top","転落"],                          t:"FALL" },
+      { w:["屋根の上","高い場所","ビルの上","top of building","高所","高いところ"],           t:"FALL" },
+      { w:["お風呂","裸で外","公衆の面前","public place naked","人前で"],                    t:"NAKED" },
+      { w:["遊園地","迷路","テーマパーク","amusement park","haunted house"],                 t:"ROOMS" },
+      { w:["砂漠","荒野","草原","savannah","wasteland","何もない場所"],                      t:"ALONE" },
+      { w:["宇宙空間","無重力","宇宙ステーション","space station","weightlessness"],          t:"MARS" },
+      { w:["地下","地底","洞窟の中","cave","underground","地下鉄","トンネル"],               t:"NOWAKE" },
+    ];
       // 政治・権力・社会
       { w:["独裁","独裁者","独裁政権","dictator","dictatorship","tyranny","専制"],          t:"FASC" },
       { w:["ファシズム","全体主義","fascism","totalitarian","権威主義","支配者"],            t:"FASC" },
@@ -2387,9 +2425,13 @@
         }
       }
 
-      // 3. Fallback: 日本語→英語変換してPexels
+      // 3. 認識できなかった場合 → ユーザーに通知して再録音を促す
       const title = generateDreamTitle(null, null);
-      fetchPexels(transcript, title);
+      if (title === "あなたの夢" || title === "Your dream") {
+        showUnrecognized();
+      } else {
+        fetchPexels(transcript, title);
+      }
     }
 
     // 日本語テキストをPexels検索用英語に変換
