@@ -535,6 +535,176 @@ CONCEPT_QUERIES = {
   "teeth_close":    "teeth close up macro dramatic",
   "hands_aging":    "aging hands wrinkled dark close up",
   "face_mirror":    "face mirror reflection dark dramatic",
+
+  # ── Food & Drink ──
+  "ramen":          "ramen noodle soup bowl japanese",
+  "sushi":          "sushi plate japanese food",
+  "rice_bowl":      "rice bowl japanese food",
+  "bread":          "fresh bread bakery warm",
+  "cake_sweet":     "birthday cake sweet dessert",
+  "ice_cream":      "ice cream cone melting",
+  "vegetables":     "fresh vegetables colorful market",
+  "fruit_bowl":     "fruit bowl colorful fresh",
+  "coffee_dark":    "coffee cup dark morning",
+  "school_lunch":   "school lunch cafeteria tray",
+  "fast_food":      "fast food burger fries",
+  "pizza":          "pizza slice cheese pull",
+  "chocolate":      "chocolate dark sweet",
+  "watermelon":     "watermelon slice summer",
+  "barbecue":       "barbecue grill meat outdoor",
+  "noodles":        "noodles pasta bowl steam",
+  "bento":          "japanese bento box lunch",
+  "soda_drink":     "soda drink bubbles cold",
+  "alcohol_drink":  "whiskey glass dark bar",
+  "tea_ceremony":   "japanese tea ceremony serene",
+
+  # ── Everyday Places ──
+  "convenience_store": "convenience store night japan",
+  "supermarket":    "supermarket aisle products",
+  "train_station_jp": "japanese train station busy platform",
+  "office_building": "office building interior corporate",
+  "apartment_night": "apartment building night windows",
+  "restaurant_dark": "restaurant interior dim cozy",
+  "cafe_morning":   "cafe morning light coffee table",
+  "park_bench":     "park bench autumn leaves",
+  "playground":     "empty playground swing night",
+  "shopping_street": "shopping street japan busy",
+  "arcade":         "arcade game center japan night",
+  "karaoke":        "karaoke microphone stage lights",
+  "izakaya":        "izakaya japanese bar night lanterns",
+  "onsen":          "onsen hot spring steam outdoor",
+  "temple_garden":  "japanese garden zen peaceful",
+  "beach_summer":   "beach summer ocean sunny",
+  "ski_slope":      "ski slope snow winter mountain",
+  "concert_hall":   "concert hall empty stage",
+  "museum_dark":    "museum dark corridor art",
+  "maze_dark":      "dark maze corridor endless",
+
+  # ── Transportation ──
+  "bicycle":        "bicycle road street riding",
+  "motorcycle":     "motorcycle road speed dark",
+  "bus_empty":      "empty bus night interior",
+  "taxi":           "taxi cab night city street",
+  "bullet_train":   "shinkansen bullet train speed blur",
+  "airplane_window": "airplane window clouds view",
+  "helicopter":     "helicopter flying city night",
+  "boat_ocean":     "small boat ocean alone",
+  "submarine":      "submarine underwater dark",
+  "hot_air_balloon": "hot air balloon sky sunrise",
+  "rocket_launch":  "rocket launch fire smoke",
+  "old_car":        "vintage old car abandoned",
+  "ambulance":      "ambulance night emergency lights",
+  "police_car":     "police car night lights",
+  "fire_truck":     "fire truck emergency night",
+
+  # ── Weather & Time ──
+  "morning_light":  "morning golden light bedroom",
+  "midnight_room":  "room midnight dark blue",
+  "sunset_orange":  "sunset orange dramatic sky",
+  "heavy_rain":     "heavy rain storm street",
+  "snowfall_quiet": "snowfall quiet street night",
+  "thick_fog":      "thick fog street mysterious",
+  "heatwave":       "heat wave summer dry cracked",
+  "after_rain":     "after rain puddle reflection",
+  "storm_window":   "storm outside window looking",
+  "bright_sun":     "bright sun desert bleached",
+
+  # ── Everyday Objects ──
+  "smartphone":     "smartphone screen dark glowing",
+  "broken_phone":   "broken cracked phone screen",
+  "old_letter":     "handwritten letter envelope vintage",
+  "mirror_bathroom": "bathroom mirror reflection morning",
+  "empty_wallet":   "empty wallet money gone",
+  "passport_travel": "passport travel documents",
+  "alarm_clock":    "alarm clock ringing morning",
+  "locked_door":    "locked door dark hallway",
+  "window_night":   "window looking out night rain",
+  "staircase_dark": "staircase dark empty echoing",
+  "elevator":       "elevator door opening dark",
+  "broken_tv":      "broken television static dark",
+  "old_radio":      "vintage radio old music",
+  "teddy_bear":     "teddy bear old worn child",
+  "toy_box":        "toy box childhood memories",
+  "wedding_ring":   "wedding ring alone abandoned",
+  "glasses_broken": "glasses broken floor",
+  "briefcase":      "briefcase work office dark",
+  "shopping_bag":   "shopping bags many consumer",
+  "piggy_bank":     "piggy bank broken coins",
+
+  # ── People & Social Situations ──
+  "crowd_busy":     "crowd busy street people moving",
+  "empty_school":   "empty school hallway lockers",
+  "classroom_kids": "school classroom children studying",
+  "office_stress":  "office worker stress deadline",
+  "family_dinner":  "family dinner table together",
+  "argument_people": "two people arguing confrontation",
+  "lonely_person":  "lonely person sitting alone dark",
+  "running_late":   "person running late rush street",
+  "lost_person":    "person lost confused street map",
+  "job_interview":  "job interview table formal",
+  "funeral_procession": "funeral procession cemetery dark",
+  "wedding_ceremony": "wedding ceremony aisle flowers",
+  "birthday_party": "birthday party celebration candles",
+  "graduation_ceremony": "graduation ceremony diploma stage",
+  "protest_crowd":  "protest crowd street signs",
+  "sports_game":    "sports game competition running",
+  "dating_couple":  "couple dating romantic dinner",
+  "old_couple":     "elderly couple hand in hand",
+  "newborn_baby":   "newborn baby sleeping peaceful",
+  "doctor_patient": "doctor patient hospital consultation",
+
+  # ── Body & Health ──
+  "running_person": "person running marathon road",
+  "swimming_pool":  "swimming pool water lanes",
+  "sleeping_person": "sleeping person bed peaceful",
+  "hospital_bed":   "hospital bed empty white",
+  "dentist_chair":  "dentist chair equipment bright",
+  "surgery_light":  "surgery operating room bright lights",
+  "x_ray":          "xray skeleton medical dark",
+  "yoga_meditation": "yoga meditation peaceful",
+  "crying_person":  "person crying tears sadness",
+  "laughing_person": "person laughing joy happy",
+
+  # ── Animals (more) ──
+  "cat_sleeping":   "cat sleeping peaceful curled",
+  "dog_running":    "dog running happy park",
+  "bird_cage":      "bird cage empty open",
+  "fish_tank":      "fish tank aquarium dark",
+  "horse_dark":     "horse dark dramatic field",
+  "crow_single":    "single crow dark perched",
+  "white_dove":     "white dove flying peace",
+  "black_swan":     "black swan elegant dark water",
+  "rabbit_white":   "white rabbit dreamlike surreal",
+  "cat_eyes":       "cat eyes glowing dark night",
+
+  # ── Nature & Seasons ──
+  "cherry_blossom": "cherry blossom sakura falling",
+  "autumn_path":    "autumn path leaves falling",
+  "winter_snow":    "winter snow quiet peaceful",
+  "summer_field":   "summer flower field bright",
+  "rain_street":    "rain street puddles night",
+  "sunrise_mountain": "sunrise mountain peak dramatic",
+  "full_moon":      "full moon dark sky forest",
+  "shooting_star":  "shooting star night sky wish",
+  "river_flow":     "river flowing peaceful nature",
+  "ocean_horizon":  "ocean horizon sunset alone",
+  "earthquake_crack": "earthquake ground crack road",
+  "flood_street":   "flood street underwater car",
+  "wildfire_tree":  "wildfire burning tree dramatic",
+  "ice_storm":      "ice storm frozen branches",
+  "drought_land":   "drought cracked dry land",
+
+  # ── Misc Dream Scenarios ──
+  "teleportation":  "teleportation light flash portal",
+  "invisibility":   "invisible person outline ghost",
+  "giant_small":    "giant small scale surreal dream",
+  "mirror_infinite": "infinite mirror reflection corridor",
+  "empty_city":     "empty abandoned city street",
+  "underwater_city": "underwater city ruins fantasy",
+  "floating_island": "floating island sky fantasy",
+  "door_nowhere":   "door standing alone field nowhere",
+  "endless_road":   "endless road horizon straight",
+  "falling_upward": "falling upward sky surreal inverse",
 }
 
 def download_concepts():
@@ -545,17 +715,27 @@ def download_concepts():
         out_path = os.path.join(OUT, f"concept_{slug}.jpg")
         if os.path.exists(out_path):
             continue
-        try:
-            img_url = pexels_photo(query)
-            if not img_url:
-                print(f"!!  concept_{slug}: 画像なし"); skip += 1; continue
-            raw = download(img_url)
-            with open(out_path, "wb") as f:
-                f.write(raw)
-            print(f"OK  concept_{slug:20s} <- \"{query[:40]}\"  ({len(raw)//1024}KB)")
-            ok += 1; time.sleep(0.15)
-        except Exception as e:
-            print(f"!!  concept_{slug}: {e}"); skip += 1
+        # retry up to 5 times with exponential backoff on 429
+        for attempt in range(5):
+            try:
+                img_url = pexels_photo(query)
+                if not img_url:
+                    print(f"!!  concept_{slug}: 画像なし"); skip += 1; break
+                raw = download(img_url)
+                with open(out_path, "wb") as f:
+                    f.write(raw)
+                print(f"OK  concept_{slug:20s} <- \"{query[:40]}\"  ({len(raw)//1024}KB)")
+                ok += 1; time.sleep(1.2)
+                break
+            except Exception as e:
+                if "429" in str(e):
+                    wait = 20 * (2 ** attempt)
+                    print(f"..  concept_{slug}: 429 wait {wait}s (attempt {attempt+1})")
+                    time.sleep(wait)
+                else:
+                    print(f"!!  concept_{slug}: {e}"); skip += 1; break
+        else:
+            print(f"!!  concept_{slug}: max retries exceeded"); skip += 1
     print(f"\n取得 {ok} / スキップ {skip}")
 
 if __name__ == "__main__":
