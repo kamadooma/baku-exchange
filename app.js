@@ -125,6 +125,8 @@
     }));
     const si = $("#searchInput");
     if (si) si.addEventListener("input", () => { searchQuery = si.value; buildList(); });
+    const sb = $("#searchBtn");
+    if (sb) sb.addEventListener("click", () => { if (si) si.focus(); });
   }
   function buildList() {
     const el = $("#marketList"); el.innerHTML = "";
