@@ -2340,11 +2340,12 @@
         if (phrase.length > 2) return phrase;
         return "Your dream";
       } else {
-        // 日本語: 口語・フィラーを除去
+        // 日本語: 枕詞・口語・フィラーを除去
         const clean = transcript
+          .replace(/^(夢の中で|夢の中に|夢の中では|夢の中の|夢の中|夢で|夢に)[、\s]*/g, "")
           .replace(/^(えーと|えー|あのー|あの|その|なんか|こう|ちょっと|まあ)[、\s]*/g, "")
           .replace(/という夢(を見た|です|でした)?/g, "")
-          .replace(/(夢を見た|夢でした|夢です|夢の話|夢なんですが)/g, "")
+          .replace(/(夢を見た|夢でした|夢です|夢の話|夢なんですが|夢を見ました)/g, "")
           .replace(/[、。！？…‥～〜]/g, " ")
           .trim();
         const phrase = clean
@@ -2357,7 +2358,9 @@
     }
 
     function matchAndLoad() {
-      const q = transcript;
+      // 「夢の中で〜」などの枕詞を除去してからマッチング
+      const q = transcript
+        .replace(/^(夢の中で|夢の中に|夢の中では|夢の中|夢で|夢に)[、\s]*/g, "");
       const ql = q.toLowerCase();
 
       // 1. 視覚名詞（具体的に見えるもの）→ ローカルconceptファイル直接表示
