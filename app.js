@@ -2105,11 +2105,60 @@
 
     document.getElementById("sellRetake").addEventListener("click", resetVoice);
 
-    document.getElementById("sellVoiceDone").addEventListener("click", () => {
+    document.getElementById("sellVoiceDone").addEventListener("click", async () => {
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
       document.getElementById("sellMic").classList.remove("recording");
+      // Claude APIで分析を試みる（pillow serverが起動していれば）
+      try {
+        const res = await fetch(PILLOW_SERVER + "/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ transcript }),
+          signal: AbortSignal.timeout(8000),
+        });
+        if (res.ok) {
+          const analysis = await res.json();
+          return matchAndLoadWithAnalysis(analysis);
+        }
+      } catch(e) {}
+      // フォールバック: ローカルマッチング
       matchAndLoad();
     });
+
+    function matchAndLoadWithAnalysis(analysis) {
+      const { ticker, keywords_en, summary_jp } = analysis;
+      if (ticker) {
+        const s = byTicker.get(ticker);
+        if (s) {
+          const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
+          return loadOrb(summary_jp || s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
+        }
+      }
+      // ティッカーマッチなし → Pexels
+      fetchPexelsEn(keywords_en || "dream surreal abstract");
+    }
+
+    async function fetchPexelsEn(keywords) {
+      const q = encodeURIComponent(keywords.slice(0, 80));
+      let vidUrl = null, imgUrl = null;
+      try {
+        const [vRes, pRes] = await Promise.all([
+          fetch("https://api.pexels.com/videos/search?query=" + q + "&per_page=1", { headers: { Authorization: PEXELS_KEY } }),
+          fetch("https://api.pexels.com/v1/search?query=" + q + "&per_page=1&orientation=square", { headers: { Authorization: PEXELS_KEY } }),
+        ]);
+        const vData = await vRes.json(), pData = await pRes.json();
+        const files = vData.videos?.[0]?.video_files || [];
+        const sd = files.filter(f => f.quality === "sd");
+        const chosen = (sd.length ? sd : files).sort((a,b) => (a.width||9999)-(b.width||9999));
+        vidUrl = chosen[0]?.link || null;
+        imgUrl = pData.photos?.[0]?.src?.large || null;
+      } catch(e) {}
+      const price = Math.floor(Math.random() * 900 + 100);
+      const fb = state[Math.floor(Math.random() * state.length)];
+      loadOrb(transcript.slice(0, 20) || fb.nameJp,
+        vidUrl || "assets/footage/" + fb.ticker + ".mp4?v=20260622",
+        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", price);
+    }
 
     // 夢キーワード → ティッカー対応表（日本語の夢の言葉から直接マッチ）
     const DREAM_KW = [
