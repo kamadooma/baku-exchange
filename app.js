@@ -1900,27 +1900,32 @@
   // ---- 夢を吸い出すフロー ----
   (function() {
     const PEXELS_KEY = "9heRDTAA2Hs38mjrmR4FTW81nU18jWbQF2iFQxvfXzmZNHYjUhKzERBa";
-    const GUIDE = [
-      [0,   "目を閉じて、呼吸を整えてください",         "Close your eyes. Let your breath settle."],
-      [30,  "最近見た夢を思い出してください",             "Recall a dream you've had recently."],
-      [60,  "その夢の色、形、感触を感じてください",       "Feel its colors, its shapes, its texture."],
-      [90,  "夢の中で何が起きていましたか？",             "What was happening inside that dream?"],
-      [120, "その夢は、あなたに何かを伝えていましたか？", "What was the dream trying to tell you?"],
-      [150, "夢を手放す準備ができたら、次へ進んでください", "When you are ready to let go — move forward."],
-    ];
-    let meditateIv = null, transcript = "", matched = null, rec = null;
-    let lastSpokenIdx = -1;
 
-    function speak(jp, en) {
-      if (!window.speechSynthesis) return;
-      window.speechSynthesis.cancel();
-      const uJp = new SpeechSynthesisUtterance(jp);
-      uJp.lang = "ja-JP"; uJp.rate = 0.88; uJp.pitch = 0.95; uJp.volume = 0.9;
-      const uEn = new SpeechSynthesisUtterance(en);
-      uEn.lang = "en-US"; uEn.rate = 0.82; uEn.pitch = 0.95; uEn.volume = 0.85;
-      uJp.onend = () => { setTimeout(() => window.speechSynthesis.speak(uEn), 600); };
-      window.speechSynthesis.speak(uJp);
-    }
+    // 瞑想ナレーション（JP→EN speech chain）
+    const NAR = [
+      { jp:"息を、整えます。",                                                             en:"Breathe." },
+      { jp:"全身を楽にして。力を抜いて——目を閉じて。",                                     en:"Let your whole body relax. Release the tension — and close your eyes." },
+      { jp:"鼻から、ゆっくりと息を吸って、口から吐き切ります。吐き切って。もう一度。",   en:"Breathe in, slowly, through your nose. Breathe out fully, through your mouth. All the way out. Once more." },
+      { jp:"鼻から、ゆっくりと息を吸って、口から吐き切ります。あなたの夢は、まだ、ここにあります。", en:"Breathe in, slowly, through your nose. Breathe out fully.\nYour dream is still — here." },
+      { jp:"ひとつ、思い浮かべてください。手放したい夢を。あるいは、悪夢を。",           en:"Bring one to mind.\nThe dream you want to release. Or the nightmare." },
+      { jp:"——それはいつから、あなたのものでしたか？夢を持つことは良いことだと、私たちは子どもの頃から繰り返し言われてきました。", en:"— When did it become yours?\nWe were told, as children, that having dreams was good." },
+      { jp:"けれど、夢はやみくもに抱えるものではありません。それは、そもそも、ほんとうにあなたのものでしたか？", en:"But dreams are not things to be carried blindly.\nWas it ever, truly, yours?" },
+      { jp:"誰かが欲しがっていたものを、あなたも欲しがっているだけかもしれません。あるいは——あなたにとって、それは怖いものかもしれません。", en:"Perhaps it was something someone else wanted, and you only learned to want it too.\nOr perhaps — it is something that frightens you." },
+      { jp:"おそれと、ほんとうの望みは、表裏一体です。今いちど、その夢が本当にいらないか、自分に問うてください。", en:"Fear and true desire are two sides of the same coin.\nAsk yourself, once more, whether you really no longer need this dream." },
+      { jp:"息を、ゆっくり、吐いてください。その夢のかたちを、感じてみてください。重さ。温度。輪郭。", en:"Breathe out — slowly.\nSense the shape of it.\nIts weight. Its temperature. Its edges." },
+      { jp:"それを、胸の中心から、ゆっくりと持ち上げます。",                              en:"Lift it, slowly, from the centre of your chest." },
+      { jp:"あなたの呼吸に乗せて——私が三つ数えたら、弓を引き絞るように、一気に、吐き出します。", en:"Carry it on your breath — and when I count to three, release it, all at once, like an arrow loosed from a bow." },
+      { jp:"3。", en:"Three.", pause:1800 },
+      { jp:"2。", en:"Two.",   pause:1800 },
+      { jp:"1。", en:"One.",   pause:1800 },
+      { jp:"Bakuが、それを受け取ります。",                                                en:"The Baku receives it.", pause:2000 },
+      { jp:"あなたの夢は、これからマーケットへ放たれます。そのとき、あなたの個人情報は消されます。だから、夢のかたちは、少しだけ、変形します。あなたを守るために。——安心してください。", en:"Your dream is now released into the market.\nAt that moment, your personal information is erased. Because of this, the shape of the dream will shift, slightly.\nTo protect you.\n— Please, be at ease." },
+      { jp:"誰かが、それを欲しがるかもしれません。誰かにとって、それは値のつくものになるかもしれません。あなたにとっては、もう、必要のないものです。", en:"Someone, somewhere, may want it.\nFor someone, it may carry a price.\nFor you, it is no longer needed." },
+      { jp:"最後に、ひとつだけ、問います。——この夢を、手放していいですか？",              en:"One last question.\n— Will you release this dream?", final:true },
+    ];
+
+    let meditateIv = null, narTO = null, narIdx = 0;
+    let transcript = "", rec = null;
 
     function goStep(n) {
       [0,1,2,3,4].forEach(i => {
@@ -1929,10 +1934,14 @@
       });
     }
 
-    function resetFlow() {
-      transcript = ""; matched = null;
-      clearInterval(meditateIv);
+    function stopAll() {
+      clearInterval(meditateIv); clearTimeout(narTO);
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
+    }
+
+    function resetFlow() {
+      stopAll(); transcript = "";
       const mic = document.getElementById("sellMic");
       if (mic) mic.classList.remove("recording");
       const tr = document.getElementById("sellTranscript");
@@ -1941,66 +1950,64 @@
         const el = document.getElementById(id);
         if (el) el.classList.remove("visible");
       });
-      document.getElementById("sellResultOrb").innerHTML = "";
+      const orb = document.getElementById("sellResultOrb");
+      if (orb) { orb.innerHTML = '<div class="sell-orb-hint">tap to sell</div>'; orb.style.backgroundImage = ""; }
       goStep(0);
     }
 
-    $("#toSell").addEventListener("click", () => {
-      resetFlow();
-      $("#selldream").classList.remove("hidden");
-    });
-    $("#sellClose").addEventListener("click", () => {
-      clearInterval(meditateIv);
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      $("#selldream").classList.add("hidden");
-    });
+    $("#toSell").addEventListener("click", () => { resetFlow(); $("#selldream").classList.remove("hidden"); });
+    $("#sellClose").addEventListener("click", () => { stopAll(); $("#selldream").classList.add("hidden"); });
 
-    // Step 0 → 1
+    // Step 0 → 1: start narration chain
     document.getElementById("sellStart").addEventListener("click", () => {
       goStep(1);
+      narIdx = 0;
       let secs = 180;
       const timerEl = document.getElementById("sellTimer");
-      const guideEl = document.getElementById("sellGuideText");
-      const nextBtn = document.getElementById("sellMedNext");
-      lastSpokenIdx = 0;
-      guideEl.textContent = GUIDE[0][1];
-      speak(GUIDE[0][1], GUIDE[0][2]);
-      clearInterval(meditateIv);
       meditateIv = setInterval(() => {
-        secs--;
+        secs = Math.max(0, secs - 1);
         const m = Math.floor(secs / 60), s = secs % 60;
         timerEl.textContent = m + ":" + String(s).padStart(2, "0");
-        const elapsed = 180 - secs;
-        for (let i = GUIDE.length - 1; i >= 0; i--) {
-          if (elapsed >= GUIDE[i][0]) {
-            if (i !== lastSpokenIdx) {
-              lastSpokenIdx = i;
-              guideEl.textContent = GUIDE[i][1];
-              speak(GUIDE[i][1], GUIDE[i][2]);
-            }
-            break;
-          }
-        }
-        if (secs <= 0) {
-          clearInterval(meditateIv);
-          nextBtn.classList.add("visible");
-        }
       }, 1000);
+      playNar(0);
     });
+
+    function setGuideText(text) {
+      const el = document.getElementById("sellGuideText");
+      if (!el) return;
+      el.style.opacity = "0";
+      setTimeout(() => { el.textContent = text; el.style.opacity = "1"; }, 350);
+    }
+
+    function playNar(idx) {
+      if (idx >= NAR.length) {
+        clearInterval(meditateIv);
+        document.getElementById("sellMedNext").classList.add("visible");
+        return;
+      }
+      narIdx = idx;
+      const n = NAR[idx];
+      setGuideText(n.jp);
+
+      if (!window.speechSynthesis) {
+        narTO = setTimeout(() => playNar(idx + 1), 3000);
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const uJp = new SpeechSynthesisUtterance(n.jp);
+      uJp.lang = "ja-JP"; uJp.rate = 0.86; uJp.pitch = 0.95; uJp.volume = 0.9;
+      const uEn = new SpeechSynthesisUtterance(n.en);
+      uEn.lang = "en-US"; uEn.rate = 0.80; uEn.pitch = 0.95; uEn.volume = 0.85;
+      uEn.onend = () => { narTO = setTimeout(() => playNar(idx + 1), n.pause || 900); };
+      uJp.onend = () => { setTimeout(() => window.speechSynthesis.speak(uEn), 550); };
+      window.speechSynthesis.speak(uJp);
+    }
 
     document.getElementById("sellMedNext").addEventListener("click", () => {
-      clearInterval(meditateIv);
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      goStep(2);
+      stopAll(); goStep(2);
     });
 
-    // Step 2
-    document.getElementById("sellYes").addEventListener("click", () => goStep(3));
-    document.getElementById("sellNo").addEventListener("click", () => {
-      $("#selldream").classList.add("hidden");
-    });
-
-    // Step 3: voice
+    // Step 2: voice input
     document.getElementById("sellMic").addEventListener("click", () => {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const micBtn = document.getElementById("sellMic");
@@ -2026,21 +2033,20 @@
     document.getElementById("sellVoiceDone").addEventListener("click", () => {
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
       document.getElementById("sellMic").classList.remove("recording");
-      matchAndShow();
+      matchAndLoad();
     });
 
-    function matchAndShow() {
+    function matchAndLoad() {
       const q = transcript.toLowerCase();
       let best = null, bestScore = 0;
       state.forEach(s => {
         const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||""].join(" ").toLowerCase();
-        const words = q.split(/[\s、。！？,. ]+/).filter(w => w.length > 1);
+        const words = q.split(/[\s、。！？,.]+/).filter(w => w.length > 1);
         let score = words.reduce((a, w) => a + (text.includes(w) ? 1 : 0), 0);
         if (score > bestScore) { bestScore = score; best = s; }
       });
       if (best && bestScore > 0) {
-        matched = best;
-        showResult(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622");
+        loadOrb(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622");
       } else {
         fetchPexels(transcript);
       }
@@ -2055,39 +2061,42 @@
           fetch("https://api.pexels.com/v1/search?query=" + q + "&per_page=1&orientation=square", { headers: { Authorization: PEXELS_KEY } }),
         ]);
         const vData = await vRes.json(), pData = await pRes.json();
-        const files = (vData.videos?.[0]?.video_files || []);
+        const files = vData.videos?.[0]?.video_files || [];
         const sd = files.filter(f => f.quality === "sd");
         const chosen = (sd.length ? sd : files).sort((a,b) => (a.width||9999)-(b.width||9999));
         vidUrl = chosen[0]?.link || null;
         imgUrl = pData.photos?.[0]?.src?.large || null;
       } catch(e) {}
-      const fallback = state[Math.floor(Math.random() * state.length)];
-      showResult(
-        transcript.slice(0, 24) || fallback.nameJp,
-        vidUrl || "assets/footage/" + fallback.ticker + ".mp4?v=20260622",
-        imgUrl || "assets/footage/" + fallback.ticker + ".jpg?v=20260622"
-      );
+      const fb = state[Math.floor(Math.random() * state.length)];
+      loadOrb(transcript.slice(0, 24) || fb.nameJp,
+        vidUrl || "assets/footage/" + fb.ticker + ".mp4?v=20260622",
+        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622");
     }
 
-    function showResult(name, vidUrl, imgUrl) {
-      goStep(4);
+    function loadOrb(name, vidUrl, imgUrl) {
+      goStep(3);
       document.getElementById("sellResultName").textContent = name;
       const orb = document.getElementById("sellResultOrb");
-      orb.innerHTML = "";
+      orb.innerHTML = '<div class="sell-orb-hint">tap to sell</div>';
+      orb.style.backgroundImage = "";
       if (vidUrl) {
         const vid = document.createElement("video");
         vid.src = vidUrl; vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
-        vid.style.cssText = "width:100%;height:100%;object-fit:cover;";
+        vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
         vid.onerror = () => { orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover"; };
-        orb.appendChild(vid);
+        orb.insertBefore(vid, orb.firstChild);
       } else if (imgUrl) {
         orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover";
       }
+      orb.onclick = () => goStep(4);
     }
 
+    // Step 3: cancel
+    document.getElementById("sellNo").addEventListener("click", () => { stopAll(); $("#selldream").classList.add("hidden"); });
+
+    // Step 4: go to DreamField
     document.getElementById("sellToField").addEventListener("click", () => {
-      $("#selldream").classList.add("hidden");
-      openField();
+      $("#selldream").classList.add("hidden"); openField();
     });
   })();
   $("#fieldPanel").addEventListener("click", (e) => e.stopPropagation());

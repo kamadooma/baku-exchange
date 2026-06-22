@@ -526,12 +526,21 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 .sell-transcript { min-height: 3em; margin-top: 24px; color: var(--g1); font-size: 0.9rem;
   line-height: 1.8; max-width: 36ch; font-style: italic; }
 
-/* result */
+/* guide text fade */
+.sell-guide-text { transition: opacity 0.7s ease; }
+
+/* result orb */
 .sell-result-orb { width: min(240px, 60vw); height: min(240px, 60vw); border-radius: 50%;
-  overflow: hidden; margin: 0 auto 28px; border: 1px solid var(--line-2);
-  background: var(--bg-2); }
+  overflow: hidden; margin: 24px auto 20px; border: 1px solid var(--line-2);
+  background: var(--bg-2); position: relative; }
 .sell-result-orb video { width: 100%; height: 100%; object-fit: cover; }
-.sell-result-name { font-size: clamp(1.1rem, 3vw, 1.6rem); font-weight: 200; letter-spacing: 0.06em; }
+.sell-orb-tappable { cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.sell-orb-tappable:hover { transform: scale(1.04); box-shadow: 0 0 40px rgba(243,241,236,0.08); }
+.sell-orb-tappable:active { transform: scale(0.97); }
+.sell-orb-hint { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center;
+  font-size: 0.48rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--g3);
+  pointer-events: none; }
+.sell-result-name { font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 200; letter-spacing: 0.06em; }
 .sell-result-msg { margin-top: 14px; font-size: 0.72rem; letter-spacing: 0.12em; color: var(--g2); }
 .sell-result-msg-en { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--g3); margin-top: 6px; }
 
