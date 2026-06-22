@@ -2247,9 +2247,9 @@
       "霧":"fog","きり":"fog","fog":"fog",
       // 武器・その他
       "剣":"sword","つるぎ":"sword","けん":"sword","sword":"sword","刀":"sword","かたな":"sword",
-      "炎":"fire","ほのお":"fire","火":"fire","ひ":"fire","fire":"fire",
+      "炎":"fire","ほのお":"fire","火":"fire","fire":"fire",
       "爆発":"explosion","ばくはつ":"explosion","explosion":"explosion",
-      "血":"blood","ち":"blood","blood":"blood",
+      "血":"blood","blood":"blood",
       "鎖":"chain","くさり":"chain","chain":"chain",
       "鏡":"mirror_dark","かがみ":"mirror_dark","時計":"clock","とけい":"clock",
       "宇宙船":"spaceship","うちゅうせん":"spaceship","spacecraft":"spaceship","spaceship":"spaceship",
@@ -2299,6 +2299,7 @@
     function extractVisualNoun(text) {
       let bestSlug = null, bestJp = null, bestLen = 0;
       Object.entries(VISUAL_NOUNS).forEach(([jp, slug]) => {
+        if (jp.length < 2) return; // 単文字は誤マッチするので除外
         if (text.includes(jp) && jp.length > bestLen) {
           bestSlug = slug; bestJp = jp; bestLen = jp.length;
         }
