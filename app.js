@@ -124,7 +124,28 @@
       buildList();
     }));
     const si = $("#searchInput");
-    if (si) si.addEventListener("input", () => { searchQuery = si.value; buildList(); });
+    if (si) {
+      si.addEventListener("input", () => {
+        searchQuery = si.value;
+        buildList();
+        const q = searchQuery.toLowerCase();
+        if (!q) return;
+        const hits = state.filter((s) =>
+          s.ticker.toLowerCase().includes(q) ||
+          s.nameJp.includes(searchQuery) ||
+          s.nameEn.toLowerCase().includes(q));
+        if (hits.length === 1) { selectDream(hits[0]); si.value = ""; searchQuery = ""; buildList(); }
+      });
+      si.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") return;
+        const q = searchQuery.toLowerCase(); if (!q) return;
+        const hits = state.filter((s) =>
+          s.ticker.toLowerCase().includes(q) ||
+          s.nameJp.includes(searchQuery) ||
+          s.nameEn.toLowerCase().includes(q));
+        if (hits.length) { selectDream(hits[0]); si.value = ""; searchQuery = ""; buildList(); }
+      });
+    }
     const sb = $("#searchBtn");
     if (sb) sb.addEventListener("click", () => { if (si) si.focus(); });
   }
