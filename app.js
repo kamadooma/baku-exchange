@@ -2015,7 +2015,7 @@
     let transcript = "", rec = null;
     const bgm = new Audio("music/release_your_dream.mp3");
     bgm.loop = true; bgm.volume = 0.5;
-    const narAudio = new Audio("narration/release_your_dream_full.mp3?v=20260622b");
+    const narAudio = new Audio("narration/release_your_dream_full.mp3?v=20260622c");
     narAudio.volume = 1.0;
 
     function goStep(n) {
