@@ -2138,8 +2138,9 @@
       fetchPexelsEn(keywords_en || "dream surreal abstract");
     }
 
-    async function fetchPexelsEn(keywords) {
+    async function fetchPexelsEn(keywords, title, price) {
       const q = encodeURIComponent(keywords.slice(0, 80));
+      const finalPrice = price || Math.floor(Math.random() * 900 + 100);
       let vidUrl = null, imgUrl = null;
       try {
         const [vRes, pRes] = await Promise.all([
@@ -2153,11 +2154,10 @@
         vidUrl = chosen[0]?.link || null;
         imgUrl = pData.photos?.[0]?.src?.large || null;
       } catch(e) {}
-      const price = Math.floor(Math.random() * 900 + 100);
       const fb = state[Math.floor(Math.random() * state.length)];
-      loadOrb(transcript.slice(0, 20) || fb.nameJp,
+      loadOrb(title || transcript.slice(0, 16) || fb.nameJp,
         vidUrl || "assets/footage/" + fb.ticker + ".mp4?v=20260622",
-        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", price);
+        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", finalPrice);
     }
 
     // ── 視覚名詞テーブル（具体的に見えるもの → Pexels直接検索・長い語優先）──
@@ -2284,13 +2284,26 @@
 
     // 視覚名詞を抽出（長い語を優先）
     function extractVisualNoun(text) {
-      let best = null, bestLen = 0;
+      let best = null, bestJp = null, bestLen = 0;
       Object.entries(VISUAL_NOUNS).forEach(([jp, en]) => {
         if (text.includes(jp) && jp.length > bestLen) {
-          best = en; bestLen = jp.length;
+          best = en; bestJp = jp; bestLen = jp.length;
         }
       });
-      return best;
+      return best ? { en: best, jp: bestJp } : null;
+    }
+
+    // 話した夢の内容から表示用タイトルを生成
+    function generateDreamTitle(visualMatch, matchedTicker) {
+      if (visualMatch) return visualMatch.jp + "の夢";
+      if (matchedTicker) return matchedTicker.nameJp;
+      // テキストから最初の意味のある文を抽出（最大16文字）
+      const firstPhrase = transcript
+        .replace(/^(えー|あの|その|なんか|こう|ちょっと)\s*/g, "")
+        .split(/[。！？\n]/)[0]
+        .trim()
+        .slice(0, 16);
+      return firstPhrase || "あなたの夢";
     }
 
     function matchAndLoad() {
@@ -2298,8 +2311,12 @@
       const ql = q.toLowerCase();
 
       // 1. 視覚名詞（具体的に見えるもの）→ Pexels直接
-      const visualConcept = extractVisualNoun(q);
-      if (visualConcept) return fetchPexelsEn(visualConcept);
+      const visual = extractVisualNoun(q);
+      if (visual) {
+        const title = generateDreamTitle(visual, null);
+        const price = Math.floor(Math.random() * 900 + 100);
+        return fetchPexelsEn(visual.en, title, price);
+      }
 
       // 2. 夢テーマ（感情・体験）→ ティッカー映像
       let themeBest = null, themeScore = 0;
@@ -2311,12 +2328,14 @@
         const s = byTicker.get(themeBest);
         if (s) {
           const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
-          return loadOrb(s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
+          const title = generateDreamTitle(null, s);
+          return loadOrb(title, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
         }
       }
 
       // 3. Fallback: 日本語→英語変換してPexels
-      fetchPexels(transcript);
+      const title = generateDreamTitle(null, null);
+      fetchPexels(transcript, title);
     }
 
     // 日本語テキストをPexels検索用英語に変換
@@ -2341,7 +2360,7 @@
       return (enOnly.length > 3 ? enOnly : "dream surreal abstract").slice(0, 80);
     }
 
-    async function fetchPexels(query) {
+    async function fetchPexels(query, title) {
       const keywords = toEnKeywords(query);
       const q = encodeURIComponent(keywords);
       let vidUrl = null, imgUrl = null;
@@ -2359,7 +2378,7 @@
       } catch(e) {}
       const price = Math.floor(Math.random() * 900 + 100);
       const fb = state[Math.floor(Math.random() * state.length)];
-      loadOrb(transcript.slice(0, 20) || fb.nameJp,
+      loadOrb(title || transcript.slice(0, 16) || fb.nameJp,
         vidUrl || "assets/footage/" + fb.ticker + ".mp4?v=20260622",
         imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", price);
     }
