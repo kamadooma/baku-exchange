@@ -144,13 +144,12 @@
     <!-- Step 0: Start -->
     <div class="sell-step" id="sellStep0">
       <img class="sell-logo" src="assets/baku_logo.png" alt="Baku">
-      <div class="sell-step-title">夢を吸い出す</div>
-      <div class="sell-step-en">Extract Your Dream</div>
+      <div class="sell-step-title">夢を吸い出す<span class="sell-step-en">Extract Your Dream</span></div>
       <p class="sell-step-desc">
         あなたの夢を市場に放ちます。夢の内容は<strong>匿名</strong>で記録されます。<br>
         <span class="sell-desc-en">Your dream will be released into the market. The content is recorded <strong>anonymously</strong>.</span>
       </p>
-      <button class="sell-btn-main" id="sellStart">はじめる →</button>
+      <button class="sell-btn-main" id="sellStart">Begin →</button>
     </div>
 
     <!-- Step 1: Meditation narration -->
@@ -159,42 +158,38 @@
       <div class="sell-pulse" id="sellPulse"></div>
       <div class="sell-timer" id="sellTimer">0:00</div>
       <div class="sell-med-btns">
-        <button class="sell-btn-main sell-btn-hidden" id="sellMedNext">次へ →</button>
+        <button class="sell-btn-main sell-btn-hidden" id="sellMedNext">Next →</button>
         <button class="sell-btn-sub" id="sellMedSkip">Skip →</button>
       </div>
     </div>
 
     <!-- Step 2: Voice input -->
     <div class="sell-step hidden" id="sellStep2">
-      <div class="sell-step-title">夢を話してください</div>
-      <div class="sell-step-en">Speak your dream aloud</div>
+      <div class="sell-step-title">夢を話してください<span class="sell-step-en">Speak your dream aloud</span></div>
       <button class="sell-mic-btn" id="sellMic"><span class="sell-mic-dot"></span></button>
       <div class="sell-transcript" id="sellTranscript">——</div>
       <div class="sell-voice-btns">
-        <button class="sell-btn-main sell-btn-hidden" id="sellVoiceDone">次へ →</button>
-        <button class="sell-btn-sub sell-btn-hidden" id="sellRetake">撮り直す ↺</button>
+        <button class="sell-btn-main sell-btn-hidden" id="sellVoiceDone">Next →</button>
+        <button class="sell-btn-sub sell-btn-hidden" id="sellRetake">Retake ↺</button>
       </div>
     </div>
 
     <!-- Step 3: Orb + confirm (tap orb to sell) -->
     <div class="sell-step hidden" id="sellStep3">
-      <div class="sell-step-title" style="font-size:clamp(1rem,3vw,1.4rem);">この夢を、手放していいですか？</div>
-      <div class="sell-step-en">Will you release this dream?</div>
+      <div class="sell-step-title" style="font-size:clamp(1rem,3vw,1.3rem);">この夢を、手放していいですか？<span class="sell-step-en" style="font-size:0.58rem;">Will you release this dream?</span></div>
       <div class="sell-result-orb sell-orb-tappable" id="sellResultOrb">
         <div class="sell-orb-hint">tap to sell</div>
       </div>
       <div class="sell-result-name" id="sellResultName"></div>
       <div class="sell-result-price" id="sellResultPrice"></div>
-      <button class="sell-btn-sub" id="sellNo">まだ手放せません</button>
+      <button class="sell-btn-sub" id="sellNo">Keep it</button>
     </div>
 
     <!-- Step 4: Sold -->
     <div class="sell-step hidden" id="sellStep4">
-      <div class="sell-sold-title">夢が売れました。</div>
-      <div class="sell-sold-en">Your dream has been sold.</div>
-      <div class="sell-result-msg" style="margin-top:18px;">匿名で、マーケットに放たれました。</div>
-      <div class="sell-result-msg-en">Anonymously released into the market.</div>
-      <button class="sell-btn-main" id="sellToField">Dreamfieldで見る →</button>
+      <div class="sell-sold-title">夢が売れました。<span class="sell-sold-en" style="display:block;">Your dream has been sold.</span></div>
+      <div class="sell-result-msg" style="margin-top:18px;">匿名で、マーケットに放たれました。<br><span style="color:var(--g3);font-size:0.9em;">Anonymously released into the market.</span></div>
+      <button class="sell-btn-main" id="sellToField">View in Dreamfield →</button>
     </div>
   </div>
 

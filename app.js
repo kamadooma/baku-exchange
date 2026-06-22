@@ -2111,38 +2111,106 @@
       matchAndLoad();
     });
 
-    // マッチング: キーワード抽出 + スコアリング改善
-    function extractKeywords(text) {
-      // 日本語の助詞・助動詞・記号を除去、意味のある単語を抽出
-      return text
-        .replace(/[をはがにでのもとからまでよりへ]\s/g, " ")
-        .split(/[\s、。！？,.・「」『』【】（）\(\)]+/)
-        .filter(w => w.length > 1);
-    }
+    // 夢キーワード → ティッカー対応表（日本語の夢の言葉から直接マッチ）
+    const DREAM_KW = [
+      { w:["飛","空を飛","fly","flying","float","cloud","sky","鳥","bird"],          t:"FLY" },
+      { w:["歯","tooth","teeth","dental","抜け"],                                   t:"TEETH" },
+      { w:["追われ","chase","run away","escape","逃げ","追いかけ","鬼"],             t:"CHASE" },
+      { w:["落ちる","falling","落下","fall","drop","崖"],                            t:"FALL" },
+      { w:["溺れ","water","drown","泳","flood","海","川","波"],                      t:"DROWN" },
+      { w:["裸","naked","nude","恥ずかし","undressed"],                              t:"NAKED" },
+      { w:["試験","exam","test","勉強","学校","school","入試","受験"],               t:"EXAM" },
+      { w:["死","死ぬ","funeral","葬式","cemetery","grave","墓"],                   t:"FUNRL" },
+      { w:["声が出","mute","声","話せ","叫べ","nightmare","悪夢"],                  t:"MUTE" },
+      { w:["ループ","繰り返","same dream","loop","同じ","また同じ"],                 t:"LOOP" },
+      { w:["愛","恋","love","kiss","romantic","好き","kissed","恋人"],              t:"LOVE" },
+      { w:["セックス","sex","intimacy","intimate","nude"],                           t:"SEX" },
+      { w:["親","両親","mother","father","parent","家族","family"],                 t:"PARENT" },
+      { w:["子ども","子供","child","baby","kid","赤ちゃん"],                         t:"CHILD" },
+      { w:["旅","travel","trip","journey","adventure","abroad","海外"],             t:"TRVL" },
+      { w:["宇宙","space","星","star","planet","universe","galaxy","月"],           t:"MARS" },
+      { w:["お金","金","money","rich","wealth","lottery","宝くじ"],                 t:"JACK" },
+      { w:["家","home","house","帰宅","warm","cozy"],                               t:"HOME" },
+      { w:["仕事","work","office","quit","辞め","会社","resign","上司"],            t:"QUITJOB" },
+      { w:["眠れ","眠","sleep","bed","rest","起きられ","寝"],                       t:"SLEEP" },
+      { w:["戦争","war","weapon","bomb","nuclear","attack","戦","軍"],             t:"NUKE" },
+      { w:["ロボット","robot","AI","machine","android","人工知能"],                 t:"ROBOT" },
+      { w:["鏡","mirror","reflection","自分","自己","鏡に映"],                      t:"SELF" },
+      { w:["病気","cure","vaccine","sick","ill","hospital","病院","治療"],          t:"CURE" },
+      { w:["地震","earthquake","disaster","崩れ","壊れ","崩壊"],                   t:"QUAKE" },
+      { w:["お化け","ghost","demon","monster","haunted","幽霊","霊"],              t:"DEAD" },
+      { w:["友達","友人","friend","友","仲間","親友"],                               t:"FRND" },
+      { w:["時間","time travel","タイムトラベル","過去","未来","time"],             t:"TIME" },
+      { w:["有名","fame","celebrity","スター","famous","人気"],                     t:"FAME" },
+      { w:["自由","freedom","free","解放","羽","liberation"],                       t:"FREE" },
+      { w:["夏","summer","beach","海水浴","バカンス"],                               t:"SUMMER" },
+      { w:["嵐","storm","sky falls","空が落ち","lightning","thunder"],              t:"SKYFALL" },
+      { w:["失恋","元カノ","元カレ","forgetex","忘れ","forget"],                    t:"FORGETEX" },
+      { w:["借金","debt","お金がない","貧乏","broke"],                               t:"DEBT" },
+      { w:["推し","oshi","idol","concert","ライブ"],                                t:"OSHI" },
+      { w:["可愛く","pretty","beautiful","綺麗","beauty","selfie","セルフィ"],      t:"CUTE" },
+      { w:["カルマ","revenge","復讐","仕返し","恨み"],                              t:"REVENGE" },
+      { w:["動物","animal","dog","cat","犬","猫","ペット","pet"],                   t:"ANIMAL" },
+      { w:["水没","flood","沈む","sink","city"],                                    t:"SUNKCITY" },
+      { w:["再会","reunion","会いたい","懐かしい","会う"],                           t:"REUNI" },
+      { w:["生まれ変わり","reborn","rebirth","転生","蓮","lotus"],                  t:"REBORN" },
+      { w:["平和","peace","no war","争いのない","穏やか"],                           t:"NOWAR" },
+    ];
 
     function matchAndLoad() {
-      const q = transcript.toLowerCase();
-      const words = extractKeywords(q);
+      const q = transcript;
+      const ql = q.toLowerCase();
+
+      // 1. キーワード表で直接マッチ（最も信頼性が高い）
+      let kwBest = null, kwScore = 0;
+      DREAM_KW.forEach(entry => {
+        let score = entry.w.reduce((a, w) => a + (ql.includes(w.toLowerCase()) ? w.length * 2 : 0), 0);
+        if (score > kwScore) { kwScore = score; kwBest = entry.t; }
+      });
+      if (kwBest && kwScore > 0) {
+        const s = byTicker.get(kwBest);
+        if (s) {
+          const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
+          return loadOrb(s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
+        }
+      }
+
+      // 2. 銘柄名・説明文でスコアリング
+      const words = q.split(/[\s、。！？,.・「」『』（）]+/).filter(w => w.length > 1);
       let best = null, bestScore = 0;
       state.forEach(s => {
-        const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||"", s.category].join(" ").toLowerCase();
-        // キーワード一致スコア（長いワードを重く）
-        let score = words.reduce((a, w) => a + (text.includes(w) ? w.length : 0), 0);
-        // 銘柄名への完全含有はボーナス
-        if (s.nameJp.includes(transcript.slice(0, 6))) score += 10;
+        const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||""].join(" ").toLowerCase();
+        let score = words.reduce((a, w) => a + (text.includes(w.toLowerCase()) ? w.length : 0), 0);
         if (score > bestScore) { bestScore = score; best = s; }
       });
-      if (best && bestScore > 0) {
+      if (best && bestScore > 1) {
         const price = best.price ? Math.round(best.price) : Math.floor(Math.random() * 900 + 100);
-        loadOrb(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622", price);
-      } else {
-        fetchPexels(transcript);
+        return loadOrb(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622", price);
       }
+
+      // 3. Pexelsで検索（日本語→Pexels用キーワード変換）
+      fetchPexels(transcript);
+    }
+
+    // 日本語テキストからPexels用英語キーワードを生成
+    function toEnKeywords(text) {
+      const jpToEn = {
+        "飛":"flying sky","空":"sky","海":"ocean sea","山":"mountain","恋":"love romantic",
+        "愛":"love","戦":"war battle","死":"death","家":"home house","夢":"dream surreal",
+        "水":"water","火":"fire","光":"light","闇":"dark darkness","走":"running",
+        "追":"chase running","落":"falling","眠":"sleep","涙":"tears crying","笑":"smile laughing",
+        "怖":"fear horror","孤独":"loneliness alone","自由":"freedom","宇宙":"space universe",
+        "森":"forest","雨":"rain","雪":"snow","花":"flower","夕日":"sunset","朝":"morning",
+      };
+      let en = text;
+      Object.entries(jpToEn).forEach(([jp, e]) => { if (text.includes(jp)) en += " " + e; });
+      // 日本語文字を除去して英単語だけ残す
+      const enOnly = en.replace(/[　-鿿豈-﫿]/g, " ").trim();
+      return (enOnly.length > 3 ? enOnly : "dream surreal abstract").slice(0, 80);
     }
 
     async function fetchPexels(query) {
-      // 意味のあるキーワードのみPexelsに渡す
-      const keywords = extractKeywords(query).slice(0, 5).join(" ") || query.slice(0, 60);
+      const keywords = toEnKeywords(query);
       const q = encodeURIComponent(keywords);
       let vidUrl = null, imgUrl = null;
       try {
