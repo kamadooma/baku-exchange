@@ -2310,13 +2310,23 @@
     function generateDreamTitle(visualMatch, matchedTicker) {
       if (visualMatch) return (visualMatch.jp || visualMatch.slug) + "の夢";
       if (matchedTicker) return matchedTicker.nameJp;
-      // テキストから最初の意味のある文を抽出（最大16文字）
-      const firstPhrase = transcript
-        .replace(/^(えー|あの|その|なんか|こう|ちょっと)\s*/g, "")
-        .split(/[。！？\n]/)[0]
-        .trim()
-        .slice(0, 16);
-      return firstPhrase || "あなたの夢";
+
+      // 口語・フィラーを除去してクリーンなタイトルを生成
+      const clean = transcript
+        .replace(/^(えーと|えー|あのー|あの|その|なんか|こう|ちょっと|まあ|ちょっとした)[、\s]*/g, "")
+        .replace(/という夢(を見た|です|でした)?/g, "")
+        .replace(/(夢を見た|夢でした|夢です|夢の話|夢なんですが)/g, "")
+        .replace(/[、。！？…‥～〜]/g, " ")
+        .trim();
+
+      // 最初の意味のある単語グループを取り出す（助詞の前まで）
+      const phrase = clean
+        .split(/\s+/)[0]             // 最初のスペース区切り
+        .replace(/[をにがはもでへより].*/, "")  // 助詞以降を削除
+        .slice(0, 12);               // 最大12文字
+
+      if (phrase.length > 1) return phrase + "の夢";
+      return "あなたの夢";
     }
 
     function matchAndLoad() {
