@@ -2407,6 +2407,11 @@
       if (orbCanvas && orb && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
       stopAll(); $("#selldream").classList.add("hidden");
     });
+    document.getElementById("sellRedo").addEventListener("click", () => {
+      const orb = document.getElementById("sellResultOrb");
+      if (orbCanvas && orb && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
+      resetVoice(); goStep(2);
+    });
 
     // Step 4: go to DreamField
     document.getElementById("sellToField").addEventListener("click", () => {

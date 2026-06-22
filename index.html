@@ -178,11 +178,14 @@
     <div class="sell-step hidden" id="sellStep3">
       <div class="sell-step-title" style="font-size:clamp(1rem,3vw,1.3rem);">この夢を、手放していいですか？<span class="sell-step-en" style="font-size:0.58rem;">Will you release this dream?</span></div>
       <div class="sell-result-orb sell-orb-tappable" id="sellResultOrb">
-        <div class="sell-orb-hint">tap to sell</div>
+        <div class="sell-orb-hint">Release</div>
       </div>
       <div class="sell-result-name" id="sellResultName"></div>
       <div class="sell-result-price" id="sellResultPrice"></div>
-      <button class="sell-btn-sub" id="sellNo">Keep it</button>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0;margin-top:4px;">
+        <button class="sell-btn-sub" id="sellNo">Keep it</button>
+        <button class="sell-btn-sub" id="sellRedo" style="margin-top:6px;">Re-record dream ↺</button>
+      </div>
     </div>
 
     <!-- Step 4: Sold -->

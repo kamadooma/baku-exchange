@@ -487,7 +487,7 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 .sell-step-title { font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 200; letter-spacing: 0.06em; line-height: 1.3; }
 .sell-step-title .sell-step-en { display: block; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); margin-top: 8px; }
 .sell-step-en { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); margin-top: 10px; }
-.sell-logo { width: min(60vw, 340px); height: min(60vw, 340px); object-fit: contain; margin-bottom: 24px; opacity: 0.85; }
+.sell-logo { width: min(80vw, 480px); height: min(80vw, 480px); object-fit: contain; margin-bottom: 24px; opacity: 0.85; }
 .sell-step-desc { color: var(--g1); font-size: 0.9rem; line-height: 1.9; margin: 28px 0 40px; }
 .sell-step-desc strong { color: var(--fg); font-weight: 400; }
 .sell-desc-en { display: block; margin-top: 6px; color: var(--g2); font-size: 0.8rem; }
@@ -540,9 +540,14 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 .sell-orb-tappable { cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
 .sell-orb-tappable:hover { transform: scale(1.04); box-shadow: 0 0 40px rgba(243,241,236,0.08); }
 .sell-orb-tappable:active { transform: scale(0.97); }
-.sell-orb-hint { position: absolute; bottom: 18px; left: 0; right: 0; text-align: center;
-  font-size: 0.48rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--g3);
-  pointer-events: none; }
+.sell-orb-hint {
+  position: absolute; inset: 0; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.64rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--fg);
+  background: rgba(8,9,11,0.52); backdrop-filter: blur(2px);
+  opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
+}
+.sell-orb-tappable:hover .sell-orb-hint { opacity: 1; }
 .sell-result-name { font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 200; letter-spacing: 0.06em; }
 .sell-result-price { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 200; letter-spacing: 0.1em; margin-top: 6px; }
 .sell-sold-title { font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 200; letter-spacing: 0.06em; }
