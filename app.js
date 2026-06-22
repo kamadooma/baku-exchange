@@ -2161,90 +2161,103 @@
     }
 
     // ── 視覚名詞テーブル（具体的に見えるもの → Pexels直接検索・長い語優先）──
+    // キー: 日本語（漢字/カタカナ/ひらがな全て） → ローカルファイルslug
     const VISUAL_NOUNS = {
-      // 恐竜・古代生物
-      "ティラノサウルス":"tyrannosaurus rex dinosaur","ヴェロキラプトル":"velociraptor dinosaur running",
-      "プテラノドン":"pterodactyl flying prehistoric","トリケラトプス":"triceratops dinosaur",
-      "ステゴサウルス":"stegosaurus dinosaur","ブラキオサウルス":"brachiosaurus dinosaur",
-      "恐竜":"dinosaur prehistoric","マンモス":"mammoth prehistoric ice age",
-      "剣歯虎":"saber tooth tiger ancient","ネアンデルタール":"neanderthal primitive human",
-      // ドラゴン・神話生物
-      "ドラゴン":"dragon fire breathing","龍":"chinese dragon","竜":"dragon serpent",
-      "グリフィン":"griffin mythical","フェニックス":"phoenix fire rebirth",
-      "ユニコーン":"unicorn magical white","ケルベロス":"cerberus three headed dog dark",
-      "メデューサ":"medusa snake hair stone","ミノタウロス":"minotaur labyrinth dark",
-      "ケンタウロス":"centaur mythical","人魚":"mermaid underwater ocean",
-      // オオカミ・大型肉食獣
-      "ウェアウルフ":"werewolf dark full moon","狼男":"werewolf transformation",
-      "狼":"wolf howling forest","オオカミ":"wolf pack",
-      "グリズリー":"grizzly bear wild","ホッキョクグマ":"polar bear arctic",
-      "熊":"bear forest wild","クマ":"bear standing",
-      "ピューマ":"puma mountain lion","クーガー":"cougar wild cat",
-      "チーター":"cheetah running fast","ヒョウ":"leopard jungle spotted",
-      "豹":"leopard wild","虎":"tiger wild orange",
-      "ライオン":"lion roaring mane","ゴリラ":"gorilla jungle powerful",
-      "チンパンジー":"chimpanzee jungle","バイソン":"bison wild herd",
-      // 爬虫類・両生類
-      "コブラ":"cobra snake hood","キングコブラ":"king cobra snake",
-      "アナコンダ":"anaconda python huge","ニシキヘビ":"python snake coiled",
-      "ガラガラヘビ":"rattlesnake desert","蛇":"snake reptile",
-      "ヘビ":"snake coiled","ワニ":"crocodile jaws water",
-      "クロコダイル":"crocodile attack","アリゲーター":"alligator swamp",
-      "コモドドラゴン":"komodo dragon lizard","ヴァラン":"monitor lizard",
-      "トカゲ":"lizard reptile","イグアナ":"iguana green reptile",
-      "カメレオン":"chameleon color change","カミツキガメ":"snapping turtle",
-      "爬虫類":"reptile scaly","両生類":"amphibian dark swamp",
-      // 海洋・深海
-      "ホホジロザメ":"great white shark attack","サメ":"shark underwater dark",
-      "ジョーズ":"shark jaws ocean","ダイオウイカ":"giant squid deep sea",
-      "タコ":"octopus tentacles underwater","イカ":"squid ocean bioluminescent",
-      "クラゲ":"jellyfish ocean glowing","マンタ":"manta ray ocean",
-      "シャチ":"orca killer whale","ザトウクジラ":"humpback whale breaching",
-      "クジラ":"whale ocean deep","エイ":"stingray ocean",
-      "アンコウ":"anglerfish deep sea dark","深海魚":"deep sea fish bioluminescent",
-      "海底":"underwater ocean abyss deep",
-      // 昆虫・節足動物
-      "タランチュラ":"tarantula spider hairy","クモ":"spider web dark",
-      "蜘蛛":"spider creepy","スズメバチ":"hornet swarm yellow",
-      "アシナガバチ":"wasp swarm","ハチ":"bee swarm",
-      "蜂":"bee hive swarm","サソリ":"scorpion desert venom",
-      "ムカデ":"centipede dark legs","ゴキブリ":"cockroach dark",
-      "シロアリ":"termite swarm destruction","アリ":"ant swarm colony",
-      "蟻":"ant army marching","バッタ":"locust swarm plague",
-      "虫":"insect creepy crawling",
-      // アンデッド・超自然
-      "ゾンビ":"zombie horde apocalypse dark","アンデッド":"undead zombie rotting",
-      "スケルトン":"skeleton dark bones","ミイラ":"mummy ancient dark",
-      "吸血鬼":"vampire dark castle blood","ヴァンパイア":"vampire gothic dark",
-      "幽霊":"ghost transparent ethereal dark","お化け":"ghost haunted pale",
-      "悪霊":"evil spirit dark supernatural","怨霊":"vengeful ghost dark",
-      "バンシー":"banshee wailing ghost","ポルターガイスト":"poltergeist floating objects",
-      "呪い":"cursed dark magic ritual","死霊":"undead spirit dark",
-      "悪魔":"demon dark red supernatural","デビル":"devil fire dark",
-      "サタン":"satan dark underworld","悪鬼":"demon oni japanese",
-      "地獄":"hell fire dark torture","鬼":"oni demon japanese",
-      // 宇宙・SF生物
-      "宇宙人":"alien ufo gray large eyes","エイリアン":"alien creature sci-fi",
-      "クリーチャー":"creature dark monster film","怪物":"monster creature dark",
-      "化け物":"monster scary dark","魔物":"dark creature supernatural",
-      "巨大生物":"giant creature kaiju","怪獣":"kaiju giant monster city",
-      "巨人":"giant enormous towering","タイタン":"titan giant stone",
-      // 自然現象
-      "火山":"volcano eruption lava","溶岩":"lava flow volcano glowing",
-      "津波":"tsunami giant wave destruction","洪水":"flood water disaster",
-      "竜巻":"tornado destruction spinning","ハリケーン":"hurricane storm destruction",
-      "台風":"typhoon rain wind","砂嵐":"sandstorm desert orange",
-      "地吹雪":"blizzard snow white","山火事":"wildfire forest fire",
-      "雪崩":"avalanche snow mountain","地滑り":"landslide mud destruction",
-      "雷":"lightning bolt storm dark","嵐":"storm dark clouds dramatic",
-      // 場所・建物
-      "廃墟":"abandoned ruins dark","廃病院":"abandoned hospital dark",
-      "廃屋":"abandoned house dark","廃工場":"abandoned factory dark",
-      "地下室":"basement dark creepy","地下牢":"dungeon dark stone",
-      "洞窟":"cave dark underground","迷宮":"labyrinth maze dark",
-      "城":"castle medieval stone dark","要塞":"fortress medieval stone",
-      "墓地":"cemetery dark tombstone fog","墓":"grave dark stone",
-      "ピラミッド":"pyramid egypt ancient desert",
+      // 恐竜
+      "ティラノサウルス":"dinosaur","てぃらのさうるす":"dinosaur","velociraptor":"dinosaur",
+      "ヴェロキラプトル":"dinosaur","プテラノドン":"dinosaur","トリケラトプス":"dinosaur",
+      "恐竜":"dinosaur","きょうりゅう":"dinosaur","マンモス":"dinosaur",
+      "まんもす":"dinosaur","dinosaur":"dinosaur","prehistoric":"dinosaur",
+      // ドラゴン
+      "ドラゴン":"dragon","どらごん":"dragon","龍":"dragon","りゅう":"dragon",
+      "竜":"dragon","dragon":"dragon","フェニックス":"phoenix","ふぇにっくす":"phoenix",
+      "フェニクス":"phoenix","phoenix":"phoenix","グリフィン":"griffin","ユニコーン":"unicorn",
+      "ゆにこーん":"unicorn","人魚":"mermaid","にんぎょ":"mermaid","mermaid":"mermaid",
+      // オオカミ
+      "ウェアウルフ":"werewolf","うぇあうるふ":"werewolf","狼男":"werewolf","おおかみおとこ":"werewolf",
+      "werewolf":"werewolf","狼":"wolf","おおかみ":"wolf","オオカミ":"wolf","wolf":"wolf",
+      // クマ
+      "グリズリー":"bear","ぐりずりー":"bear","ホッキョクグマ":"bear","ほっきょくぐま":"bear",
+      "熊":"bear","くま":"bear","クマ":"bear","bear":"bear",
+      // トラ・ライオン
+      "チーター":"tiger","ヒョウ":"tiger","豹":"tiger","ひょう":"tiger",
+      "虎":"tiger","とら":"tiger","tiger":"tiger","ライオン":"lion",
+      "らいおん":"lion","lion":"lion","ゴリラ":"gorilla","ごりら":"gorilla",
+      "gorilla":"gorilla","象":"elephant","ぞう":"elephant","elephant":"elephant",
+      // サメ
+      "ホホジロザメ":"shark","ほほじろざめ":"shark","サメ":"shark","さめ":"shark",
+      "ジョーズ":"shark","shark":"shark","深海":"deep_sea","しんかい":"deep_sea",
+      "海底":"deep_sea","かいてい":"deep_sea","ダイオウイカ":"octopus",
+      "タコ":"octopus","たこ":"octopus","octopus":"octopus",
+      "クラゲ":"jellyfish","くらげ":"jellyfish","jellyfish":"jellyfish",
+      "クジラ":"whale","くじら":"whale","whale":"whale",
+      "シャチ":"whale","しゃち":"whale",
+      // 蛇
+      "コブラ":"snake","こぶら":"snake","アナコンダ":"snake","あなこんだ":"snake",
+      "ニシキヘビ":"snake","にしきへび":"snake","蛇":"snake","へび":"snake",
+      "ヘビ":"snake","snake":"snake","ワニ":"crocodile","わに":"crocodile",
+      "クロコダイル":"crocodile","くろこだいる":"crocodile","crocodile":"crocodile",
+      "トカゲ":"snake","とかげ":"snake","爬虫類":"snake","はちゅうるい":"snake",
+      // 蜘蛛・虫
+      "タランチュラ":"spider","たらんちゅら":"spider","蜘蛛":"spider","くも":"spider",
+      "クモ":"spider","spider":"spider","サソリ":"scorpion","さそり":"scorpion",
+      "scorpion":"scorpion","スズメバチ":"bee_swarm","すずめばち":"bee_swarm",
+      "蜂":"bee_swarm","はち":"bee_swarm","ハチ":"bee_swarm","bee":"bee_swarm",
+      "ゴキブリ":"spider","ごきぶり":"spider","虫":"spider","むし":"spider",
+      // ゾンビ・アンデッド
+      "ゾンビ":"zombie","ぞんび":"zombie","zombie":"zombie","アンデッド":"zombie",
+      "スケルトン":"skeleton","すけるとん":"skeleton","skeleton":"skeleton",
+      "ミイラ":"mummy","みいら":"mummy","mummy":"mummy",
+      "吸血鬼":"vampire","きゅうけつき":"vampire","ヴァンパイア":"vampire","vampire":"vampire",
+      // 幽霊・悪魔
+      "幽霊":"ghost","ゆうれい":"ghost","お化け":"ghost","おばけ":"ghost",
+      "お化":"ghost","ghost":"ghost","怨霊":"ghost","おんりょう":"ghost",
+      "悪霊":"ghost","あくりょう":"ghost","ポルターガイスト":"ghost",
+      "悪魔":"demon","あくま":"demon","デビル":"demon","devil":"demon",
+      "demon":"demon","地獄":"demon","じごく":"demon","鬼":"demon","おに":"demon",
+      "呪い":"ritual","のろい":"ritual","儀式":"ritual","ぎしき":"ritual",
+      // 宇宙人
+      "宇宙人":"alien","うちゅうじん":"alien","エイリアン":"alien","alien":"alien","UFO":"alien",
+      "怪物":"monster","かいぶつ":"monster","化け物":"monster","ばけもの":"monster",
+      "monster":"monster","怪獣":"kaiju","かいじゅう":"kaiju","kaiju":"kaiju",
+      "巨人":"kaiju","きょじん":"kaiju","giant":"kaiju",
+      // 自然災害
+      "火山":"volcano","かざん":"volcano","溶岩":"volcano","ようがん":"volcano","volcano":"volcano",
+      "津波":"tsunami","つなみ":"tsunami","tsunami":"tsunami",
+      "竜巻":"tornado","たつまき":"tornado","tornado":"tornado",
+      "ハリケーン":"tornado","台風":"tornado","たいふう":"tornado",
+      "雷":"lightning","かみなり":"lightning","lightning":"lightning",
+      "山火事":"wildfire","やまかじ":"wildfire","wildfire":"wildfire",
+      "嵐":"lightning","あらし":"lightning","storm":"lightning",
+      "洪水":"flood","こうずい":"flood","flood":"flood",
+      "地震":"earthquake","じしん":"earthquake","earthquake":"earthquake",
+      "雪崩":"avalanche","なだれ":"avalanche","avalanche":"avalanche",
+      "砂嵐":"sandstorm","すなあらし":"sandstorm","sandstorm":"sandstorm",
+      // 場所
+      "廃墟":"ruins","はいきょ":"ruins","廃病院":"ruins","廃屋":"ruins","ruins":"ruins",
+      "洞窟":"cave","どうくつ":"cave","洞":"cave","cave":"cave",
+      "迷宮":"labyrinth","めいきゅう":"labyrinth","迷路":"labyrinth","labyrinth":"labyrinth",
+      "城":"castle","しろ":"castle","城塞":"castle","castle":"castle",
+      "要塞":"castle","ようさい":"castle","fortress":"castle",
+      "墓地":"cemetery","ぼち":"cemetery","墓":"cemetery","はか":"cemetery","cemetery":"cemetery",
+      "地下牢":"dungeon","ちかろう":"dungeon","牢":"dungeon","dungeon":"dungeon",
+      "ピラミッド":"pyramid","ぴらみっど":"pyramid","pyramid":"pyramid",
+      "深海":"deep_sea","しんかい":"deep_sea","海溝":"deep_sea","deep sea":"deep_sea",
+      "暗い森":"forest_dark","くらいもり":"forest_dark","霧の森":"forest_dark",
+      "霧":"fog","きり":"fog","fog":"fog",
+      // 武器・その他
+      "剣":"sword","つるぎ":"sword","けん":"sword","sword":"sword","刀":"sword","かたな":"sword",
+      "炎":"fire","ほのお":"fire","火":"fire","ひ":"fire","fire":"fire",
+      "爆発":"explosion","ばくはつ":"explosion","explosion":"explosion",
+      "血":"blood","ち":"blood","blood":"blood",
+      "鎖":"chain","くさり":"chain","chain":"chain",
+      "鏡":"mirror_dark","かがみ":"mirror_dark","時計":"clock","とけい":"clock",
+      "宇宙船":"spaceship","うちゅうせん":"spaceship","spacecraft":"spaceship","spaceship":"spaceship",
+      "ブラックホール":"black_hole","ぶらっくほーる":"black_hole","black hole":"black_hole",
+      "サムライ":"samurai","さむらい":"samurai","侍":"samurai","samurai":"samurai",
+      "忍者":"ninja","にんじゃ":"ninja","ninja":"ninja",
+      "ロボット":"robot_dark","ろぼっと":"robot_dark","robot":"robot_dark",
+      "サイボーグ":"cyborg","さいぼーぐ":"cyborg","cyborg":"cyborg",
     };
 
     // ── 夢テーマテーブル（感情・体験 → キュレーション済みティッカー映像）──
@@ -2284,18 +2297,18 @@
 
     // 視覚名詞を抽出（長い語を優先）
     function extractVisualNoun(text) {
-      let best = null, bestJp = null, bestLen = 0;
-      Object.entries(VISUAL_NOUNS).forEach(([jp, en]) => {
+      let bestSlug = null, bestJp = null, bestLen = 0;
+      Object.entries(VISUAL_NOUNS).forEach(([jp, slug]) => {
         if (text.includes(jp) && jp.length > bestLen) {
-          best = en; bestJp = jp; bestLen = jp.length;
+          bestSlug = slug; bestJp = jp; bestLen = jp.length;
         }
       });
-      return best ? { en: best, jp: bestJp } : null;
+      return bestSlug ? { slug: bestSlug, jp: bestJp } : null;
     }
 
     // 話した夢の内容から表示用タイトルを生成
     function generateDreamTitle(visualMatch, matchedTicker) {
-      if (visualMatch) return visualMatch.jp + "の夢";
+      if (visualMatch) return (visualMatch.jp || visualMatch.slug) + "の夢";
       if (matchedTicker) return matchedTicker.nameJp;
       // テキストから最初の意味のある文を抽出（最大16文字）
       const firstPhrase = transcript
@@ -2310,12 +2323,13 @@
       const q = transcript;
       const ql = q.toLowerCase();
 
-      // 1. 視覚名詞（具体的に見えるもの）→ Pexels直接
+      // 1. 視覚名詞（具体的に見えるもの）→ ローカルconceptファイル直接表示
       const visual = extractVisualNoun(q);
       if (visual) {
         const title = generateDreamTitle(visual, null);
         const price = Math.floor(Math.random() * 900 + 100);
-        return fetchPexelsEn(visual.en, title, price);
+        const imgUrl = "assets/footage/concept_" + visual.slug + ".jpg?v=20260622g";
+        return loadOrb(title, null, imgUrl, price);
       }
 
       // 2. 夢テーマ（感情・体験）→ ティッカー映像

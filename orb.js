@@ -117,6 +117,7 @@ window.OrbGL = (function () {
   }
   function loadImage(url) {
     const im = new Image();
+    im.crossOrigin = "anonymous";
     im.onload = () => { if (video) return; gl.bindTexture(gl.TEXTURE_2D, tex); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); imgReady = true; };
     im.onerror = () => { imgReady = false; };
     im.src = url;

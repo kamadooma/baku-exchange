@@ -76,7 +76,7 @@ IMG_QUERY = {
   "BLKOUT":  "power outage blackout dark city",
   "OIL":     "oil crisis gas station",
   "ENDDEM":  "protest demonstration crowd",
-  "FASC":    "fascist military dictatorship crowd march",
+  "FASC":    "military parade soldiers march totalitarian",
   "ALIEN":   "flying saucer ufo",
   "ASTER":   "asteroid space impact meteor",
   "ARMAG":   "apocalypse storm dramatic sky",
@@ -235,6 +235,11 @@ def main():
         print("  APIキー取得: https://www.pexels.com/api/")
         sys.exit(1)
 
+    if "--concepts" in sys.argv:
+        os.makedirs(OUT, exist_ok=True)
+        download_concepts()
+        return
+
     force    = "--force"    in sys.argv
     priority = "--priority" in sys.argv
     targets  = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -294,5 +299,108 @@ def main():
 
     print(f"\n動画 {ok_v} / 画像 {ok_i} / スキップ {skip}  -> {OUT}")
 
+# ── 視覚コンセプト画像の事前ダウンロード ──────────────────────────────────────
+# python3 tools/fetch_footage.py --concepts   で実行
+# assets/footage/concept_<slug>.jpg に保存
+CONCEPT_QUERIES = {
+  # 怖い生き物
+  "dinosaur":       "dinosaur tyrannosaurus prehistoric",
+  "dragon":         "dragon fire flying mythical",
+  "wolf":           "wolf howling dark forest",
+  "bear":           "bear grizzly wild forest",
+  "tiger":          "tiger wild orange stripe",
+  "lion":           "lion roaring mane savanna",
+  "shark":          "shark underwater dark ocean",
+  "snake":          "snake reptile coiled",
+  "crocodile":      "crocodile jaws water",
+  "spider":         "spider web dark creepy",
+  "scorpion":       "scorpion desert venom",
+  "bee_swarm":      "bees swarm hive dark",
+  "whale":          "whale ocean deep blue",
+  "octopus":        "octopus tentacles underwater",
+  "jellyfish":      "jellyfish glowing ocean",
+  "gorilla":        "gorilla jungle powerful",
+  "elephant":       "elephant wild africa",
+  "eagle":          "eagle soaring sky",
+  "owl":            "owl dark night forest",
+  "crow":           "crow black dark ominous",
+  # 超自然・ホラー
+  "zombie":         "zombie horror dark abandoned",
+  "ghost":          "ghost transparent ethereal dark",
+  "demon":          "demon dark supernatural fire",
+  "skeleton":       "skeleton dark bones creepy",
+  "vampire":        "vampire gothic castle dark",
+  "mummy":          "mummy ancient bandage",
+  "werewolf":       "werewolf dark full moon",
+  "alien":          "alien ufo spaceship gray",
+  "monster":        "monster creature dark scary",
+  "kaiju":          "giant monster city destruction",
+  # 自然災害
+  "volcano":        "volcano eruption lava dramatic",
+  "tsunami":        "tsunami giant wave destruction",
+  "tornado":        "tornado dark spinning destruction",
+  "lightning":      "lightning storm dramatic sky",
+  "wildfire":       "wildfire forest fire dramatic",
+  "flood":          "flood water disaster",
+  "earthquake":     "earthquake destruction ruins",
+  "avalanche":      "avalanche snow mountain",
+  "sandstorm":      "sandstorm desert orange",
+  # 場所
+  "cave":           "cave dark underground mysterious",
+  "labyrinth":      "labyrinth maze dark corridor",
+  "ruins":          "abandoned ruins dark overgrown",
+  "castle":         "castle medieval dark stone",
+  "cemetery":       "cemetery dark fog tombstone",
+  "dungeon":        "dungeon dark stone prison",
+  "pyramid":        "pyramid egypt ancient desert",
+  "deep_sea":       "deep sea ocean abyss dark bioluminescent",
+  "forest_dark":    "dark forest mysterious fog",
+  "desert":         "desert sand dunes vast",
+  "mountain":       "mountain peak dramatic sky",
+  "waterfall":      "waterfall nature dramatic",
+  # その他
+  "sword":          "sword medieval battle shining",
+  "fire":           "fire flames burning dramatic",
+  "explosion":      "explosion fire dramatic",
+  "blood":          "blood dark red dramatic",
+  "chain":          "chain metal dark bound",
+  "mirror_dark":    "mirror dark reflection mysterious",
+  "clock":          "clock time surreal dark",
+  "fog":            "fog dark mysterious forest",
+  "ritual":         "ritual dark candles circle",
+  "spaceship":      "spacecraft spaceship orbit",
+  "black_hole":     "black hole space dramatic",
+  "mermaid":        "mermaid underwater ocean fantasy",
+  "phoenix":        "phoenix fire rebirth flames",
+  "griffin":        "griffin mythical creature sky",
+  "unicorn":        "unicorn magical white fantasy",
+  "samurai":        "samurai warrior armor sword",
+  "ninja":          "ninja dark shadow warrior",
+  "robot_dark":     "robot machine dark sci-fi",
+  "cyborg":         "cyborg human machine technology",
+}
+
+def download_concepts():
+    if not API_KEY:
+        print("PEXELS_API_KEY が必要です"); return
+    ok = skip = 0
+    for slug, query in CONCEPT_QUERIES.items():
+        out_path = os.path.join(OUT, f"concept_{slug}.jpg")
+        if os.path.exists(out_path):
+            continue
+        try:
+            img_url = pexels_photo(query)
+            if not img_url:
+                print(f"!!  concept_{slug}: 画像なし"); skip += 1; continue
+            raw = download(img_url)
+            with open(out_path, "wb") as f:
+                f.write(raw)
+            print(f"OK  concept_{slug:20s} <- \"{query[:40]}\"  ({len(raw)//1024}KB)")
+            ok += 1; time.sleep(0.15)
+        except Exception as e:
+            print(f"!!  concept_{slug}: {e}"); skip += 1
+    print(f"\n取得 {ok} / スキップ {skip}")
+
 if __name__ == "__main__":
     main()
+
