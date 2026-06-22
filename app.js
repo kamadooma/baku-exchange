@@ -267,7 +267,7 @@
     // ---- orb: WebGL crystal ball (footage texture + liquid pinch) ----
     if (orbCanvas) $(".orb").appendChild(orbCanvas);
     const FB = { nightmare: [0.42, 0.12, 0.09], hope: [0.10, 0.30, 0.40], oneiric: [0.30, 0.18, 0.42], ideology: [0.42, 0.32, 0.10], mundane: [0.40, 0.16, 0.26] }[s.category] || [0.12, 0.12, 0.14];
-    if (window.OrbGL && OrbGL.ok()) OrbGL.setMedia(`assets/footage/${s.ticker}.jpg`, `assets/footage/${s.ticker}.mp4`, FB, (s.idx % 17) / 17);
+    if (window.OrbGL && OrbGL.ok()) OrbGL.setMedia(`assets/footage/${s.ticker}.jpg?v=20260622`, `assets/footage/${s.ticker}.mp4?v=20260622`, FB, (s.idx % 17) / 17);
 
     const w = deriveWish(s);
     $("#dWish").textContent = w; $("#dWishFill").style.width = w + "%";
@@ -1640,7 +1640,7 @@
       const grow = s.closes[pastM] > 0 ? s.closes[lastM] / s.closes[pastM] : 1;  // 直近20年の成長率
       const m = popularity(s) * Math.min(2.2, Math.max(0.7, grow));             // 人気度×成長（急成長を加点）
       const r = Math.round((16 + Math.pow(Math.min(m, 150) / 150, 2.4) * 122) * fScale);   // ジャンプ率を強く（最大は抑制）
-      const tex = FieldGL.loadTexture(`assets/footage/${s.ticker}.jpg`);
+      const tex = FieldGL.loadTexture(`assets/footage/${s.ticker}.jpg?v=20260622`);
       fieldOrbs.push({ s, r, tex, fb: FIELD_FB[s.category] || [0.12, 0.12, 0.14], seed: (s.idx % 17) / 17,
         x: r + Math.random() * Math.max(1, W - 2 * r), y: 90 + r + Math.random() * Math.max(1, H - 2 * r - 200),
         vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10, ph: Math.random() * 6.283, sc: 1,

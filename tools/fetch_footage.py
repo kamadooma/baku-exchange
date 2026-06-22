@@ -87,7 +87,7 @@ IMG_QUERY = {
   "FALL":    "falling dream surreal sky",
   "CHASE":   "running forest chase dark",
   "TEETH":   "teeth dental smile close up",
-  "FLY":     "flying dream sky clouds",
+  "FLY":     "person flying sky freedom aerial",
   "NAKED":   "birth of venus painting renaissance",
   "MUTE":    "nightmare dark surreal dream",
   "DROWN":   "woman floating water dreamy",
