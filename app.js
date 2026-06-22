@@ -2014,9 +2014,9 @@
     narAudio.volume = 1.0;
 
     function goStep(n) {
-      [0,1,2,3,4].forEach(i => {
+      ["0","1","2","3","4","4b"].forEach(i => {
         const el = document.getElementById("sellStep" + i);
-        if (el) el.classList.toggle("hidden", i !== n);
+        if (el) el.classList.toggle("hidden", String(n) !== i);
       });
     }
 
@@ -2405,6 +2405,9 @@
     document.getElementById("sellNo").addEventListener("click", () => {
       const orb = document.getElementById("sellResultOrb");
       if (orbCanvas && orb && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
+      goStep("4b");
+    });
+    document.getElementById("sellKeepClose").addEventListener("click", () => {
       stopAll(); $("#selldream").classList.add("hidden");
     });
     document.getElementById("sellRedo").addEventListener("click", () => {
