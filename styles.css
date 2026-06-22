@@ -542,6 +542,8 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
   pointer-events: none; }
 .sell-result-name { font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 200; letter-spacing: 0.06em; }
 .sell-result-price { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 200; letter-spacing: 0.1em; margin-top: 6px; }
+.sell-sold-title { font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 200; letter-spacing: 0.06em; }
+.sell-sold-en { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--g2); margin-top: 10px; }
 .sell-result-msg { margin-top: 14px; font-size: 0.72rem; letter-spacing: 0.12em; color: var(--g2); }
 .sell-result-msg-en { font-size: 0.58rem; letter-spacing: 0.1em; color: var(--g3); margin-top: 6px; }
 

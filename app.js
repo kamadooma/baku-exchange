@@ -2011,8 +2011,9 @@
     });
 
     // Step 1: skip / next
-    document.getElementById("sellMedNext").addEventListener("click", () => { stopAll(); goStep(2); });
-    document.getElementById("sellMedSkip").addEventListener("click", () => { stopAll(); goStep(2); });
+    function advanceToVoice() { narAudio.onended = null; stopAll(); goStep(2); }
+    document.getElementById("sellMedNext").addEventListener("click", advanceToVoice);
+    document.getElementById("sellMedSkip").addEventListener("click", advanceToVoice);
 
     // Step 2: voice input
     function resetVoice() {
