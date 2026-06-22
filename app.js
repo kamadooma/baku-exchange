@@ -2293,6 +2293,19 @@
       { w:["桃源郷","理想郷","shangri-la","hidden paradise","隠れた楽園"],                   t:"SHANGRI" },
       { w:["ロボット","android","AI","機械になった","自動化"],                               t:"ROBOT" },
       { w:["旅","adventure","journey","世界中を旅","バックパック"],                          t:"TRVL" },
+      // 政治・権力・社会
+      { w:["独裁","独裁者","独裁政権","dictator","dictatorship","tyranny","専制"],          t:"FASC" },
+      { w:["ファシズム","全体主義","fascism","totalitarian","権威主義","支配者"],            t:"FASC" },
+      { w:["革命","クーデター","反乱","revolution","coup","uprising","民衆が立ち上"],        t:"WREV" },
+      { w:["監視","監視社会","盗聴","surveillance","tracked","見張られ","監視カメラ"],       t:"SURV" },
+      { w:["核戦争","核爆発","原爆","放射能","nuclear war","mushroom cloud"],               t:"NUKE" },
+      { w:["テロ","テロリスト","terrorism","attack","爆弾","爆破"],                         t:"NUKE" },
+      { w:["格差","貧困","不平等","inequality","poverty","格差社会"],                       t:"FAIR" },
+      { w:["選挙","民主主義","democracy","vote","投票","選挙不正"],                         t:"DEMO" },
+      { w:["AI支配","AIに支配","singularity","AGI","超知性","人工知能が"],                   t:"SING" },
+      { w:["ウイルス","パンデミック","感染","pandemic","病原体","感染爆発"],                  t:"PANDM" },
+      { w:["経済崩壊","株価暴落","リーマン","crash","financial crisis","破産"],              t:"CRSH" },
+      { w:["環境破壊","温暖化","気候変動","climate change","地球が燃え"],                    t:"STOPGW" },
     ];
 
     // 視覚名詞を抽出（長い語を優先）
@@ -2336,7 +2349,7 @@
           .trim();
         const phrase = clean
           .split(/\s+/)[0]
-          .replace(/[をにがはもでへより].*/, "")
+          .replace(/[をにがはもでへよりの].*/, "")
           .slice(0, 12);
         if (phrase.length > 1) return phrase + "の夢";
         return "あなたの夢";
