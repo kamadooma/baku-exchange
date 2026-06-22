@@ -335,7 +335,7 @@ footer.status { position: fixed; bottom: 10px; right: 16px; z-index: 20; font-si
   .row { padding: 14px 18px; gap: 10px; }
   .row.active { padding-left: 22px; }
   .sortbar { padding: 0 18px 12px; }
-  .search-wrap { margin: 0 18px 12px; }
+  .search-wrap { margin: 0 18px 14px; }
 
   /* feature（中央）: 左右に余白を取り、オーブを小さめにして縦スクロール域を確保 */
   .feature-scroll { padding: 22px 22px 56px; }
@@ -450,26 +450,25 @@ button.act:hover { transform: translateY(-2px); }
 
 /* ---- listings search ---- */
 .search-wrap {
-  display: flex; align-items: center; gap: 0;
-  margin: 0 28px 12px;
-  background: #141518; border: 1px solid var(--line-2); border-radius: 999px;
-  overflow: hidden; transition: border-color 0.3s;
+  display: flex; align-items: center;
+  margin: 0 28px 14px;
+  border: 1px solid var(--line); border-radius: 75px;
+  transition: border-color 0.4s var(--ease-soft);
 }
-.search-wrap:focus-within { border-color: var(--g2); }
+.search-wrap:focus-within { border-color: var(--line-2); }
 #searchInput {
-  flex: 1; background: transparent; border: none;
-  color: var(--fg); font-family: inherit; font-size: 0.62rem; letter-spacing: 0.06em;
-  padding: 9px 14px; outline: none; caret-color: var(--fg);
-  -webkit-appearance: none;
+  flex: 1; min-width: 0; background: transparent; border: none;
+  color: var(--fg); font-family: inherit; font-size: 0.66rem; letter-spacing: 0.08em;
+  padding: 10px 16px; outline: none; caret-color: var(--fg); -webkit-appearance: none;
 }
-#searchInput::placeholder { color: var(--g3); }
+#searchInput::placeholder { color: var(--g3); letter-spacing: 0.06em; }
 #searchInput::-webkit-search-cancel-button { -webkit-appearance: none; }
 .search-btn {
   flex-shrink: 0; background: transparent; border: none; border-left: 1px solid var(--line);
-  color: var(--g2); font-size: 1rem; padding: 0 13px; height: 100%; cursor: pointer;
-  transition: color 0.2s; line-height: 1;
+  color: var(--g3); font-family: inherit; font-size: 0.7rem; letter-spacing: 0.04em;
+  padding: 10px 16px; cursor: pointer; transition: color 0.4s var(--ease-soft);
 }
-.search-btn:hover { color: var(--fg); }
+.search-btn:hover { color: var(--g1); }
 
 /* ---- listings sort bar ---- */
 .sortbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 28px 14px; }
