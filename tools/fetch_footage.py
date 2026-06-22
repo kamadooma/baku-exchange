@@ -76,7 +76,7 @@ IMG_QUERY = {
   "BLKOUT":  "power outage blackout dark city",
   "OIL":     "oil crisis gas station",
   "ENDDEM":  "protest demonstration crowd",
-  "FASC":    "military parade soldiers march totalitarian",
+  "FASC":    "crowd rally protest propaganda dark dramatic",
   "ALIEN":   "flying saucer ufo",
   "ASTER":   "asteroid space impact meteor",
   "ARMAG":   "apocalypse storm dramatic sky",

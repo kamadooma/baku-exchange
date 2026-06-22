@@ -2008,9 +2008,10 @@
 
     let meditateIv = null, narTO = null, narIdx = 0;
     let transcript = "", rec = null;
+    // ナレーション+BGM一体型ファイルを使用。別途BGMは無音
     const bgm = new Audio("music/release_your_dream.mp3");
-    bgm.loop = true; bgm.volume = 0.45;
-    const narAudio = new Audio("narration/test.mp3");
+    bgm.loop = true; bgm.volume = 0;
+    const narAudio = new Audio("narration/release_your_dream_full.mp3");
     narAudio.volume = 1.0;
 
     function goStep(n) {
