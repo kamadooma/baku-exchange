@@ -2160,191 +2160,184 @@
         imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", price);
     }
 
-    // 夢キーワード → ティッカー対応表（約100エントリ）
-    const DREAM_KW = [
-      // ── 空・移動 ──
-      { w:["飛","空を飛","fly","flying","float","sky","鳥","bird","羽ばた","soar","glide"],   t:"FLY" },
-      { w:["落ちる","falling","落下","fall","drop","崖","奈落","pit"],                        t:"FALL" },
-      { w:["追われ","chase","run away","escape","逃げ","追いかけ","鬼","迫ってく"],           t:"CHASE" },
-      { w:["旅","travel","trip","journey","adventure","abroad","海外","バックパック"],        t:"TRVL" },
-      { w:["宇宙","space","星","star","planet","universe","galaxy","月","rocket","astronaut"],t:"MARS" },
-      { w:["宇宙飛行士","astronaut","nasa","shuttle"],                                         t:"ASTRO" },
-      { w:["タイムトラベル","time travel","過去","未来","time machine","江戸","戦国"],        t:"TIME" },
-      { w:["空飛ぶ車","flying car","flycr","未来の乗り物"],                                   t:"FLYCR" },
+    // ── 視覚名詞テーブル（具体的に見えるもの → Pexels直接検索・長い語優先）──
+    const VISUAL_NOUNS = {
+      // 恐竜・古代生物
+      "ティラノサウルス":"tyrannosaurus rex dinosaur","ヴェロキラプトル":"velociraptor dinosaur running",
+      "プテラノドン":"pterodactyl flying prehistoric","トリケラトプス":"triceratops dinosaur",
+      "ステゴサウルス":"stegosaurus dinosaur","ブラキオサウルス":"brachiosaurus dinosaur",
+      "恐竜":"dinosaur prehistoric","マンモス":"mammoth prehistoric ice age",
+      "剣歯虎":"saber tooth tiger ancient","ネアンデルタール":"neanderthal primitive human",
+      // ドラゴン・神話生物
+      "ドラゴン":"dragon fire breathing","龍":"chinese dragon","竜":"dragon serpent",
+      "グリフィン":"griffin mythical","フェニックス":"phoenix fire rebirth",
+      "ユニコーン":"unicorn magical white","ケルベロス":"cerberus three headed dog dark",
+      "メデューサ":"medusa snake hair stone","ミノタウロス":"minotaur labyrinth dark",
+      "ケンタウロス":"centaur mythical","人魚":"mermaid underwater ocean",
+      // オオカミ・大型肉食獣
+      "ウェアウルフ":"werewolf dark full moon","狼男":"werewolf transformation",
+      "狼":"wolf howling forest","オオカミ":"wolf pack",
+      "グリズリー":"grizzly bear wild","ホッキョクグマ":"polar bear arctic",
+      "熊":"bear forest wild","クマ":"bear standing",
+      "ピューマ":"puma mountain lion","クーガー":"cougar wild cat",
+      "チーター":"cheetah running fast","ヒョウ":"leopard jungle spotted",
+      "豹":"leopard wild","虎":"tiger wild orange",
+      "ライオン":"lion roaring mane","ゴリラ":"gorilla jungle powerful",
+      "チンパンジー":"chimpanzee jungle","バイソン":"bison wild herd",
+      // 爬虫類・両生類
+      "コブラ":"cobra snake hood","キングコブラ":"king cobra snake",
+      "アナコンダ":"anaconda python huge","ニシキヘビ":"python snake coiled",
+      "ガラガラヘビ":"rattlesnake desert","蛇":"snake reptile",
+      "ヘビ":"snake coiled","ワニ":"crocodile jaws water",
+      "クロコダイル":"crocodile attack","アリゲーター":"alligator swamp",
+      "コモドドラゴン":"komodo dragon lizard","ヴァラン":"monitor lizard",
+      "トカゲ":"lizard reptile","イグアナ":"iguana green reptile",
+      "カメレオン":"chameleon color change","カミツキガメ":"snapping turtle",
+      "爬虫類":"reptile scaly","両生類":"amphibian dark swamp",
+      // 海洋・深海
+      "ホホジロザメ":"great white shark attack","サメ":"shark underwater dark",
+      "ジョーズ":"shark jaws ocean","ダイオウイカ":"giant squid deep sea",
+      "タコ":"octopus tentacles underwater","イカ":"squid ocean bioluminescent",
+      "クラゲ":"jellyfish ocean glowing","マンタ":"manta ray ocean",
+      "シャチ":"orca killer whale","ザトウクジラ":"humpback whale breaching",
+      "クジラ":"whale ocean deep","エイ":"stingray ocean",
+      "アンコウ":"anglerfish deep sea dark","深海魚":"deep sea fish bioluminescent",
+      "海底":"underwater ocean abyss deep",
+      // 昆虫・節足動物
+      "タランチュラ":"tarantula spider hairy","クモ":"spider web dark",
+      "蜘蛛":"spider creepy","スズメバチ":"hornet swarm yellow",
+      "アシナガバチ":"wasp swarm","ハチ":"bee swarm",
+      "蜂":"bee hive swarm","サソリ":"scorpion desert venom",
+      "ムカデ":"centipede dark legs","ゴキブリ":"cockroach dark",
+      "シロアリ":"termite swarm destruction","アリ":"ant swarm colony",
+      "蟻":"ant army marching","バッタ":"locust swarm plague",
+      "虫":"insect creepy crawling",
+      // アンデッド・超自然
+      "ゾンビ":"zombie horde apocalypse dark","アンデッド":"undead zombie rotting",
+      "スケルトン":"skeleton dark bones","ミイラ":"mummy ancient dark",
+      "吸血鬼":"vampire dark castle blood","ヴァンパイア":"vampire gothic dark",
+      "幽霊":"ghost transparent ethereal dark","お化け":"ghost haunted pale",
+      "悪霊":"evil spirit dark supernatural","怨霊":"vengeful ghost dark",
+      "バンシー":"banshee wailing ghost","ポルターガイスト":"poltergeist floating objects",
+      "呪い":"cursed dark magic ritual","死霊":"undead spirit dark",
+      "悪魔":"demon dark red supernatural","デビル":"devil fire dark",
+      "サタン":"satan dark underworld","悪鬼":"demon oni japanese",
+      "地獄":"hell fire dark torture","鬼":"oni demon japanese",
+      // 宇宙・SF生物
+      "宇宙人":"alien ufo gray large eyes","エイリアン":"alien creature sci-fi",
+      "クリーチャー":"creature dark monster film","怪物":"monster creature dark",
+      "化け物":"monster scary dark","魔物":"dark creature supernatural",
+      "巨大生物":"giant creature kaiju","怪獣":"kaiju giant monster city",
+      "巨人":"giant enormous towering","タイタン":"titan giant stone",
+      // 自然現象
+      "火山":"volcano eruption lava","溶岩":"lava flow volcano glowing",
+      "津波":"tsunami giant wave destruction","洪水":"flood water disaster",
+      "竜巻":"tornado destruction spinning","ハリケーン":"hurricane storm destruction",
+      "台風":"typhoon rain wind","砂嵐":"sandstorm desert orange",
+      "地吹雪":"blizzard snow white","山火事":"wildfire forest fire",
+      "雪崩":"avalanche snow mountain","地滑り":"landslide mud destruction",
+      "雷":"lightning bolt storm dark","嵐":"storm dark clouds dramatic",
+      // 場所・建物
+      "廃墟":"abandoned ruins dark","廃病院":"abandoned hospital dark",
+      "廃屋":"abandoned house dark","廃工場":"abandoned factory dark",
+      "地下室":"basement dark creepy","地下牢":"dungeon dark stone",
+      "洞窟":"cave dark underground","迷宮":"labyrinth maze dark",
+      "城":"castle medieval stone dark","要塞":"fortress medieval stone",
+      "墓地":"cemetery dark tombstone fog","墓":"grave dark stone",
+      "ピラミッド":"pyramid egypt ancient desert",
+    };
 
-      // ── 怖い生き物・追跡（pexelsキー = Pexelsで直接検索）──
-      { w:["恐竜","dinosaur","ティラノ","velociraptor","t-rex","ジュラ"],   pexels:"dinosaur tyrannosaurus prehistoric" },
-      { w:["狼","wolf","オオカミ","werewolf","狼男","howl"],                 pexels:"wolf dark forest howling" },
-      { w:["熊","bear","クマ","grizzly","polar bear","ホッキョクグマ"],      pexels:"bear grizzly wild" },
-      { w:["蛇","snake","スネーク","python","cobra","毒蛇","爬虫類"],        pexels:"snake reptile dangerous" },
-      { w:["爬虫類","reptile","トカゲ","lizard","iguana","ワニ","crocodile"],pexels:"reptile lizard crocodile" },
-      { w:["虫","insect","bug","ゴキブリ","cockroach","蜘蛛","spider"],      pexels:"insect spider bug crawling" },
-      { w:["サメ","shark","海の怪物","deep sea","海底"],                     pexels:"shark underwater ocean" },
-      { w:["ゾンビ","zombie","undead","死者","屍"],                           pexels:"zombie dark horror abandoned" },
-      { w:["悪魔","devil","demon","satan","地獄","hell"],                    pexels:"dark demon supernatural horror" },
-      { w:["怪物","monster","creature","beast","化け物","魔物"],              pexels:"monster creature dark beast" },
-      { w:["巨人","giant","enormous","巨大","titan","大きな"],                pexels:"giant creature enormous shadow" },
-      { w:["蜂","bee","wasp","ハチ","スズメバチ","蜂の巣","swarm"],           pexels:"bees swarm hive" },
-      { w:["ライオン","lion","虎","tiger","leopard","豹"],                    pexels:"lion tiger wild predator" },
-      { w:["幽霊","ghost","お化け","haunted","霊","怨霊","poltergeist"],      t:"DEAD" },
-      { w:["宇宙人","alien","エイリアン","UFO","extraterrestrial"],           t:"ALIEN" },
-      { w:["cat","猫","ネコ","kitten","黒猫"],                               t:"DEADCAT" },
-      { w:["犬","dog","イヌ","hound","狂犬"],                                t:"ANIMAL" },
-
-      // ── 身体・感覚 ──
-      { w:["歯","tooth","teeth","dental","抜け","虫歯"],                                      t:"TEETH" },
-      { w:["裸","naked","nude","恥ずかし","undressed","スッポンポン"],                         t:"NAKED" },
-      { w:["声が出","mute","叫べ","叫ぼう","scream","cannot speak","金縛り"],                 t:"MUTE" },
-      { w:["溺れ","drown","泳","海","川","波","flood","tsunami","水に沈"],                    t:"DROWN" },
-      { w:["血","blood","怪我","wound","bleeding","出血"],                                     t:"FUNRL" },
-      { w:["金縛り","paralysis","sleep paralysis","動けない","体が動か"],                     t:"NOWAKE" },
-      { w:["眠れ","眠","sleep","bed","rest","起きられ","寝","昼寝","仮眠"],                   t:"SLEEP" },
-      { w:["二度寝","snooze","もう少し寝","five more minutes","目覚ましを消"],                t:"SLEEPIN" },
-
-      // ── 社会・仕事 ──
-      { w:["試験","exam","test","勉強","学校","school","入試","受験","テスト"],               t:"EXAM" },
-      { w:["仕事","work","office","辞め","会社","resign","上司","クビ","解雇"],               t:"QUITJOB" },
-      { w:["借金","debt","お金がない","貧乏","broke","返済","ローン"],                         t:"DEBT" },
-      { w:["お金","金","money","rich","wealth","lottery","宝くじ","ジャックポット"],           t:"JACK" },
-      { w:["億万長者","billionaire","billion","大富豪","giant fortune"],                       t:"BILLION" },
-      { w:["遺産","inheritance","inherit","相続","遠い親戚","遺言"],                           t:"INHERIT" },
-      { w:["フォロワー","follower","social media","SNS","バズ","viral","インフルエンサー"],    t:"FOLLOW" },
-      { w:["大統領","president","prime minister","首相","政治家","権力"],                      t:"PREZ" },
-
-      // ── 関係・感情 ──
-      { w:["愛","恋","love","kiss","romantic","好き","kissed","恋人","デート"],               t:"LOVE" },
-      { w:["セックス","sex","intimacy","intimate","性的","エッチ"],                            t:"SEX" },
-      { w:["失恋","元カノ","元カレ","忘れ","forget","忘れられ","未練"],                       t:"FORGETEX" },
-      { w:["片思い","crush","好きな人","想い","気になる人","好意"],                            t:"CRUSH" },
-      { w:["結婚","wedding","marriage","式","ウェディング","プロポーズ"],                      t:"WEDLOCK" },
-      { w:["駆け落ち","elope","逃げる恋","禁断の恋"],                                          t:"ELOPE" },
-      { w:["親","両親","mother","father","parent","認められ","褒められ"],                     t:"PARENT" },
-      { w:["子ども","子供","child","baby","kid","赤ちゃん","育てる"],                          t:"CHILD" },
-      { w:["友達","友人","friend","友","仲間","親友","BFF"],                                   t:"FRND" },
-      { w:["孤独","alone","lonely","loneliness","ひとり","誰もいない"],                        t:"ALONE" },
-      { w:["再会","reunion","会いたい","懐かし","また会える","昔の人"],                        t:"REUNI" },
-      { w:["復讐","revenge","仕返し","恨み","仕返してやる","やり返す"],                        t:"REVENGE" },
-      { w:["選ばれ","chosen","excalibur","destined","運命","救世主","選ばれし"],               t:"CHOSEN" },
-      { w:["ハーレム","harem","囲まれ","モテ","皆に好かれ"],                                   t:"HAREM" },
-
-      // ── 身分・なりたい夢 ──
-      { w:["有名","fame","celebrity","スター","famous","人気","テレビ"],                       t:"FAME" },
-      { w:["歌手","singer","歌う","歌えた","vocalist","ステージで歌"],                         t:"SINGER" },
-      { w:["ロックスター","rock","guitar","バンド","ギター","ライブ"],                          t:"ROCK" },
-      { w:["サッカー","football","soccer","スポーツ選手","野球","バスケ","アスリート"],        t:"BALLER" },
-      { w:["可愛く","pretty","beautiful","綺麗","beauty","selfie","セルフィ","おしゃれ"],      t:"CUTE" },
-      { w:["何者","someone","成功","自分を見つけ","自己実現","夢を叶え"],                      t:"SOMEONE" },
-      { w:["才能","talent","gifted","能力が開花","得意","上手くなれ"],                         t:"TALNT" },
-      { w:["自信","confidence","conf","自己肯定","堂々と","自分を信じ"],                       t:"CONF" },
-
-      // ── 思想・宇宙論 ──
-      { w:["革命","revolution","wrev","デモ","反乱","社会を変え","変革"],                      t:"WREV" },
-      { w:["シンギュラリティ","singularity","AI超知性","技術的特異点"],                        t:"SING" },
-      { w:["ロボット","robot","android","機械","自動化","automation"],                         t:"ROBOT" },
-      { w:["戦争","war","bomb","nuclear","attack","戦","軍","ミサイル"],                       t:"NUKE" },
-      { w:["核","nuke","原爆","核爆発","mushroom cloud","放射能"],                             t:"NUKE" },
-      { w:["世界の終わり","apocalypse","armag","最後の日","終末","世界崩壊"],                  t:"ARMAG" },
-      { w:["地震","earthquake","崩れ","崩壊","disaster","津波"],                              t:"QUAKE" },
-      { w:["水没","flood","沈む","sink","都市が沈","海に沈"],                                  t:"SUNKCITY" },
-      { w:["停電","blackout","power outage","電気が消え","暗闇"],                              t:"BLKOUT" },
-      { w:["監視","surveillance","監視カメラ","見られてる","盗聴","tracked"],                  t:"SURV" },
-      { w:["平和","peace","no war","争いのない","穏やか","戦争がない"],                        t:"NOWAR" },
-
-      // ── 自然・環境 ──
-      { w:["嵐","storm","lightning","thunder","空が落ちる","sky falls","空が崩"],              t:"SKYFALL" },
-      { w:["夏","summer","beach","海水浴","バカンス","永遠の夏"],                              t:"SUMMER" },
-      { w:["宇宙","space","エコ","地球","温暖化","climate","環境"],                            t:"STOPGW" },
-      { w:["食料","food","agriculture","飢え","hunger","食べ物がない","飢饉"],                 t:"NOHGR" },
-      { w:["動物","animal","絶滅","extinction","最後の","dodo"],                               t:"EXTN" },
-
-      // ── 哲学・宗教・神話 ──
-      { w:["悟り","enlightenment","buddha","仏","解脱","涅槃","瞑想の奥"],                    t:"ENLIGHT" },
-      { w:["天国","heaven","eden","楽園","paradise","神","god"],                              t:"EDEN" },
-      { w:["審判","judgment","last judgment","裁き","天国か地獄か"],                           t:"JUDG" },
-      { w:["救世主","messiah","jesus","キリスト","神の子","second coming"],                    t:"MESSI" },
-      { w:["生まれ変わり","reborn","rebirth","転生","蓮","lotus","輪廻"],                     t:"REBORN" },
-      { w:["魂","soul","spirit","soulim","霊魂","不滅","永遠の命"],                            t:"SOULIM" },
-      { w:["桃源郷","shangri-la","shangri","ユートピア的","隠れた楽園"],                       t:"SHANGRI" },
-      { w:["アトランティス","atlantis","atlantan","海底都市","失われた文明"],                   t:"ATLANT" },
-      { w:["黄金時代","golden age","golden","すべてが豊か","理想の時代"],                      t:"GOLDEN" },
-      { w:["賢者の石","philosopher stone","stone","錬金術","alchemy","金に変え"],              t:"STONE" },
-      { w:["永久機関","perpetual motion","perp","エネルギーが無限"],                           t:"PERP" },
-      { w:["ユートピア","utopia","完全な世界","理想社会","みんなが幸せ"],                       t:"UTOPIA" },
-      { w:["予知","foresee","crystal ball","未来が見える","予言","予知夢"],                    t:"FORESEE" },
-
-      // ── 家・場所 ──
-      { w:["家","home","house","帰宅","温か","cozy","我が家"],                                 t:"HOME" },
-      { w:["故郷","village","田舎","hometown","懐かしい場所","幼い頃の家"],                    t:"HOME2" },
-      { w:["廃墟","ghost town","abandoned","廃墟の街","誰もいない街"],                         t:"LOSTHOME" },
-      { w:["階段","stairs","rooms","部屋","廊下","corridor","迷路のような"],                   t:"ROOMS" },
-      { w:["ポタラ","potala","チベット","寺","temple","聖地"],                                  t:"SHANGRI" },
-
-      // ── その他の体験 ──
-      { w:["鏡","mirror","reflection","映し","自己像","もう一人の自分"],                       t:"MIRR" },
-      { w:["電話","telephone","dead","亡くなった人から電話","呼ばれ"],                         t:"DEAD" },
-      { w:["ループ","繰り返","loop","同じ夢","また同じ夢","何度も"],                           t:"LOOP" },
-      { w:["会話","looptalk","同じ会話","ループ会話","終わらない会話"],                         t:"LOOPTALK" },
-      { w:["一言","undo","言い間違え","取り消し","謝りたい","後悔の言葉"],                     t:"UNDO" },
-      { w:["ひまわり","sunflower","花屋","florist","花束","bouquet"],                          t:"FLORIST" },
-      { w:["シンデレラ","cinderella","かぼちゃの馬車","fairy tale","おとぎ話"],                t:"CINDER" },
-      { w:["皇帝","emperor","tenno","王","king","crown","戴冠"],                               t:"TENNO" },
+    // ── 夢テーマテーブル（感情・体験 → キュレーション済みティッカー映像）──
+    const THEME_KW = [
+      { w:["空を飛","飛んでいた","飛んだ","fly","flying","soar","float","鳥になった","翼"],  t:"FLY" },
+      { w:["落ちる","落下","崖から落","落ちていく","falling","dropped","奈落"],              t:"FALL" },
+      { w:["追われ","逃げ","追いかけ","chase","escape","run away","逃げ回","迫って"],        t:"CHASE" },
+      { w:["溺れ","溺れた","水没","drown","underwater","flood","水の中に"],                 t:"DROWN" },
+      { w:["試験","テスト","受験","exam","test","学校に遅刻","試験会場"],                    t:"EXAM" },
+      { w:["歯が抜け","歯がぐらぐら","teeth fell","tooth falling"],                         t:"TEETH" },
+      { w:["裸で","服を着ていない","naked","nude","恥ずかしい姿で"],                          t:"NAKED" },
+      { w:["声が出ない","叫べない","叫ぼうとした","金縛り","mute","cannot scream"],          t:"MUTE" },
+      { w:["同じ夢","繰り返し","ループ","また同じ","loop","repeating dream"],                t:"LOOP" },
+      { w:["愛している","恋人","kiss","kissed","romantic","大好きな人","抱きしめ"],          t:"LOVE" },
+      { w:["失恋","元カ","忘れられ","忘れたい","forgetex","forget ex"],                     t:"FORGETEX" },
+      { w:["死んだ","葬式","cemetery","funeral","亡くなった","弔い"],                        t:"FUNRL" },
+      { w:["宇宙を旅","宇宙へ","space travel","outer space","galaxy","無重力"],              t:"MARS" },
+      { w:["お金持ち","宝くじ","大金","lottery","jackpot","億万長者"],                       t:"JACK" },
+      { w:["戦争","爆発","nuclear","ミサイル","bomb","戦場"],                                t:"NUKE" },
+      { w:["世界の終わり","終末","apocalypse","humanity ends","世界崩壊"],                   t:"ARMAG" },
+      { w:["地震","earthquake","崩壊","disaster","建物が倒れ"],                              t:"QUAKE" },
+      { w:["親に","両親に認められ","褒められた","parent approval","親の承認"],               t:"PARENT" },
+      { w:["仕事を辞め","会社を辞め","resign","quit job","クビになった"],                    t:"QUITJOB" },
+      { w:["有名になった","スターになった","celebrity","famous","テレビに出た"],              t:"FAME" },
+      { w:["歌手になった","歌えた","singer","concert stage","ステージで歌"],                 t:"SINGER" },
+      { w:["平和な","争いのない","peaceful world","no war","平和が来た"],                    t:"NOWAR" },
+      { w:["ひとりぼっち","孤独","alone","lonely","誰もいない","孤立"],                       t:"ALONE" },
+      { w:["楽園","天国","paradise","heaven","eden","神様に会った"],                         t:"EDEN" },
+      { w:["生まれ変わり","転生","reborn","rebirth","前世","来世"],                           t:"REBORN" },
+      { w:["タイムトラベル","過去に戻","time travel","back in time","未来へ"],               t:"TIME" },
+      { w:["可愛くなった","綺麗になった","pretty","beautiful mirror","変身した"],             t:"CUTE" },
+      { w:["結婚","プロポーズ","wedding","marry","式を挙げた"],                              t:"WEDLOCK" },
+      { w:["桃源郷","理想郷","shangri-la","hidden paradise","隠れた楽園"],                   t:"SHANGRI" },
+      { w:["ロボット","android","AI","機械になった","自動化"],                               t:"ROBOT" },
+      { w:["旅","adventure","journey","世界中を旅","バックパック"],                          t:"TRVL" },
     ];
+
+    // 視覚名詞を抽出（長い語を優先）
+    function extractVisualNoun(text) {
+      let best = null, bestLen = 0;
+      Object.entries(VISUAL_NOUNS).forEach(([jp, en]) => {
+        if (text.includes(jp) && jp.length > bestLen) {
+          best = en; bestLen = jp.length;
+        }
+      });
+      return best;
+    }
 
     function matchAndLoad() {
       const q = transcript;
       const ql = q.toLowerCase();
 
-      // 1. キーワード表で直接マッチ
-      let kwBest = null, kwScore = 0, kwPexels = null;
-      DREAM_KW.forEach(entry => {
-        let score = entry.w.reduce((a, w) => a + (ql.includes(w.toLowerCase()) ? w.length * 2 : 0), 0);
-        if (score > kwScore) {
-          kwScore = score;
-          kwBest = entry.t || null;
-          kwPexels = entry.pexels || null;
-        }
+      // 1. 視覚名詞（具体的に見えるもの）→ Pexels直接
+      const visualConcept = extractVisualNoun(q);
+      if (visualConcept) return fetchPexelsEn(visualConcept);
+
+      // 2. 夢テーマ（感情・体験）→ ティッカー映像
+      let themeBest = null, themeScore = 0;
+      THEME_KW.forEach(entry => {
+        const score = entry.w.reduce((a, w) => a + (ql.includes(w.toLowerCase()) ? w.length : 0), 0);
+        if (score > themeScore) { themeScore = score; themeBest = entry.t; }
       });
-      // pexelsキーのエントリがマッチ → Pexelsで直接検索
-      if (kwPexels && kwScore > 0) return fetchPexelsEn(kwPexels);
-      if (kwBest && kwScore > 0) {
-        const s = byTicker.get(kwBest);
+      if (themeBest && themeScore > 0) {
+        const s = byTicker.get(themeBest);
         if (s) {
           const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
           return loadOrb(s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
         }
       }
 
-      // 2. 銘柄名・説明文でスコアリング
-      const words = q.split(/[\s、。！？,.・「」『』（）]+/).filter(w => w.length > 1);
-      let best = null, bestScore = 0;
-      state.forEach(s => {
-        const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||""].join(" ").toLowerCase();
-        let score = words.reduce((a, w) => a + (text.includes(w.toLowerCase()) ? w.length : 0), 0);
-        if (score > bestScore) { bestScore = score; best = s; }
-      });
-      if (best && bestScore > 1) {
-        const price = best.price ? Math.round(best.price) : Math.floor(Math.random() * 900 + 100);
-        return loadOrb(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622", price);
-      }
-
-      // 3. Pexelsで検索（日本語→Pexels用キーワード変換）
+      // 3. Fallback: 日本語→英語変換してPexels
       fetchPexels(transcript);
     }
 
-    // 日本語テキストからPexels用英語キーワードを生成
+    // 日本語テキストをPexels検索用英語に変換
     function toEnKeywords(text) {
       const jpToEn = {
-        "飛":"flying sky","空":"sky","海":"ocean sea","山":"mountain","恋":"love romantic",
-        "愛":"love","戦":"war battle","死":"death","家":"home house","夢":"dream surreal",
-        "水":"water","火":"fire","光":"light","闇":"dark darkness","走":"running",
-        "追":"chase running","落":"falling","眠":"sleep","涙":"tears crying","笑":"smile laughing",
-        "怖":"fear horror","孤独":"loneliness alone","自由":"freedom","宇宙":"space universe",
-        "森":"forest","雨":"rain","雪":"snow","花":"flower","夕日":"sunset","朝":"morning",
+        "飛":"flying","空":"sky","海":"ocean","山":"mountain","森":"forest",
+        "川":"river","湖":"lake","砂漠":"desert","火":"fire","水":"water",
+        "愛":"love","恋":"romantic","怖":"fear dark","孤独":"loneliness",
+        "自由":"freedom","希望":"hope","絶望":"despair dark",
+        "走":"running","追":"chasing","落":"falling","泳":"swimming",
+        "眠":"sleeping","笑":"laughing","泣":"crying tearful",
+        "光":"light","闇":"darkness","風":"wind","夜":"night",
+        "星":"stars sky","花":"flowers","木":"tree","雨":"rain","雪":"snow",
+        "家":"home house","学校":"school","宇宙":"space universe",
+        "未来":"future technology","過去":"vintage historical",
+        "血":"blood dark red","死":"death dark cemetery",
+        "剣":"sword battle","戦":"war battle","爆発":"explosion",
       };
       let en = text;
       Object.entries(jpToEn).forEach(([jp, e]) => { if (text.includes(jp)) en += " " + e; });
-      // 日本語文字を除去して英単語だけ残す
-      const enOnly = en.replace(/[　-鿿豈-﫿]/g, " ").trim();
+      const enOnly = en.replace(/[\u3000-\u9fff\uf900-\ufaff]/g, " ").replace(/\s+/g, " ").trim();
       return (enOnly.length > 3 ? enOnly : "dream surreal abstract").slice(0, 80);
     }
 
