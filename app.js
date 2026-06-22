@@ -2172,22 +2172,24 @@
       { w:["タイムトラベル","time travel","過去","未来","time machine","江戸","戦国"],        t:"TIME" },
       { w:["空飛ぶ車","flying car","flycr","未来の乗り物"],                                   t:"FLYCR" },
 
-      // ── 怖い生き物・追跡 ──
-      { w:["恐竜","dinosaur","ティラノ","velociraptor","t-rex","ジュラ"],                     t:"CHASE" },
-      { w:["狼","wolf","オオカミ","werewolf","狼男","howl"],                                  t:"CHASE" },
-      { w:["熊","bear","クマ","grizzly"],                                                      t:"CHASE" },
-      { w:["蛇","snake","スネーク","python","cobra","毒蛇"],                                  t:"MUTE" },
-      { w:["虫","insect","bug","ゴキブリ","cockroach","蜘蛛","spider","swarm"],               t:"MUTE" },
-      { w:["サメ","shark","海の生き物","monster fish"],                                        t:"DROWN" },
-      { w:["ゾンビ","zombie","undead","死者","屍"],                                            t:"CHASE" },
-      { w:["幽霊","ghost","お化け","haunted","霊","怨霊","poltergeist","幽玄"],               t:"DEAD" },
-      { w:["悪魔","devil","demon","satan","地獄","hell","666"],                               t:"ARMAG" },
-      { w:["怪物","monster","creature","beast","化け物","魔物"],                               t:"MUTE" },
-      { w:["宇宙人","alien","エイリアン","UFO","extraterrestrial","invasion"],                t:"ALIEN" },
-      { w:["巨人","giant","enormous","巨大","大きな人","titan"],                               t:"CHASE" },
-      { w:["蜂","bee","wasp","ハチ","スズメバチ","刺され"],                                   t:"MUTE" },
-      { w:["cat","猫","ネコ","kitten","黒猫","dead cat"],                                     t:"DEADCAT" },
-      { w:["犬","dog","イヌ","hound","狂犬"],                                                  t:"ANIMAL" },
+      // ── 怖い生き物・追跡（pexelsキー = Pexelsで直接検索）──
+      { w:["恐竜","dinosaur","ティラノ","velociraptor","t-rex","ジュラ"],   pexels:"dinosaur tyrannosaurus prehistoric" },
+      { w:["狼","wolf","オオカミ","werewolf","狼男","howl"],                 pexels:"wolf dark forest howling" },
+      { w:["熊","bear","クマ","grizzly","polar bear","ホッキョクグマ"],      pexels:"bear grizzly wild" },
+      { w:["蛇","snake","スネーク","python","cobra","毒蛇","爬虫類"],        pexels:"snake reptile dangerous" },
+      { w:["爬虫類","reptile","トカゲ","lizard","iguana","ワニ","crocodile"],pexels:"reptile lizard crocodile" },
+      { w:["虫","insect","bug","ゴキブリ","cockroach","蜘蛛","spider"],      pexels:"insect spider bug crawling" },
+      { w:["サメ","shark","海の怪物","deep sea","海底"],                     pexels:"shark underwater ocean" },
+      { w:["ゾンビ","zombie","undead","死者","屍"],                           pexels:"zombie dark horror abandoned" },
+      { w:["悪魔","devil","demon","satan","地獄","hell"],                    pexels:"dark demon supernatural horror" },
+      { w:["怪物","monster","creature","beast","化け物","魔物"],              pexels:"monster creature dark beast" },
+      { w:["巨人","giant","enormous","巨大","titan","大きな"],                pexels:"giant creature enormous shadow" },
+      { w:["蜂","bee","wasp","ハチ","スズメバチ","蜂の巣","swarm"],           pexels:"bees swarm hive" },
+      { w:["ライオン","lion","虎","tiger","leopard","豹"],                    pexels:"lion tiger wild predator" },
+      { w:["幽霊","ghost","お化け","haunted","霊","怨霊","poltergeist"],      t:"DEAD" },
+      { w:["宇宙人","alien","エイリアン","UFO","extraterrestrial"],           t:"ALIEN" },
+      { w:["cat","猫","ネコ","kitten","黒猫"],                               t:"DEADCAT" },
+      { w:["犬","dog","イヌ","hound","狂犬"],                                t:"ANIMAL" },
 
       // ── 身体・感覚 ──
       { w:["歯","tooth","teeth","dental","抜け","虫歯"],                                      t:"TEETH" },
@@ -2292,12 +2294,18 @@
       const q = transcript;
       const ql = q.toLowerCase();
 
-      // 1. キーワード表で直接マッチ（最も信頼性が高い）
-      let kwBest = null, kwScore = 0;
+      // 1. キーワード表で直接マッチ
+      let kwBest = null, kwScore = 0, kwPexels = null;
       DREAM_KW.forEach(entry => {
         let score = entry.w.reduce((a, w) => a + (ql.includes(w.toLowerCase()) ? w.length * 2 : 0), 0);
-        if (score > kwScore) { kwScore = score; kwBest = entry.t; }
+        if (score > kwScore) {
+          kwScore = score;
+          kwBest = entry.t || null;
+          kwPexels = entry.pexels || null;
+        }
       });
+      // pexelsキーのエントリがマッチ → Pexelsで直接検索
+      if (kwPexels && kwScore > 0) return fetchPexelsEn(kwPexels);
       if (kwBest && kwScore > 0) {
         const s = byTicker.get(kwBest);
         if (s) {
@@ -2403,17 +2411,16 @@
 
     // Step 3: cancel — orbCanvasを元の場所に戻す
     document.getElementById("sellNo").addEventListener("click", () => {
-      const orb = document.getElementById("sellResultOrb");
-      if (orbCanvas && orb && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
+      try { if (orbCanvas && orbCanvas.parentElement) orbCanvas.parentElement.removeChild(orbCanvas); } catch(e) {}
       goStep("4b");
     });
     document.getElementById("sellKeepClose").addEventListener("click", () => {
       stopAll(); $("#selldream").classList.add("hidden");
     });
     document.getElementById("sellRedo").addEventListener("click", () => {
-      const orb = document.getElementById("sellResultOrb");
-      if (orbCanvas && orb && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
-      resetVoice(); goStep(2);
+      try { if (orbCanvas && orbCanvas.parentElement) orbCanvas.parentElement.removeChild(orbCanvas); } catch(e) {}
+      resetVoice();
+      goStep(2);
     });
 
     // Step 4: go to DreamField
