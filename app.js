@@ -2102,7 +2102,8 @@
       }
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; micBtn.classList.remove("recording"); return; }
       rec = new SpeechRec();
-      rec.lang = navigator.language || "ja-JP"; rec.interimResults = true; rec.continuous = true;
+      rec.lang = navigator.language.startsWith("en") ? "en-US" : "ja-JP";
+      rec.interimResults = true; rec.continuous = true;
       rec.onresult = (e) => {
         transcript = Array.from(e.results).map(r => r[0].transcript).join("");
         trEl.textContent = transcript;

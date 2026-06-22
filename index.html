@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Dream Dock" />
   <meta name="theme-color" content="#08090b" />
   <link rel="apple-touch-icon" href="assets/icon.png" />
-  <link rel="stylesheet" href="styles.css?v=20260622g" />
+  <link rel="stylesheet" href="styles.css?v=20260622i" />
 </head>
 <body>
   <div id="grain"></div>
@@ -144,10 +144,10 @@
     <!-- Step 0: Start -->
     <div class="sell-step" id="sellStep0">
       <img class="sell-logo" src="assets/baku_coin03.jpg?v=20260622g" alt="Baku">
-      <div class="sell-step-title" style="margin-top:0;line-height:1.1;">夢を吸い出す<span class="sell-step-en">Extract Your Dream</span></div>
+      <div class="sell-step-title" style="margin-top:0;line-height:1.1;">Extract Your Dream<span class="sell-step-en" style="font-weight:200;">夢を吸い出す</span></div>
       <p class="sell-step-desc">
-        あなたの夢を市場に放ちます。夢の内容は<strong>匿名</strong>で記録されます。<br>
-        <span class="sell-desc-en">Your dream will be released into the market. The content is recorded <strong>anonymously</strong>.</span>
+        Your dream will be released into the market.<br>The content is recorded <strong>anonymously</strong>.<br>
+        <span class="sell-desc-en">あなたの夢を市場に放ちます。内容は<strong>匿名</strong>で記録されます。</span>
       </p>
       <button class="sell-btn-main" id="sellStart">Begin →</button>
     </div>
@@ -165,7 +165,7 @@
 
     <!-- Step 2: Voice input -->
     <div class="sell-step hidden" id="sellStep2">
-      <div class="sell-step-title">夢を話してください<span class="sell-step-en">Speak your dream aloud</span></div>
+      <div class="sell-step-title">Speak your dream aloud<span class="sell-step-en">夢を話してください</span></div>
       <button class="sell-mic-btn" id="sellMic"><span class="sell-mic-dot"></span></button>
       <div class="sell-transcript" id="sellTranscript">——</div>
       <div class="sell-voice-btns">
@@ -176,7 +176,7 @@
 
     <!-- Step 3: Orb + confirm (tap orb to sell) -->
     <div class="sell-step hidden" id="sellStep3">
-      <div class="sell-step-title" style="font-size:clamp(1rem,3vw,1.3rem);">この夢を、手放していいですか？<span class="sell-step-en" style="font-size:0.58rem;">Will you release this dream?</span></div>
+      <div class="sell-step-title" style="font-size:clamp(1rem,3vw,1.3rem);">Will you release this dream?<span class="sell-step-en" style="font-size:0.58rem;">この夢を、手放していいですか？</span></div>
       <div class="sell-result-orb sell-orb-tappable" id="sellResultOrb">
         <div class="sell-orb-hint">Release</div>
       </div>
@@ -190,22 +190,20 @@
 
     <!-- Step 4b: Keep it -->
     <div class="sell-step hidden" id="sellStep4b">
-      <div class="sell-step-title">あなたの夢を<br>大切にしてください。<span class="sell-step-en">Hold onto your dream.</span></div>
+      <div class="sell-step-title">Hold onto your dream.<span class="sell-step-en">あなたの夢を大切にしてください。</span></div>
       <p class="sell-step-desc">
-        夢は夢のままとは限りません。<br>
-        手放したくないと思ったなら、<br>
-        その夢はきっと、あなたの大切な一部。<br>
-        <span class="sell-desc-en">A dream doesn't have to stay a dream.<br>
-        If you can't let go — that dream<br>
-        is probably a vital part of who you are.</span>
+        A dream doesn't have to stay a dream.<br>
+        If you can't let go —<br>
+        that dream is probably a vital part of who you are.<br>
+        <span class="sell-desc-en">夢は夢のままとは限りません。手放したくないなら、それはきっとあなたの大切な一部。</span>
       </p>
       <button class="sell-btn-main" id="sellKeepClose">← Back to Market</button>
     </div>
 
     <!-- Step 4: Sold -->
     <div class="sell-step hidden" id="sellStep4">
-      <div class="sell-sold-title">夢が放たれました。<span class="sell-sold-en" style="display:block;">Your dream has been released.</span></div>
-      <div class="sell-result-msg" style="margin-top:18px;">匿名で、マーケットに放たれました。<br><span style="color:var(--g3);font-size:0.9em;">Anonymously released into the market.</span></div>
+      <div class="sell-sold-title">Your dream has been released.<span class="sell-sold-en" style="display:block;">夢が放たれました。</span></div>
+      <div class="sell-result-msg" style="margin-top:18px;">Anonymously released into the market.<br><span style="color:var(--g3);font-size:0.9em;">匿名で、マーケットに放たれました。</span></div>
       <button class="sell-btn-main" id="sellToField">View in Dreamfield →</button>
     </div>
   </div>
@@ -216,6 +214,6 @@
   <script src="data.js?v=20260615b"></script>
   <script src="orb.js?v=20260622h"></script>
   <script src="field.js?v=20260615b"></script>
-  <script src="app.js?v=20260622h"></script>
+  <script src="app.js?v=20260622i"></script>
 </body>
 </html>

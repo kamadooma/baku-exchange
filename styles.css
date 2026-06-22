@@ -485,8 +485,8 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
   min-height: 100svh; padding: 80px 32px 60px; text-align: center; max-width: 480px; margin: 0 auto; }
 .sell-step.hidden { display: none; }
 .sell-step-title { font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 200; letter-spacing: 0.06em; line-height: 1.3; }
-.sell-step-title .sell-step-en { display: block; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); margin-top: 8px; }
-.sell-step-en { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); margin-top: 10px; }
+.sell-step-title .sell-step-en { display: block; font-size: 0.66rem; letter-spacing: 0.12em; color: var(--g2); margin-top: 8px; }
+.sell-step-en { font-size: 0.66rem; letter-spacing: 0.12em; color: var(--g2); margin-top: 10px; }
 .sell-logo { width: min(90vw, 560px); height: min(90vw, 560px); object-fit: contain; margin: 0; display: block; opacity: 0.85; }
 .sell-step-desc { color: var(--g1); font-size: 0.9rem; line-height: 1.9; margin: 28px 0 40px; }
 .sell-step-desc strong { color: var(--fg); font-weight: 400; }
