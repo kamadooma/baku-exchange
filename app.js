@@ -2114,7 +2114,7 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ transcript }),
-          signal: AbortSignal.timeout(8000),
+          signal: AbortSignal.timeout(2000),
         });
         if (res.ok) {
           const analysis = await res.json();
