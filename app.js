@@ -102,7 +102,7 @@
   //  LIST
   // ============================================================
   const rowRefs = new Map();
-  let sortMode = "mix", searchQuery = "";
+  let sortMode = "mix";
   function orderedForDisplay() {
     const arr = state.slice();
     if (sortMode === "popular") return arr.sort((a, b) => (b.realViews || b.interest * 200) - (a.realViews || a.interest * 200));
@@ -123,42 +123,10 @@
       document.querySelectorAll("#sortBar .sort-btn").forEach((x) => x.classList.toggle("on", x.dataset.sort === sortMode));
       buildList();
     }));
-    const si = $("#searchInput");
-    if (si) {
-      si.addEventListener("input", () => {
-        searchQuery = si.value;
-        buildList();
-        const q = searchQuery.toLowerCase();
-        if (!q) return;
-        const hits = state.filter((s) =>
-          s.ticker.toLowerCase().includes(q) ||
-          s.nameJp.includes(searchQuery) ||
-          s.nameEn.toLowerCase().includes(q));
-        if (hits.length === 1) { selectDream(hits[0]); si.value = ""; searchQuery = ""; buildList(); }
-      });
-      si.addEventListener("keydown", (e) => {
-        if (e.key !== "Enter") return;
-        const q = searchQuery.toLowerCase(); if (!q) return;
-        const hits = state.filter((s) =>
-          s.ticker.toLowerCase().includes(q) ||
-          s.nameJp.includes(searchQuery) ||
-          s.nameEn.toLowerCase().includes(q));
-        if (hits.length) { selectDream(hits[0]); si.value = ""; searchQuery = ""; buildList(); }
-      });
-    }
-    const sb = $("#searchBtn");
-    if (sb) sb.addEventListener("click", () => { if (si) si.focus(); });
   }
   function buildList() {
     const el = $("#marketList"); el.innerHTML = "";
-    const q = searchQuery.toLowerCase();
-    const visible = q
-      ? orderedForDisplay().filter((s) =>
-          s.ticker.toLowerCase().includes(q) ||
-          s.nameJp.includes(searchQuery) ||
-          s.nameEn.toLowerCase().includes(q))
-      : orderedForDisplay();
-    visible.forEach((s) => {
+    orderedForDisplay().forEach((s) => {
       const row = document.createElement("div");
       row.className = "row" + (s === selected ? " active" : "");
       row.innerHTML = `
