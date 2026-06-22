@@ -2693,7 +2693,8 @@
       { w:["閉じ込められ","逃げられない","trapped","escape impossible","出られない","鍵が"],  t:"MUTE" },
       { w:["忘れた","忘れてしまった","forgotten","cannot remember","思い出せない"],           t:"FORGETEX" },
       { w:["爆発した","爆発する","exploded","blast","崩れ落ち","崩壊した"],                   t:"QUAKE" },
-      { w:["眠れない","眠ろうとした","can't sleep","insomnia","起きられない"],               t:"NOWAKE" },
+      { w:["眠れない夢","眠れない","眠ろうとした","can't sleep","insomnia","不眠","睡眠できない"],  t:"NOWAKE" },
+      { w:["起きられない","目覚められない","起きれない","wake up can't","cannot wake","朝起きれ"],   t:"SLEEPIN" },
       { w:["浮かんだ","浮いた","floating","levitating","宙に浮","weightless"],              t:"FLY" },
       { w:["泣いた","泣いていた","crying","sobbing","涙が止まら"],                           t:"ALONE" },
       { w:["笑えない","笑えなかった","couldn't laugh","forced smile"],                       t:"MUTE" },
@@ -2812,6 +2813,15 @@
         .replace(/^(夢の中で|夢の中に|夢の中では|夢の中|夢で|夢に)[、\s]*/g, "");
       const ql = q.toLowerCase();
 
+      // 0.5: JP具体名詞 → ローカルconceptファイル
+      const concrete = extractConcreteTerm(q);
+      if (concrete) {
+        const title = concrete.jp + "の夢";
+        const price = Math.floor(Math.random() * 900 + 100);
+        const imgUrl = "assets/footage/concept_" + concrete.slug + ".jpg?v=20260622i";
+        return loadOrb(title, null, imgUrl, price);
+      }
+
       // 1. 視覚名詞（具体的に見えるもの）→ ローカルconceptファイル直接表示
       const visual = extractVisualNoun(q);
       if (visual) {
@@ -2845,25 +2855,71 @@
       }
     }
 
-    // 日本語テキストをPexels検索用英語に変換
+    // 具体名詞JP→EN辞書（事前DLスラグへのマッピング）
+    const JP_NOUN_EN = {
+      // 野菜
+      "トマト":"tomato","ピーマン":"green_pepper","きゅうり":"cucumber","にんじん":"carrot",
+      "じゃがいも":"potato","ナス":"eggplant","なす":"eggplant","たまねぎ":"onion",
+      "ブロッコリー":"broccoli","かぼちゃ":"pumpkin","さつまいも":"potato","とうもろこし":"corn",
+      // 果物
+      "りんご":"apple_fruit","バナナ":"banana","いちご":"strawberry","ぶどう":"grape",
+      "スイカ":"watermelon_slice","もも":"peach","レモン":"lemon","さくらんぼ":"cherry","マンゴー":"mango",
+      // 料理・食べ物
+      "ラーメン":"ramen_bowl","らーめん":"ramen_bowl","うどん":"soba_noodle","そば":"soba_noodle",
+      "すし":"sushi_plate","寿司":"sushi_plate","おにぎり":"onigiri","カレー":"curry_rice",
+      "てんぷら":"tempura","味噌汁":"miso_soup","弁当":"bento_box","たこ焼き":"takoyaki",
+      "ハンバーガー":"hamburger","ピザ":"pizza_slice","パスタ":"pasta_plate","ケーキ":"cake_birthday",
+      "アイスクリーム":"ice_cream_cone","チョコレート":"chocolate_dark","パン":"bread_loaf",
+      "ドーナツ":"donut_sweet","クッキー":"cookie_baked","サンドウィッチ":"sandwich",
+      // 飲み物
+      "牛乳":"milk_glass","ぎゅうにゅう":"milk_glass","ミルク":"milk_glass",
+      "コーヒー":"coffee_cup","お茶":"green_tea","ビール":"beer_glass","ワイン":"wine_glass",
+      "ジュース":"juice_glass","コーラ":"cola_drink","お酒":"wine_glass",
+      // 動物
+      "ねこ":"cat_cute","ネコ":"cat_cute","いぬ":"dog_happy","犬":"dog_happy",
+      "うさぎ":"rabbit_cute","ウサギ":"rabbit_cute","ハムスター":"hamster","金魚":"goldfish",
+      "オウム":"parrot","かも":"duck_pond","パンダ":"panda","コアラ":"koala",
+      "ペンギン":"penguin_cute","たぬき":"cat_cute",
+      // ピエロ（重要）
+      "ピエロ":"clown","ぴえろ":"clown","どうけし":"clown","ホラーピエロ":"clown","サーカス":"circus_dark",
+      // 乗り物
+      "じてんしゃ":"bicycle_road","自転車":"bicycle_road","バイク":"motorcycle_speed",
+      "バス":"bus_interior","タクシー":"taxi_night","新幹線":"bullet_train_jp","しんかんせん":"bullet_train_jp",
+      "飛行機":"airplane_interior","船":"boat_sea","気球":"hot_air_balloon_sky",
+      // 場所
+      "コンビニ":"convenience_store_jp","スーパー":"supermarket_aisle","カフェ":"cafe_interior",
+      "レストラン":"restaurant_dim","映画館":"cinema_empty","ゲームセンター":"arcade_jp",
+      "温泉":"onsen_steam","神社":"shrine_path","お寺":"temple_stone",
+      // 日常品
+      "スマホ":"smartphone_dark","財布":"wallet_empty","傘":"umbrella_rain",
+      "メガネ":"glasses_pair","時計":"watch_clock","鍵":"key_metal","かぎ":"key_metal",
+      "目覚まし":"alarm_clock","アラーム":"alarm_clock","ぬいぐるみ":"teddy_bear_old",
+      "くすり":"medicine_bottle","薬":"medicine_bottle","花束":"flower_bouquet",
+      "風船":"balloon_sky","蝋燭":"candle_flame","鏡":"mirror_reflection",
+      "毒":"poison_bottle","コンパス":"compass_old","砂時計":"hourglass_sand",
+      // 人物・状況
+      "歯医者":"dentist_chair_jp","手術":"surgery_close","卒業":"graduation",
+      "結婚式":"wedding_church","喧嘩":"argument_couple","面接":"job_interview_room",
+      // 自然
+      "桜":"cherry_blossom_pink","さくら":"cherry_blossom_pink","紅葉":"autumn_leaves_red",
+      "虹":"rainbow_sky","満月":"full_moon_dark","流れ星":"shooting_star_sky",
+    };
+
+    // 具体名詞を抽出してローカルconceptファイルで表示（長い語優先）
+    function extractConcreteTerm(text) {
+      let bestSlug = null, bestJp = null, bestLen = 0;
+      Object.entries(JP_NOUN_EN).forEach(([jp, slug]) => {
+        if (jp.length >= 2 && text.includes(jp) && jp.length > bestLen) {
+          bestSlug = slug; bestJp = jp; bestLen = jp.length;
+        }
+      });
+      return bestSlug ? { slug: bestSlug, jp: bestJp } : null;
+    }
+
     function toEnKeywords(text) {
-      const jpToEn = {
-        "飛":"flying","空":"sky","海":"ocean","山":"mountain","森":"forest",
-        "川":"river","湖":"lake","砂漠":"desert","火":"fire","水":"water",
-        "愛":"love","恋":"romantic","怖":"fear dark","孤独":"loneliness",
-        "自由":"freedom","希望":"hope","絶望":"despair dark",
-        "走":"running","追":"chasing","落":"falling","泳":"swimming",
-        "眠":"sleeping","笑":"laughing","泣":"crying tearful",
-        "光":"light","闇":"darkness","風":"wind","夜":"night",
-        "星":"stars sky","花":"flowers","木":"tree","雨":"rain","雪":"snow",
-        "家":"home house","学校":"school","宇宙":"space universe",
-        "未来":"future technology","過去":"vintage historical",
-        "血":"blood dark red","死":"death dark cemetery",
-        "剣":"sword battle","戦":"war battle","爆発":"explosion",
-      };
-      let en = text;
-      Object.entries(jpToEn).forEach(([jp, e]) => { if (text.includes(jp)) en += " " + e; });
-      const enOnly = en.replace(/[\u3000-\u9fff\uf900-\ufaff]/g, " ").replace(/\s+/g, " ").trim();
+      const concrete = extractConcreteTerm(text);
+      if (concrete) return concrete.jp + " " + concrete.slug.replace(/_/g, " ");
+      const enOnly = text.replace(/[　-鿿豈-﫿]/g, " ").replace(/\s+/g, " ").trim();
       return (enOnly.length > 3 ? enOnly : "dream surreal abstract").slice(0, 80);
     }
 
