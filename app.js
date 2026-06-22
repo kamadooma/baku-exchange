@@ -1944,6 +1944,8 @@
     let transcript = "", rec = null;
     const bgm = new Audio("music/release_your_dream.mp3");
     bgm.loop = true; bgm.volume = 0.45;
+    const narAudio = new Audio("narration/test.mp3");
+    narAudio.volume = 1.0;
 
     function goStep(n) {
       [0,1,2,3,4].forEach(i => {
@@ -1957,6 +1959,7 @@
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
       bgm.pause(); bgm.currentTime = 0;
+      narAudio.pause(); narAudio.currentTime = 0;
     }
 
     function resetFlow() {
@@ -1977,51 +1980,25 @@
     $("#toSell").addEventListener("click", () => { resetFlow(); $("#selldream").classList.remove("hidden"); });
     $("#sellClose").addEventListener("click", () => { stopAll(); $("#selldream").classList.add("hidden"); });
 
-    // Step 0 → 1: start narration chain
+    // Step 0 → 1: start meditation
     document.getElementById("sellStart").addEventListener("click", () => {
       goStep(1);
       bgm.currentTime = 0; bgm.play().catch(() => {});
-      narIdx = 0;
-      let secs = 180;
+      narAudio.currentTime = 0;
+      narAudio.play().catch(() => {});
+      narAudio.onended = () => {
+        clearInterval(meditateIv);
+        document.getElementById("sellMedNext").classList.add("visible");
+      };
+      let secs = 0;
       const timerEl = document.getElementById("sellTimer");
+      timerEl.textContent = "0:00";
       meditateIv = setInterval(() => {
-        secs = Math.max(0, secs - 1);
+        secs++;
         const m = Math.floor(secs / 60), s = secs % 60;
         timerEl.textContent = m + ":" + String(s).padStart(2, "0");
       }, 1000);
-      playNar(0);
     });
-
-    function setGuideText(text) {
-      const el = document.getElementById("sellGuideText");
-      if (!el) return;
-      el.style.opacity = "0";
-      setTimeout(() => { el.textContent = text; el.style.opacity = "1"; }, 350);
-    }
-
-    function playNar(idx) {
-      if (idx >= NAR.length) {
-        clearInterval(meditateIv);
-        document.getElementById("sellMedNext").classList.add("visible");
-        return;
-      }
-      narIdx = idx;
-      const n = NAR[idx];
-      setGuideText(n.jp);
-
-      if (!window.speechSynthesis) {
-        narTO = setTimeout(() => playNar(idx + 1), 3000);
-        return;
-      }
-      window.speechSynthesis.cancel();
-      const uJp = new SpeechSynthesisUtterance(n.jp);
-      uJp.lang = "ja-JP"; uJp.rate = 0.86; uJp.pitch = 0.95; uJp.volume = 0.9;
-      const uEn = new SpeechSynthesisUtterance(n.en);
-      uEn.lang = "en-US"; uEn.rate = 0.80; uEn.pitch = 0.95; uEn.volume = 0.85;
-      uEn.onend = () => { narTO = setTimeout(() => playNar(idx + 1), n.pause || 900); };
-      uJp.onend = () => { setTimeout(() => window.speechSynthesis.speak(uEn), 550); };
-      window.speechSynthesis.speak(uJp);
-    }
 
     document.getElementById("sellMedNext").addEventListener("click", () => {
       stopAll(); goStep(2);
