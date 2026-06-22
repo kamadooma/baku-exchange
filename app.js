@@ -1926,6 +1926,8 @@
 
     let meditateIv = null, narTO = null, narIdx = 0;
     let transcript = "", rec = null;
+    const bgm = new Audio("music/release_your_dream.mp3");
+    bgm.loop = true; bgm.volume = 0.45;
 
     function goStep(n) {
       [0,1,2,3,4].forEach(i => {
@@ -1938,6 +1940,7 @@
       clearInterval(meditateIv); clearTimeout(narTO);
       if (window.speechSynthesis) window.speechSynthesis.cancel();
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
+      bgm.pause(); bgm.currentTime = 0;
     }
 
     function resetFlow() {
@@ -1961,6 +1964,7 @@
     // Step 0 → 1: start narration chain
     document.getElementById("sellStart").addEventListener("click", () => {
       goStep(1);
+      bgm.currentTime = 0; bgm.play().catch(() => {});
       narIdx = 0;
       let secs = 180;
       const timerEl = document.getElementById("sellTimer");
