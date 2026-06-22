@@ -487,7 +487,7 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 .sell-step-title { font-size: clamp(1.6rem, 5vw, 2.6rem); font-weight: 200; letter-spacing: 0.06em; line-height: 1.3; }
 .sell-step-title .sell-step-en { display: block; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); margin-top: 8px; }
 .sell-step-en { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--g2); margin-top: 10px; }
-.sell-logo { width: clamp(40px, 8vw, 54px); height: clamp(40px, 8vw, 54px); object-fit: contain; filter: invert(1); mix-blend-mode: screen; margin-bottom: 24px; opacity: 0.9; }
+.sell-logo { width: clamp(32px, 6vw, 44px); height: clamp(32px, 6vw, 44px); object-fit: contain; margin-bottom: 20px; opacity: 0.85; }
 .sell-step-desc { color: var(--g1); font-size: 0.9rem; line-height: 1.9; margin: 28px 0 40px; }
 .sell-step-desc strong { color: var(--fg); font-weight: 400; }
 .sell-desc-en { display: block; margin-top: 6px; color: var(--g2); font-size: 0.8rem; }
