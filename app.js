@@ -2104,20 +2104,37 @@
       const orb = document.getElementById("sellResultOrb");
       orb.innerHTML = '<div class="sell-orb-hint">tap to sell</div>';
       orb.style.backgroundImage = "";
-      if (vidUrl) {
-        const vid = document.createElement("video");
-        vid.src = vidUrl; vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
-        vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
-        vid.onerror = () => { orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover"; };
-        orb.insertBefore(vid, orb.firstChild);
-      } else if (imgUrl) {
-        orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover";
+      // OrbGLのcanvasを借用してWebGLエフェクトを適用
+      if (window.OrbGL && OrbGL.ok() && orbCanvas) {
+        orbCanvas.style.cssText = "position:absolute;inset:0;width:100%;height:100%;border-radius:50%;";
+        orb.insertBefore(orbCanvas, orb.firstChild);
+        const FB = [0.18, 0.12, 0.28];
+        OrbGL.setMedia(imgUrl, vidUrl, FB, 0.42);
+      } else {
+        // フォールバック: 動画/画像を直接表示
+        if (vidUrl) {
+          const vid = document.createElement("video");
+          vid.src = vidUrl; vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+          vid.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;";
+          vid.onerror = () => { orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover"; };
+          orb.insertBefore(vid, orb.firstChild);
+        } else if (imgUrl) {
+          orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover";
+        }
       }
-      orb.onclick = () => goStep(4);
+      orb.onclick = () => {
+        // orbCanvasを元の場所に戻してからステップ遷移
+        if (orbCanvas && orb.contains(orbCanvas)) $(".orb") && $(".orb").appendChild(orbCanvas);
+        goStep(4);
+      };
     }
 
-    // Step 3: cancel
-    document.getElementById("sellNo").addEventListener("click", () => { stopAll(); $("#selldream").classList.add("hidden"); });
+    // Step 3: cancel — orbCanvasを元の場所に戻す
+    document.getElementById("sellNo").addEventListener("click", () => {
+      const orb = document.getElementById("sellResultOrb");
+      if (orbCanvas && orb && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
+      stopAll(); $("#selldream").classList.add("hidden");
+    });
 
     // Step 4: go to DreamField
     document.getElementById("sellToField").addEventListener("click", () => {
