@@ -2000,19 +2000,28 @@
       }, 1000);
     });
 
-    document.getElementById("sellMedNext").addEventListener("click", () => {
-      stopAll(); goStep(2);
-    });
+    // Step 1: skip / next
+    document.getElementById("sellMedNext").addEventListener("click", () => { stopAll(); goStep(2); });
+    document.getElementById("sellMedSkip").addEventListener("click", () => { stopAll(); goStep(2); });
 
     // Step 2: voice input
+    function resetVoice() {
+      if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
+      document.getElementById("sellMic").classList.remove("recording");
+      transcript = "";
+      document.getElementById("sellTranscript").textContent = "——";
+      ["sellVoiceDone","sellRetake"].forEach(id => document.getElementById(id).classList.remove("visible"));
+    }
+
     document.getElementById("sellMic").addEventListener("click", () => {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const micBtn = document.getElementById("sellMic");
       const doneBtn = document.getElementById("sellVoiceDone");
+      const retakeBtn = document.getElementById("sellRetake");
       const trEl = document.getElementById("sellTranscript");
       if (!SpeechRec) {
         const t = prompt("マイクが使えません。夢をテキストで入力してください：");
-        if (t) { transcript = t; trEl.textContent = t; doneBtn.classList.add("visible"); }
+        if (t) { transcript = t; trEl.textContent = t; doneBtn.classList.add("visible"); retakeBtn.classList.add("visible"); }
         return;
       }
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; micBtn.classList.remove("recording"); return; }
@@ -2021,11 +2030,13 @@
       rec.onresult = (e) => {
         transcript = Array.from(e.results).map(r => r[0].transcript).join("");
         trEl.textContent = transcript;
-        if (transcript) doneBtn.classList.add("visible");
+        if (transcript) { doneBtn.classList.add("visible"); retakeBtn.classList.add("visible"); }
       };
       rec.onend = () => { rec = null; micBtn.classList.remove("recording"); };
       rec.start(); micBtn.classList.add("recording");
     });
+
+    document.getElementById("sellRetake").addEventListener("click", resetVoice);
 
     document.getElementById("sellVoiceDone").addEventListener("click", () => {
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
@@ -2033,24 +2044,39 @@
       matchAndLoad();
     });
 
+    // マッチング: キーワード抽出 + スコアリング改善
+    function extractKeywords(text) {
+      // 日本語の助詞・助動詞・記号を除去、意味のある単語を抽出
+      return text
+        .replace(/[をはがにでのもとからまでよりへ]\s/g, " ")
+        .split(/[\s、。！？,.・「」『』【】（）\(\)]+/)
+        .filter(w => w.length > 1);
+    }
+
     function matchAndLoad() {
       const q = transcript.toLowerCase();
+      const words = extractKeywords(q);
       let best = null, bestScore = 0;
       state.forEach(s => {
-        const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||""].join(" ").toLowerCase();
-        const words = q.split(/[\s、。！？,.]+/).filter(w => w.length > 1);
-        let score = words.reduce((a, w) => a + (text.includes(w) ? 1 : 0), 0);
+        const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||"", s.category].join(" ").toLowerCase();
+        // キーワード一致スコア（長いワードを重く）
+        let score = words.reduce((a, w) => a + (text.includes(w) ? w.length : 0), 0);
+        // 銘柄名への完全含有はボーナス
+        if (s.nameJp.includes(transcript.slice(0, 6))) score += 10;
         if (score > bestScore) { bestScore = score; best = s; }
       });
       if (best && bestScore > 0) {
-        loadOrb(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622");
+        const price = best.price ? Math.round(best.price) : Math.floor(Math.random() * 900 + 100);
+        loadOrb(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622", price);
       } else {
         fetchPexels(transcript);
       }
     }
 
     async function fetchPexels(query) {
-      const q = encodeURIComponent(query.slice(0, 80));
+      // 意味のあるキーワードのみPexelsに渡す
+      const keywords = extractKeywords(query).slice(0, 5).join(" ") || query.slice(0, 60);
+      const q = encodeURIComponent(keywords);
       let vidUrl = null, imgUrl = null;
       try {
         const [vRes, pRes] = await Promise.all([
@@ -2064,15 +2090,17 @@
         vidUrl = chosen[0]?.link || null;
         imgUrl = pData.photos?.[0]?.src?.large || null;
       } catch(e) {}
+      const price = Math.floor(Math.random() * 900 + 100);
       const fb = state[Math.floor(Math.random() * state.length)];
-      loadOrb(transcript.slice(0, 24) || fb.nameJp,
+      loadOrb(transcript.slice(0, 20) || fb.nameJp,
         vidUrl || "assets/footage/" + fb.ticker + ".mp4?v=20260622",
-        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622");
+        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", price);
     }
 
-    function loadOrb(name, vidUrl, imgUrl) {
+    function loadOrb(name, vidUrl, imgUrl, price) {
       goStep(3);
       document.getElementById("sellResultName").textContent = name;
+      document.getElementById("sellResultPrice").textContent = price + " BAKU";
       const orb = document.getElementById("sellResultOrb");
       orb.innerHTML = '<div class="sell-orb-hint">tap to sell</div>';
       orb.style.backgroundImage = "";

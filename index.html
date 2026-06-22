@@ -153,8 +153,11 @@
     <div class="sell-step hidden" id="sellStep1">
       <div class="sell-guide-text" id="sellGuideText"></div>
       <div class="sell-pulse" id="sellPulse"></div>
-      <div class="sell-timer" id="sellTimer">3:00</div>
-      <button class="sell-btn-main sell-btn-hidden" id="sellMedNext">次へ →</button>
+      <div class="sell-timer" id="sellTimer">0:00</div>
+      <div class="sell-med-btns">
+        <button class="sell-btn-main sell-btn-hidden" id="sellMedNext">次へ →</button>
+        <button class="sell-btn-sub" id="sellMedSkip">Skip →</button>
+      </div>
     </div>
 
     <!-- Step 2: Voice input -->
@@ -163,7 +166,10 @@
       <div class="sell-step-en">Speak your dream aloud</div>
       <button class="sell-mic-btn" id="sellMic"><span class="sell-mic-dot"></span></button>
       <div class="sell-transcript" id="sellTranscript">——</div>
-      <button class="sell-btn-main sell-btn-hidden" id="sellVoiceDone">次へ →</button>
+      <div class="sell-voice-btns">
+        <button class="sell-btn-main sell-btn-hidden" id="sellVoiceDone">次へ →</button>
+        <button class="sell-btn-sub sell-btn-hidden" id="sellRetake">撮り直す ↺</button>
+      </div>
     </div>
 
     <!-- Step 3: Orb + confirm (tap orb to sell) -->
@@ -174,6 +180,7 @@
         <div class="sell-orb-hint">tap to sell</div>
       </div>
       <div class="sell-result-name" id="sellResultName"></div>
+      <div class="sell-result-price" id="sellResultPrice"></div>
       <button class="sell-btn-sub" id="sellNo">まだ手放せません</button>
     </div>
 
