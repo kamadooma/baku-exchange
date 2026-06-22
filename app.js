@@ -1940,6 +1940,16 @@
         en:"One last question. — Will you release this dream?", final:true },
     ];
 
+    // 円形モニターへの送信 — Mac上でpython3 tools/pillow_server.py を起動しておく
+    const PILLOW_SERVER = "http://localhost:8765";
+    function sendToPillow(imgUrl) {
+      fetch(PILLOW_SERVER + "/dream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: imgUrl }),
+      }).catch(() => {}); // 接続できなくても無視
+    }
+
     let meditateIv = null, narTO = null, narIdx = 0;
     let transcript = "", rec = null;
     const bgm = new Audio("music/release_your_dream.mp3");
@@ -2098,6 +2108,7 @@
     }
 
     function loadOrb(name, vidUrl, imgUrl, price) {
+      sendToPillow(imgUrl); // 円形モニターへ送信
       goStep(3);
       document.getElementById("sellResultName").textContent = name;
       document.getElementById("sellResultPrice").textContent = price + " BAKU";
