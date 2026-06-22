@@ -1897,8 +1897,176 @@
   $("#titlecard").addEventListener("click", enter);
   $("#toField").addEventListener("click", openField);
   $("#fieldClose").addEventListener("click", closeField);
-  $("#toSell").addEventListener("click", () => $("#selldream").classList.remove("hidden"));
-  $("#sellClose").addEventListener("click", () => $("#selldream").classList.add("hidden"));
+  // ---- 夢を吸い出すフロー ----
+  (function() {
+    const PEXELS_KEY = "9heRDTAA2Hs38mjrmR4FTW81nU18jWbQF2iFQxvfXzmZNHYjUhKzERBa";
+    const GUIDE = [
+      [0,   "目を閉じて、呼吸を整えてください"],
+      [30,  "最近見た夢を思い出してください"],
+      [60,  "その夢の色、形、感触を感じてください"],
+      [90,  "夢の中で何が起きていましたか？"],
+      [120, "その夢は、あなたに何かを伝えていましたか？"],
+      [150, "夢を手放す準備ができたら、次へ進んでください"],
+    ];
+    let meditateIv = null, transcript = "", matched = null, rec = null;
+
+    function goStep(n) {
+      [0,1,2,3,4].forEach(i => {
+        const el = document.getElementById("sellStep" + i);
+        if (el) el.classList.toggle("hidden", i !== n);
+      });
+    }
+
+    function resetFlow() {
+      transcript = ""; matched = null;
+      clearInterval(meditateIv);
+      if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
+      const mic = document.getElementById("sellMic");
+      if (mic) mic.classList.remove("recording");
+      const tr = document.getElementById("sellTranscript");
+      if (tr) tr.textContent = "——";
+      ["sellVoiceDone","sellMedNext"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.remove("visible");
+      });
+      document.getElementById("sellResultOrb").innerHTML = "";
+      goStep(0);
+    }
+
+    $("#toSell").addEventListener("click", () => {
+      resetFlow();
+      $("#selldream").classList.remove("hidden");
+    });
+    $("#sellClose").addEventListener("click", () => {
+      clearInterval(meditateIv);
+      $("#selldream").classList.add("hidden");
+    });
+
+    // Step 0 → 1
+    document.getElementById("sellStart").addEventListener("click", () => {
+      goStep(1);
+      let secs = 180;
+      const timerEl = document.getElementById("sellTimer");
+      const guideEl = document.getElementById("sellGuideText");
+      const nextBtn = document.getElementById("sellMedNext");
+      guideEl.textContent = GUIDE[0][1];
+      clearInterval(meditateIv);
+      meditateIv = setInterval(() => {
+        secs--;
+        const m = Math.floor(secs / 60), s = secs % 60;
+        timerEl.textContent = m + ":" + String(s).padStart(2, "0");
+        const elapsed = 180 - secs;
+        for (let i = GUIDE.length - 1; i >= 0; i--) {
+          if (elapsed >= GUIDE[i][0]) { guideEl.textContent = GUIDE[i][1]; break; }
+        }
+        if (secs <= 0) {
+          clearInterval(meditateIv);
+          nextBtn.classList.add("visible");
+        }
+      }, 1000);
+    });
+
+    document.getElementById("sellMedNext").addEventListener("click", () => {
+      clearInterval(meditateIv);
+      goStep(2);
+    });
+
+    // Step 2
+    document.getElementById("sellYes").addEventListener("click", () => goStep(3));
+    document.getElementById("sellNo").addEventListener("click", () => {
+      $("#selldream").classList.add("hidden");
+    });
+
+    // Step 3: voice
+    document.getElementById("sellMic").addEventListener("click", () => {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const micBtn = document.getElementById("sellMic");
+      const doneBtn = document.getElementById("sellVoiceDone");
+      const trEl = document.getElementById("sellTranscript");
+      if (!SpeechRec) {
+        const t = prompt("マイクが使えません。夢をテキストで入力してください：");
+        if (t) { transcript = t; trEl.textContent = t; doneBtn.classList.add("visible"); }
+        return;
+      }
+      if (rec) { try { rec.stop(); } catch(e) {} rec = null; micBtn.classList.remove("recording"); return; }
+      rec = new SpeechRec();
+      rec.lang = "ja-JP"; rec.interimResults = true; rec.continuous = true;
+      rec.onresult = (e) => {
+        transcript = Array.from(e.results).map(r => r[0].transcript).join("");
+        trEl.textContent = transcript;
+        if (transcript) doneBtn.classList.add("visible");
+      };
+      rec.onend = () => { rec = null; micBtn.classList.remove("recording"); };
+      rec.start(); micBtn.classList.add("recording");
+    });
+
+    document.getElementById("sellVoiceDone").addEventListener("click", () => {
+      if (rec) { try { rec.stop(); } catch(e) {} rec = null; }
+      document.getElementById("sellMic").classList.remove("recording");
+      matchAndShow();
+    });
+
+    function matchAndShow() {
+      const q = transcript.toLowerCase();
+      let best = null, bestScore = 0;
+      state.forEach(s => {
+        const text = [s.nameJp, s.nameEn, s.descJp||"", s.descEn||""].join(" ").toLowerCase();
+        const words = q.split(/[\s、。！？,. ]+/).filter(w => w.length > 1);
+        let score = words.reduce((a, w) => a + (text.includes(w) ? 1 : 0), 0);
+        if (score > bestScore) { bestScore = score; best = s; }
+      });
+      if (best && bestScore > 0) {
+        matched = best;
+        showResult(best.nameJp, "assets/footage/" + best.ticker + ".mp4?v=20260622", "assets/footage/" + best.ticker + ".jpg?v=20260622");
+      } else {
+        fetchPexels(transcript);
+      }
+    }
+
+    async function fetchPexels(query) {
+      const q = encodeURIComponent(query.slice(0, 80));
+      let vidUrl = null, imgUrl = null;
+      try {
+        const [vRes, pRes] = await Promise.all([
+          fetch("https://api.pexels.com/videos/search?query=" + q + "&per_page=1", { headers: { Authorization: PEXELS_KEY } }),
+          fetch("https://api.pexels.com/v1/search?query=" + q + "&per_page=1&orientation=square", { headers: { Authorization: PEXELS_KEY } }),
+        ]);
+        const vData = await vRes.json(), pData = await pRes.json();
+        const files = (vData.videos?.[0]?.video_files || []);
+        const sd = files.filter(f => f.quality === "sd");
+        const chosen = (sd.length ? sd : files).sort((a,b) => (a.width||9999)-(b.width||9999));
+        vidUrl = chosen[0]?.link || null;
+        imgUrl = pData.photos?.[0]?.src?.large || null;
+      } catch(e) {}
+      const fallback = state[Math.floor(Math.random() * state.length)];
+      showResult(
+        transcript.slice(0, 24) || fallback.nameJp,
+        vidUrl || "assets/footage/" + fallback.ticker + ".mp4?v=20260622",
+        imgUrl || "assets/footage/" + fallback.ticker + ".jpg?v=20260622"
+      );
+    }
+
+    function showResult(name, vidUrl, imgUrl) {
+      goStep(4);
+      document.getElementById("sellResultName").textContent = name;
+      const orb = document.getElementById("sellResultOrb");
+      orb.innerHTML = "";
+      if (vidUrl) {
+        const vid = document.createElement("video");
+        vid.src = vidUrl; vid.autoplay = true; vid.loop = true; vid.muted = true; vid.playsInline = true;
+        vid.style.cssText = "width:100%;height:100%;object-fit:cover;";
+        vid.onerror = () => { orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover"; };
+        orb.appendChild(vid);
+      } else if (imgUrl) {
+        orb.style.backgroundImage = "url(" + imgUrl + ")"; orb.style.backgroundSize = "cover";
+      }
+    }
+
+    document.getElementById("sellToField").addEventListener("click", () => {
+      $("#selldream").classList.add("hidden");
+      openField();
+    });
+  })();
   $("#fieldPanel").addEventListener("click", (e) => e.stopPropagation());
   const fieldXY = (e, el) => { const rc = el.getBoundingClientRect(); return { x: (e.touches ? e.touches[0].clientX : e.clientX) - rc.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - rc.top }; };
   $("#fieldGL").addEventListener("pointerdown", (e) => {

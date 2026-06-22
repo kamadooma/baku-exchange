@@ -140,11 +140,49 @@
   <!-- 夢を吸い出すページ -->
   <div id="selldream" class="hidden">
     <button id="sellClose">← Market</button>
-    <div class="sell-inner">
-      <div class="sell-title">夢を吸い出す<span class="sell-title-en">Extract Your Dream</span></div>
-      <div class="sell-body">
-        <!-- コンテンツはここに -->
+
+    <!-- Step 0: Start -->
+    <div class="sell-step" id="sellStep0">
+      <div class="sell-step-title">夢を吸い出す</div>
+      <div class="sell-step-en">Extract Your Dream</div>
+      <p class="sell-step-desc">あなたの夢を市場に放ちます。<br>夢の内容は<strong>匿名</strong>で記録されます。</p>
+      <button class="sell-btn-main" id="sellStart">はじめる →</button>
+    </div>
+
+    <!-- Step 1: Meditate -->
+    <div class="sell-step hidden" id="sellStep1">
+      <div class="sell-guide-text" id="sellGuideText">目を閉じて、呼吸を整えてください</div>
+      <div class="sell-pulse" id="sellPulse"></div>
+      <div class="sell-timer" id="sellTimer">3:00</div>
+      <button class="sell-btn-main sell-btn-hidden" id="sellMedNext">次へ →</button>
+    </div>
+
+    <!-- Step 2: Confirm -->
+    <div class="sell-step hidden" id="sellStep2">
+      <div class="sell-step-title">この夢を<br>手放してもいいですか？</div>
+      <div class="sell-step-en">Are you sure you want to release this dream?</div>
+      <div class="sell-confirm-row">
+        <button class="sell-btn-main" id="sellYes">はい、売ります</button>
+        <button class="sell-btn-sub" id="sellNo">まだ手放せません</button>
       </div>
+    </div>
+
+    <!-- Step 3: Voice -->
+    <div class="sell-step hidden" id="sellStep3">
+      <div class="sell-step-title">夢を話してください</div>
+      <div class="sell-step-en">Speak your dream aloud</div>
+      <button class="sell-mic-btn" id="sellMic"><span class="sell-mic-dot"></span></button>
+      <div class="sell-transcript" id="sellTranscript">——</div>
+      <button class="sell-btn-main sell-btn-hidden" id="sellVoiceDone">この夢を売る →</button>
+    </div>
+
+    <!-- Step 4: Result -->
+    <div class="sell-step hidden" id="sellStep4">
+      <div class="sell-result-orb" id="sellResultOrb"></div>
+      <div class="sell-result-name" id="sellResultName"></div>
+      <div class="sell-result-msg">この夢は市場に放たれました</div>
+      <div class="sell-result-msg-en">Your dream has entered the market — anonymously.</div>
+      <button class="sell-btn-main" id="sellToField">Dreamfieldで見る →</button>
     </div>
   </div>
 
