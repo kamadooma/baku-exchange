@@ -59,8 +59,7 @@ body {
 
 /* ---- Baku ink logo: invert to white line-art, drop the paper ---- */
 .logo-baku {
-  filter: invert(1) grayscale(1) brightness(1.12) contrast(1.05);
-  mix-blend-mode: screen;
+  mix-blend-mode: normal;
 }
 
 /* ---- title card ---- */
