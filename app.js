@@ -1897,6 +1897,8 @@
   $("#titlecard").addEventListener("click", enter);
   $("#toField").addEventListener("click", openField);
   $("#fieldClose").addEventListener("click", closeField);
+  $("#toSell").addEventListener("click", () => $("#selldream").classList.remove("hidden"));
+  $("#sellClose").addEventListener("click", () => $("#selldream").classList.add("hidden"));
   $("#fieldPanel").addEventListener("click", (e) => e.stopPropagation());
   const fieldXY = (e, el) => { const rc = el.getBoundingClientRect(); return { x: (e.touches ? e.touches[0].clientX : e.clientX) - rc.left, y: (e.touches ? e.touches[0].clientY : e.clientY) - rc.top }; };
   $("#fieldGL").addEventListener("pointerdown", (e) => {

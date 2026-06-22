@@ -470,6 +470,19 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
   background: transparent; color: var(--g1); border: 1px solid var(--line-2); border-radius: 75px;
   cursor: pointer; margin-left: 22px; transition: all 0.4s var(--ease-soft); font-family: inherit; white-space: nowrap; }
 .navbtn:hover { background: var(--fg); color: var(--bg); }
+.navbtn-sell { color: var(--fg); border-color: var(--fg); }
+
+/* ---- 夢を吸い出すページ ---- */
+#selldream { position: fixed; inset: 0; z-index: 60; overflow-y: auto;
+  background: var(--bg); display: flex; align-items: center; justify-content: center; }
+#selldream.hidden { display: none; }
+#sellClose { position: absolute; top: 20px; left: 24px; z-index: 4; font-size: 0.56rem; letter-spacing: 0.16em;
+  text-transform: uppercase; padding: 9px 16px; background: transparent; color: var(--g1);
+  border: 1px solid var(--line-2); border-radius: 75px; cursor: pointer; font-family: inherit; }
+.sell-inner { text-align: center; padding: 80px 32px 60px; max-width: 540px; width: 100%; }
+.sell-title { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 200; letter-spacing: 0.08em; line-height: 1.2; }
+.sell-title-en { display: block; font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--g2); margin-top: 10px; }
 
 #dreamfield { position: fixed; inset: 0; z-index: 60; overflow: hidden;
   background: radial-gradient(120% 100% at 50% 38%, #0e1013, #050506 82%); }
