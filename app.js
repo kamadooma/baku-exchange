@@ -1646,6 +1646,8 @@
         vx: (Math.random() - 0.5) * 0.10, vy: (Math.random() - 0.5) * 0.10, ph: Math.random() * 6.283, sc: 1,
         z: 0.18 + Math.random() * 0.82, delay: 0 });
     });
+    // 保存済みユーザー夢をフィールドに追加
+    loadReleasedDreams().forEach(d => _addDreamOrb(d, W, H, fScale));
     // 水中を漂う埃のような微粒子
     fieldDust = [];
     for (let i = 0; i < 150; i++) fieldDust.push({
@@ -1897,6 +1899,60 @@
   $("#titlecard").addEventListener("click", enter);
   $("#toField").addEventListener("click", openField);
   $("#fieldClose").addEventListener("click", closeField);
+  // ---- ユーザー夢の保存・DreamField統合 ----
+  const STORAGE_KEY = "baku_released_dreams";
+
+  function loadReleasedDreams() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch(e) { return []; }
+  }
+
+  function saveReleasedDream(dream) {
+    const list = loadReleasedDreams();
+    list.unshift(dream); // 新しいものを先頭に
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(list.slice(0, 100))); } catch(e) {}
+  }
+
+  function formatDreamForField(transcript, matched) {
+    // 物語から短いタイトルを抽出
+    const shortJp = (transcript.split(/[。！？\n]/)[0] || transcript).slice(0, 18);
+    // キーワードでカテゴリ推定
+    const q = transcript.toLowerCase();
+    const cat = /怖|悪夢|nightmare|horror|fear|暗|死|monster/.test(q) ? "nightmare"
+              : /平和|happy|love|hope|願|光|beautiful|夢|sky|fly/.test(q) ? "hope"
+              : "oneiric";
+    const t = matched || {};
+    return {
+      ticker: "USR_" + Date.now(),
+      nameJp: shortJp || t.nameJp || "あなたの夢",
+      nameEn: t.nameEn || "Your dream",
+      descJp: transcript,
+      descEn: transcript,
+      category: cat,
+      seller: "あなた自身",
+      _userDream: true,
+      interest: 55 + Math.floor(Math.random() * 30),
+      price: t.price || (100 + Math.floor(Math.random() * 900)),
+      closes: [], tape: [],
+    };
+  }
+
+  function _addDreamOrb(data, W, H, fScale) {
+    if (!window.FieldGL || !fieldBuilt) return;
+    fScale = fScale || Math.max(0.42, Math.min(1, Math.min(innerWidth, innerHeight) / 640));
+    W = W || innerWidth; H = H || innerHeight;
+    const r = Math.round(52 * fScale);
+    const tex = FieldGL.loadTexture(data.imgUrl + "");
+    const s = data._s || formatDreamForField(data.transcript || "", null);
+    s._imgUrl = data.imgUrl; s._userDream = true;
+    fieldOrbs.push({
+      s, r, tex, fb: [0.28, 0.18, 0.42], seed: Math.random(),
+      x: r + Math.random() * Math.max(1, W - 2 * r),
+      y: 90 + r + Math.random() * Math.max(1, H - 2 * r - 200),
+      vx: (Math.random() - 0.5) * 0.08, vy: (Math.random() - 0.5) * 0.08,
+      ph: Math.random() * 6.283, sc: 1, z: 0.5 + Math.random() * 0.5, delay: 0,
+    });
+  }
+
   // ---- 夢を吸い出すフロー ----
   (function() {
     const PEXELS_KEY = "9heRDTAA2Hs38mjrmR4FTW81nU18jWbQF2iFQxvfXzmZNHYjUhKzERBa";
@@ -1942,11 +1998,11 @@
 
     // 円形モニターへの送信 — Mac上でpython3 tools/pillow_server.py を起動しておく
     const PILLOW_SERVER = "http://localhost:8765";
-    function sendToPillow(imgUrl) {
+    function sendToPillow(imgUrl, extra) {
       fetch(PILLOW_SERVER + "/dream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: imgUrl }),
+        body: JSON.stringify({ url: imgUrl, ...(extra || {}) }),
       }).catch(() => {}); // 接続できなくても無視
     }
 
@@ -2135,8 +2191,13 @@
         }
       }
       orb.onclick = () => {
-        // orbCanvasを元の場所に戻してからステップ遷移
-        if (orbCanvas && orb.contains(orbCanvas)) $(".orb") && $(".orb").appendChild(orbCanvas);
+        if (orbCanvas && orb.contains(orbCanvas)) { const dest = $(".orb"); if (dest) dest.appendChild(orbCanvas); }
+        // 夢を保存
+        const s = formatDreamForField(transcript, null);
+        const dreamData = { id: Date.now(), transcript, name, imgUrl, vidUrl: vidUrl || null, price, ts: Date.now(), _s: s };
+        saveReleasedDream(dreamData);
+        _addDreamOrb(dreamData);
+        sendToPillow(imgUrl, { name, transcript, price });
         goStep(4);
       };
     }
