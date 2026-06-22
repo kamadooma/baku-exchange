@@ -2093,7 +2093,7 @@
       }
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; micBtn.classList.remove("recording"); return; }
       rec = new SpeechRec();
-      rec.lang = "ja-JP"; rec.interimResults = true; rec.continuous = true;
+      rec.lang = navigator.language || "ja-JP"; rec.interimResults = true; rec.continuous = true;
       rec.onresult = (e) => {
         transcript = Array.from(e.results).map(r => r[0].transcript).join("");
         trEl.textContent = transcript;
@@ -2311,22 +2311,35 @@
       if (visualMatch) return (visualMatch.jp || visualMatch.slug) + "の夢";
       if (matchedTicker) return matchedTicker.nameJp;
 
-      // 口語・フィラーを除去してクリーンなタイトルを生成
-      const clean = transcript
-        .replace(/^(えーと|えー|あのー|あの|その|なんか|こう|ちょっと|まあ|ちょっとした)[、\s]*/g, "")
-        .replace(/という夢(を見た|です|でした)?/g, "")
-        .replace(/(夢を見た|夢でした|夢です|夢の話|夢なんですが)/g, "")
-        .replace(/[、。！？…‥～〜]/g, " ")
-        .trim();
+      const isEnglish = /[a-zA-Z]/.test(transcript) && transcript.replace(/[a-zA-Z\s]/g, "").length < transcript.length * 0.3;
 
-      // 最初の意味のある単語グループを取り出す（助詞の前まで）
-      const phrase = clean
-        .split(/\s+/)[0]             // 最初のスペース区切り
-        .replace(/[をにがはもでへより].*/, "")  // 助詞以降を削除
-        .slice(0, 12);               // 最大12文字
-
-      if (phrase.length > 1) return phrase + "の夢";
-      return "あなたの夢";
+      if (isEnglish) {
+        // 英語: フィラーと定型文を除去
+        const clean = transcript
+          .replace(/^(um+|uh+|so|like|i mean|well|okay|you know)[,\s]*/gi, "")
+          .replace(/\b(i had a dream (about|where|that)|i dreamed (about|of)|in my dream|dream about)\b/gi, "")
+          .replace(/[.,!?]/g, " ")
+          .trim();
+        // 最初の3〜4語を取る
+        const words = clean.split(/\s+/).filter(w => w.length > 1).slice(0, 4);
+        const phrase = words.join(" ").slice(0, 30);
+        if (phrase.length > 2) return phrase;
+        return "Your dream";
+      } else {
+        // 日本語: 口語・フィラーを除去
+        const clean = transcript
+          .replace(/^(えーと|えー|あのー|あの|その|なんか|こう|ちょっと|まあ)[、\s]*/g, "")
+          .replace(/という夢(を見た|です|でした)?/g, "")
+          .replace(/(夢を見た|夢でした|夢です|夢の話|夢なんですが)/g, "")
+          .replace(/[、。！？…‥～〜]/g, " ")
+          .trim();
+        const phrase = clean
+          .split(/\s+/)[0]
+          .replace(/[をにがはもでへより].*/, "")
+          .slice(0, 12);
+        if (phrase.length > 1) return phrase + "の夢";
+        return "あなたの夢";
+      }
     }
 
     function matchAndLoad() {
