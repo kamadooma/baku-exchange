@@ -2934,7 +2934,11 @@
 
     // 話した夢の内容から表示用タイトルを生成
     function generateDreamTitle(visualMatch, matchedTicker) {
-      if (visualMatch) return (visualMatch.jp || visualMatch.slug) + "の夢";
+      if (visualMatch) {
+        const term = visualMatch.jp || visualMatch.slug;
+        if (/^[a-zA-Z]/.test(term)) return term.charAt(0).toUpperCase() + term.slice(1);
+        return term + "の夢";
+      }
       if (matchedTicker) return matchedTicker.nameEn || matchedTicker.nameJp;
 
       const isEnglish = /[a-zA-Z]/.test(transcript) && transcript.replace(/[a-zA-Z\s]/g, "").length < transcript.length * 0.3;
@@ -2983,10 +2987,11 @@
       // 0.5: JP具体名詞 → ローカルconceptファイル
       const concrete = extractConcreteTerm(q);
       if (concrete) {
-        const title = concrete.jp + "の夢";
+        const enTitle = concrete.slug.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+        const jpSub = concrete.jp + "の夢";
         const price = Math.floor(Math.random() * 900 + 100);
         const imgUrl = "assets/footage/concept_" + concrete.slug + ".jpg?v=20260622i";
-        return loadOrb(title, null, imgUrl, price);
+        return loadOrb(enTitle, null, imgUrl, price, null, jpSub);
       }
 
       // 1. 視覚名詞（具体的に見えるもの）→ ローカルconceptファイル直接表示
@@ -2995,7 +3000,13 @@
         const title = generateDreamTitle(visual, null);
         const price = Math.floor(Math.random() * 900 + 100);
         const imgUrl = "assets/footage/concept_" + visual.slug + ".jpg?v=20260622g";
-        return loadOrb(title, null, imgUrl, price);
+        // 英語マッチ時はJP_NOUN_ENから日本語語を逆引きしてサブタイトルに
+        let jpSub = null;
+        if (/^[a-zA-Z]/.test(visual.jp || "")) {
+          const jpKey = Object.entries(JP_NOUN_EN).find(([jp, s]) => s === visual.slug && /[^\x00-\x7F]/.test(jp));
+          if (jpKey) jpSub = jpKey[0] + "の夢";
+        }
+        return loadOrb(title, null, imgUrl, price, null, jpSub);
       }
 
       // 2. 夢テーマ（感情・体験）→ ティッカー映像
