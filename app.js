@@ -2094,6 +2094,16 @@
       ["sellVoiceDone","sellRetake"].forEach(id => document.getElementById(id).classList.remove("visible"));
     }
 
+    // 言語トグル
+    let recLang = "ja-JP";
+    document.querySelectorAll(".sell-lang-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".sell-lang-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        recLang = btn.dataset.lang;
+      });
+    });
+
     document.getElementById("sellMic").addEventListener("click", () => {
       const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
       const micBtn = document.getElementById("sellMic");
@@ -2101,13 +2111,13 @@
       const retakeBtn = document.getElementById("sellRetake");
       const trEl = document.getElementById("sellTranscript");
       if (!SpeechRec) {
-        const t = prompt("マイクが使えません。夢をテキストで入力してください：");
+        const t = prompt("Speak your dream — or type it here:\n夢をテキストで入力してください：");
         if (t) { transcript = t; trEl.textContent = t; doneBtn.classList.add("visible"); retakeBtn.classList.add("visible"); }
         return;
       }
       if (rec) { try { rec.stop(); } catch(e) {} rec = null; micBtn.classList.remove("recording"); return; }
       rec = new SpeechRec();
-      rec.lang = navigator.language.startsWith("en") ? "en-US" : "ja-JP";
+      rec.lang = recLang;
       rec.interimResults = true; rec.continuous = true;
       rec.onresult = (e) => {
         transcript = Array.from(e.results).map(r => r[0].transcript).join("");
@@ -2146,7 +2156,7 @@
         const s = byTicker.get(ticker);
         if (s) {
           const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
-          return loadOrb(summary_jp || s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
+          return loadOrb(s.nameEn || summary_jp || s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
         }
       }
       // ティッカーマッチなし → Pexels
@@ -2925,7 +2935,7 @@
     // 話した夢の内容から表示用タイトルを生成
     function generateDreamTitle(visualMatch, matchedTicker) {
       if (visualMatch) return (visualMatch.jp || visualMatch.slug) + "の夢";
-      if (matchedTicker) return matchedTicker.nameJp;
+      if (matchedTicker) return matchedTicker.nameEn || matchedTicker.nameJp;
 
       const isEnglish = /[a-zA-Z]/.test(transcript) && transcript.replace(/[a-zA-Z\s]/g, "").length < transcript.length * 0.3;
 
@@ -3220,4 +3230,49 @@
   window.addEventListener("resize", () => { if (dref) updateDetail(); });
   setTimeout(() => { if ($("#titlecard").style.display !== "none") enter(); }, 9000);
   if (location.search.indexOf("field") >= 0) { enter(); setTimeout(openField, 300); }   // ?field= で夢の海を自動表示（確認用）
+
+  // ---- music player ----
+  (() => {
+    const audio = $("#bgmAudio");
+    const toggleBtn = $("#musicToggle");
+    const tracks = document.querySelectorAll(".music-trk");
+    let playing = false;
+
+    function loadTrack(src) {
+      audio.src = src;
+      if (playing) audio.play().catch(() => {});
+    }
+
+    function setActive(btn) {
+      tracks.forEach(t => t.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      if (!audio.src) {
+        const first = document.querySelector(".music-trk.active");
+        audio.src = first ? first.dataset.src : tracks[0].dataset.src;
+      }
+      if (playing) {
+        audio.pause(); playing = false;
+        toggleBtn.textContent = "▶"; toggleBtn.classList.remove("playing");
+      } else {
+        audio.play().catch(() => {});
+        playing = true;
+        toggleBtn.textContent = "⏸"; toggleBtn.classList.add("playing");
+      }
+    });
+
+    tracks.forEach(btn => {
+      btn.addEventListener("click", () => {
+        setActive(btn);
+        loadTrack(btn.dataset.src);
+        if (!playing) {
+          audio.play().catch(() => {});
+          playing = true;
+          toggleBtn.textContent = "⏸"; toggleBtn.classList.add("playing");
+        }
+      });
+    });
+  })();
 })();

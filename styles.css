@@ -136,6 +136,26 @@ header.topbar {
 .brand-name { font-size: 1.05rem; font-weight: 300; letter-spacing: 0.3em; text-transform: uppercase; padding-left: 0.3em; }
 .brand .tagline { display: none; }
 
+/* ---- music bar ---- */
+#musicBar { display: flex; align-items: center; gap: 14px; }
+.music-btn {
+  background: none; border: 1px solid var(--line-2); color: var(--fg);
+  width: 30px; height: 30px; border-radius: 50%; cursor: pointer; flex-shrink: 0;
+  font-size: 0.65rem; display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.25s, color 0.25s; padding: 0; line-height: 1;
+}
+.music-btn:hover { border-color: var(--g1); }
+.music-btn.playing { border-color: var(--fg); color: var(--fg); }
+.music-tracks { display: flex; gap: 4px; }
+.music-trk {
+  background: none; border: none; border-bottom: 1px solid transparent;
+  color: var(--g2); cursor: pointer; padding: 3px 6px;
+  font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase;
+  font-family: var(--sans); transition: color 0.25s, border-color 0.25s;
+}
+.music-trk:hover { color: var(--g1); }
+.music-trk.active { color: var(--fg); border-bottom-color: var(--fg); }
+
 .metrics { display: flex; gap: 46px; align-items: center; }
 .metric { min-width: 120px; }
 .metric .m-val { font-size: 1.45rem; font-weight: 200; margin-top: 8px; }
@@ -519,6 +539,13 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 .sell-confirm-row, .sell-med-btns, .sell-voice-btns { display: flex; flex-direction: column; align-items: center; gap: 0; margin-top: 10px; }
 
 /* voice */
+/* ---- language toggle ---- */
+.sell-lang-toggle { display: flex; gap: 0; margin-top: 20px; border: 1px solid var(--line-2); border-radius: 4px; overflow: hidden; align-self: center; }
+.sell-lang-btn { background: none; border: none; color: var(--g2); cursor: pointer; padding: 5px 14px;
+  font-size: 0.62rem; letter-spacing: 0.18em; font-family: var(--sans); transition: background 0.2s, color 0.2s; }
+.sell-lang-btn + .sell-lang-btn { border-left: 1px solid var(--line-2); }
+.sell-lang-btn.active { background: var(--line-2); color: var(--fg); }
+
 .sell-mic-btn { width: 80px; height: 80px; border-radius: 50%; border: 1px solid var(--line-2);
   background: transparent; cursor: pointer; margin: 36px auto 0; display: flex; align-items: center;
   justify-content: center; transition: border-color 0.3s; }
