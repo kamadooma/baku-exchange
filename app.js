@@ -2151,19 +2151,19 @@
     });
 
     function matchAndLoadWithAnalysis(analysis) {
-      const { ticker, keywords_en, summary_jp } = analysis;
+      const { ticker, keywords_en, summary_jp, title_en } = analysis;
       if (ticker) {
         const s = byTicker.get(ticker);
         if (s) {
           const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
-          return loadOrb(s.nameEn || summary_jp || s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price, null, s.nameJp);
+          return loadOrb(title_en || s.nameEn, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price, null, summary_jp || s.nameJp);
         }
       }
-      // ティッカーマッチなし → Pexels
-      fetchPexelsEn(keywords_en || "dream surreal abstract");
+      // ティッカーマッチなし → Pexels（summary_jpをサブタイトルに渡す）
+      fetchPexelsEn(keywords_en || "dream surreal abstract", title_en, null, summary_jp);
     }
 
-    async function fetchPexelsEn(keywords, title, price) {
+    async function fetchPexelsEn(keywords, title, price, nameJp) {
       const q = encodeURIComponent(keywords.slice(0, 80));
       const finalPrice = price || Math.floor(Math.random() * 900 + 100);
       let vidUrl = null, imgUrl = null;
@@ -2182,7 +2182,7 @@
       const fb = state[Math.floor(Math.random() * state.length)];
       loadOrb(title || transcript.slice(0, 16) || fb.nameJp,
         vidUrl || "assets/footage/" + fb.ticker + ".mp4?v=20260622",
-        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", finalPrice);
+        imgUrl  || "assets/footage/" + fb.ticker + ".jpg?v=20260622", finalPrice, null, nameJp);
     }
 
     // ── 視覚名詞テーブル（具体的に見えるもの → Pexels直接検索・長い語優先）──
