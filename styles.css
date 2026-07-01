@@ -575,7 +575,8 @@ img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
   opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
 }
 .sell-orb-tappable:hover .sell-orb-hint { opacity: 1; }
-.sell-result-name { font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 200; letter-spacing: 0.06em; }
+.sell-result-name { font-size: clamp(1rem, 3vw, 1.4rem); font-weight: 200; letter-spacing: 0.06em; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sell-result-name-jp { font-size: 0.62rem; letter-spacing: 0.14em; color: var(--g2); font-weight: 300; }
 .sell-result-price { font-size: clamp(1.6rem, 5vw, 2.4rem); font-weight: 200; letter-spacing: 0.1em; margin-top: 6px; }
 .sell-sold-title { font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 200; letter-spacing: 0.06em; }
 .sell-sold-en { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--g2); margin-top: 10px; }

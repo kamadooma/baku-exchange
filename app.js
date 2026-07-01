@@ -2156,7 +2156,7 @@
         const s = byTicker.get(ticker);
         if (s) {
           const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
-          return loadOrb(s.nameEn || summary_jp || s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
+          return loadOrb(s.nameEn || summary_jp || s.nameJp, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price, null, s.nameJp);
         }
       }
       // ティッカーマッチなし → Pexels
@@ -3009,7 +3009,7 @@
         if (s) {
           const price = s.price ? Math.round(s.price) : Math.floor(Math.random() * 900 + 100);
           const title = generateDreamTitle(null, s);
-          return loadOrb(title, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price);
+          return loadOrb(title, "assets/footage/" + s.ticker + ".mp4?v=20260622", "assets/footage/" + s.ticker + ".jpg?v=20260622", price, null, s.nameJp);
         }
       }
 
@@ -3139,10 +3139,12 @@
     let _dissolveTimer = null;
 
     // imgUrls: 単一string または string[] (複数の時はディゾルブで切り替え)
-    function loadOrb(name, vidUrl, imgUrl, price, extraImgs) {
+    function loadOrb(nameEn, vidUrl, imgUrl, price, extraImgs, nameJp) {
       if (imgUrl) sendToPillow(imgUrl); // 円形モニターへ送信
       goStep(3);
-      document.getElementById("sellResultName").textContent = name;
+      const nameEl = document.getElementById("sellResultName");
+      nameEl.innerHTML = nameEn
+        + (nameJp ? `<span class="sell-result-name-jp">${nameJp}</span>` : "");
       document.getElementById("sellResultPrice").textContent = price + " BAKU";
       const orb = document.getElementById("sellResultOrb");
       orb.innerHTML = '<div class="sell-orb-hint">Release</div>';
