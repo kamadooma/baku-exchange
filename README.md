@@ -80,4 +80,10 @@ python3 -m http.server 8137
 
 ---
 
+## Special Thanks
+
+**REVITAL COHEN & TUUR VAN BALEN**
+
+---
+
 *Made by madoka × Claude.*
