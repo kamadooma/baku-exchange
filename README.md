@@ -4,9 +4,6 @@
 
 🔗 **Live: <https://kamadooma.github.io/baku-exchange/>**
 
-> Speculative Design Project 2: *Apocalypse–Cosmogeny*
-> School of Design & Science
-
 ---
 
 ## Statement
