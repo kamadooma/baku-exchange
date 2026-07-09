@@ -1794,13 +1794,16 @@
       const rec = TL[s.ticker] || { birth: BIRTH[s.ticker], events: EVENTS[s.ticker] };  // 研究データ優先、無ければ内蔵
       const birth = rec.birth, ev = rec.events;
       if (!birth && (!ev || !ev.length)) return;
+      // 実データ(Ngram/実測)が入った銘柄では、手書きイベント山は形を作らず“味付け”に留める(25%)。
+      // 履歴の無い銘柄では山が唯一の形なので全力(100%)。
+      const evAmp = s.hasHistory ? 0.25 : 1;
       for (let m = 0; m < L; m++) {
         const y = START_YEAR + m / 12;
         if (birth) s.closes[m] *= Math.max(0.04, Math.min(1, (y - (birth - 4)) / 8));   // 誕生前はほぼ無
         if (ev) {
           let bump = 0;
           for (const e of ev) { const sig = e[0] >= 2015 ? 4.5 : 2.4; bump += e[1] * Math.exp(-((y - e[0]) * (y - e[0])) / (2 * sig * sig)); }  // 近年の山は2026まで余韻
-          s.closes[m] += bump;
+          s.closes[m] += bump * evAmp;
         }
       }
       s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price; s.tape = Array.from(s.closes.slice(-TAPE_N)); s.hasHistory = true;
@@ -1859,33 +1862,92 @@
   function setStatus(live, text) { $("#dataStatus").textContent = text; $("#dataDot").classList.toggle("live", !!live); }
 
   // 近年テック富豪らが本気で追う夢は、2020年代に急騰している（Ngramは2019まで＆書籍ベースで拾えない）
+  // ただし recent.json に実測の近年系列がある銘柄では実データが置き換えるので TREND_NOW は使わない
   const TREND_NOW = { IMMO: 1.0, SING: 0.85, AIBC: 0.7, ENHANCE: 0.7, MARS: 0.5 };
 
-  // ---- historical shape from Google Ngram (data/history.json) ----
+  // 月次テクスチャ：i.i.d.白色ノイズをやめ、市場らしい過程にする。
+  // ボラ状態 vs を平均1へゆっくり回帰する AR(1)、ドリフトに慣性(0.9)を持たせ
+  // ボラ・クラスタリングを作り、対数偏差 ld を0へ平均回帰させて水準は注目カーブが支配する。
+  // 100Yズームでは注目の形が主役、5Y/10Yズームでは“それらしい揺らぎ”が見える強さに調整。
+  function marketTexture(s, L) {
+    const vol = s.volatility || 1;
+    let vs = 1, drift = 0, ld = 0;
+    for (let m = 1; m < L; m++) {
+      vs = 0.94 * vs + 0.06 * (1 + 0.5 * gauss());          // ボラ状態 AR(1)（平均1回帰）
+      vs = Math.max(0.3, Math.min(2.5, vs));
+      drift = 0.9 * drift + gauss() * 0.008 * vol * vs;     // 慣性のあるドリフト＝ボラ・クラスタリング
+      ld = 0.96 * ld + drift;                               // 対数偏差は0へ平均回帰（水準を暴走させず注目カーブを主役に）
+      ld = Math.max(-0.45, Math.min(0.45, ld));             // 単月で最大~1.5倍まで（穏やかな夢は±14%, 荒い夢は±27%帯）
+      s.closes[m] *= Math.exp(ld);
+    }
+  }
+
+  // ---- historical shape from Google Ngram (data/history.json) + 近年実測 (data/recent.json) ----
   async function loadHistory() {
-    let hist = null;
+    let hist = null, rec = null;
     try { const r = await fetch("data/history.json"); if (r.ok) hist = await r.json(); } catch (e) {}
+    try { const r = await fetch("data/recent.json"); if (r.ok) rec = await r.json(); } catch (e) {}
     if (!hist) return;
+    rec = rec || {};
     const L = TOTAL_MONTHS;
+    const O0 = (2015 - START_YEAR) * 12 + 6, O1 = (2019 - START_YEAR) * 12 + 11; // 重なり窓 2015-07..2019-12
     let n = 0;
     state.forEach((s) => {
-      const ys = hist[s.ticker]; if (!ys || ys.length < 2) return;
-      for (let m = 0; m < L; m++) {
-        const yr = START_YEAR + m / 12;
-        let v;
-        if (yr <= 1900 + ys.length - 1) {
-          const x = Math.max(0, Math.min(ys.length - 1, yr - 1900));
-          const i0 = Math.floor(x), i1 = Math.min(ys.length - 1, i0 + 1), f = x - i0;
-          v = ys[i0] * (1 - f) + ys[i1] * f;
-        } else v = ys[ys.length - 1];
-        s.closes[m] = 30 + v * 420;                 // 0..1 → ~30..450 BAKU
+      const ys = hist[s.ticker], rc = rec[s.ticker];
+      const hasNg = ys && ys.length >= 2;
+      const hasRc = rc && rc.monthly && rc.monthly.length;
+      if (!hasNg && !hasRc) return;                                   // 実データが全く無い→合成のまま
+      // 1) Ngram の 0..1 カーブを月次に展開（あれば）
+      let ng = null;
+      if (hasNg) {
+        ng = new Float64Array(L);
+        for (let m = 0; m < L; m++) {
+          const yr = START_YEAR + m / 12;
+          if (yr <= 1900 + ys.length - 1) {
+            const x = Math.max(0, Math.min(ys.length - 1, yr - 1900));
+            const i0 = Math.floor(x), i1 = Math.min(ys.length - 1, i0 + 1), f = x - i0;
+            ng[m] = ys[i0] * (1 - f) + ys[i1] * f;
+          } else ng[m] = ys[ys.length - 1];
+        }
       }
-      for (let m = 1; m < L; m++) s.closes[m] *= (1 + 0.015 * gauss());  // 月次のテクスチャ
-      const boost = TREND_NOW[s.ticker];                                 // いま熱い夢は近年急騰
-      if (boost) { const cy = _now.getFullYear(); for (let m = 0; m < L; m++) { const yr = START_YEAR + m / 12; if (yr > 2008) { const t = (yr - 2008) / (cy - 2008); s.closes[m] *= 1 + boost * 0.9 * t; } } }
+      // 2) 近年実測(recent)を反映
+      let usedRecent = false;
+      if (hasRc) {
+        const rm = rc.monthly;                                         // 0..1（各系列の最大で正規化済み）
+        const sm = rc.start.split("-"), rs = (+sm[0] - START_YEAR) * 12 + (+sm[1] - 1); // recent開始の月インデックス
+        const rv = (m) => { const li = m - rs; return li < 0 ? null : rm[Math.min(li, rm.length - 1)]; };
+        if (hasNg) {                                                   // Ngram(〜2019)→実測(2020〜)を継ぎ足す
+          // 重なり期間で水準合わせ（Ngram平均÷recent平均）。Ngramが≈0なら小さな床で実測を殺さない
+          let sn = 0, sr = 0, cnt = 0;
+          for (let m = O0; m <= O1 && m < L; m++) { const r = rv(m); if (r == null) continue; sn += ng[m]; sr += r; cnt++; }
+          let scale;
+          if (cnt >= 6 && sr > 1e-4) { scale = Math.max(sn / cnt, 0.08) / (sr / cnt); }
+          else { const r0 = rm[0]; scale = r0 > 1e-3 ? Math.max(ng[Math.min(L - 1, Math.max(0, rs))], 0.08) / r0 : 1; } // 後年作成記事は開始月で連続接続
+          scale = Math.max(0.2, Math.min(8, scale));
+          for (let m = 0; m < L; m++) {
+            const yr = START_YEAR + m / 12, r = rv(m);
+            let v = ng[m];
+            if (r != null) {                                          // 実測がある月だけ差し替え/クロスフェード
+              const sv = r * scale;
+              if (yr >= 2020) v = sv;                                 // 2020以降は実測に置換（COVID/AI/戦争の集合的関心）
+              else if (yr >= 2018) { const t = (yr - 2018) / 2; v = ng[m] * (1 - t) + sv * t; } // 2018-19でクロスフェード
+            }
+            s.closes[m] = Math.max(12, Math.min(600, 30 + v * 420));  // 30..450基準・本物の急騰は~600まで許容
+          }
+        } else {                                                      // Ngram無し：実測のみで形を作る（開始前は先頭値で平坦→誕生ランプが前史を整える）
+          for (let m = 0; m < L; m++) { let r = rv(m); if (r == null) r = rm[0]; s.closes[m] = Math.max(12, Math.min(600, 30 + r * 420)); }
+        }
+        usedRecent = true;
+      } else {                                                        // Ngramのみ：実測が無い銘柄だけ手調整で近年急騰
+        for (let m = 0; m < L; m++) s.closes[m] = 30 + ng[m] * 420;   // 0..1 → ~30..450 BAKU
+        const boost = TREND_NOW[s.ticker];
+        if (boost) { const cy = _now.getFullYear(); for (let m = 0; m < L; m++) { const yr = START_YEAR + m / 12; if (yr > 2008) { const t = (yr - 2008) / (cy - 2008); s.closes[m] *= 1 + boost * 0.9 * t; } } }
+      }
+      // 3) 市場らしい月次テクスチャ
+      marketTexture(s, L);
       s.price = s.closes[L - 1]; s.open = s.price; s.fair = s.price;
       s.tape = Array.from(s.closes.slice(-TAPE_N));
-      s.hasHistory = true; n++;
+      s.hasHistory = true; s.hasRecent = usedRecent; n++;
     });
     idxBase = null;                                  // 指数の基準を取り直す
     updateList(); updateTicker(); if (dref) updateDetail();
